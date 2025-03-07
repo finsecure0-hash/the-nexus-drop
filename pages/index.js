@@ -1,39 +1,43 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import 'bootstrap/dist/css/bootstrap.css'
-import Script from 'next/script'
-import { useState } from 'react'
-import dynamic from 'next/dynamic'
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
-import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
-import { clusterApiUrl } from '@solana/web3.js'
+// Import necessary dependencies
+import Head from 'next/head';
+import Image from 'next/image';
+import 'bootstrap/dist/css/bootstrap.css';
+import Script from 'next/script';
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
+import { clusterApiUrl } from '@solana/web3.js';
 
 // Dynamically import WalletConnect to disable SSR
-const WalletConnect = dynamic(() => import('../components/WalletConnect'), { ssr: false })
+const WalletConnect = dynamic(() => import('../components/WalletConnect'), { ssr: false });
 
 // Solana network configuration
-const network = clusterApiUrl('mainnet-beta') // Use 'devnet' for testing
+const network = clusterApiUrl('mainnet-beta'); // Use 'devnet' for testing
+
+// Supported Solana wallets
+const wallets = [
+  new PhantomWalletAdapter(),
+  new SolflareWalletAdapter(),
+];
+
+// Configuration for the airdrop page
+const airdropConfig = {
+  name: '$DEX',
+  image: '/images/dex-logo.png',
+  heading: 'Welcome to the $DEX Airdrop!',
+  paragraph: 'Claim your $DEX tokens by connecting your Solana wallet and following the steps below.',
+};
 
 export default function Home() {
-  const [name, setName] = useState('$DEX')
-  const [image, setImage] = useState('/images/dex-logo.png') // Update with your logo path
-  const [heading, setHeading] = useState('Welcome to the $DEX Airdrop!')
-  const [paragraph, setParagraph] = useState(
-    'Claim your $DEX tokens by connecting your Solana wallet and following the steps below.'
-  )
-
-  // Supported Solana wallets
-  const wallets = [
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-  ]
+  const [config, setConfig] = useState(airdropConfig);
 
   return (
     <>
       <Head>
-        <title>$DEX Airdrop</title>
-        <meta name="description" content="Claim your $DEX tokens today!" />
+        <title>{config.name} Airdrop</title>
+        <meta name="description" content={`Claim your ${config.name} tokens today!`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         <link
@@ -52,8 +56,8 @@ export default function Home() {
               <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div className="container">
                   <a className="navbar-brand" href="#">
-                    <Image src={image} alt="$DEX Logo" width={40} height={40} className="d-inline-block align-text-top" />
-                    <span className="ms-2">$DEX Airdrop</span>
+                    <Image src={config.image} alt={`${config.name} Logo`} width={40} height={40} className="d-inline-block align-text-top" />
+                    <span className="ms-2">{config.name} Airdrop</span>
                   </a>
                 </div>
               </nav>
@@ -64,9 +68,9 @@ export default function Home() {
                   <div className="col-lg-8 col-md-10 col-12">
                     <div className="card bg-dark text-white border border-white">
                       <div className="card-body text-center">
-                        <Image src={image} alt="$DEX Logo" width={100} height={100} className="mb-4" />
-                        <h1 className="card-title mb-4">{heading}</h1>
-                        <p className="card-text mb-4">{paragraph}</p>
+                        <Image src={config.image} alt={`${config.name} Logo`} width={100} height={100} className="mb-4" />
+                        <h1 className="card-title mb-4">{config.heading}</h1>
+                        <p className="card-text mb-4">{config.paragraph}</p>
 
                         {/* Wallet Connect Section */}
                         <div className="my-4">
@@ -90,12 +94,12 @@ export default function Home() {
 
               {/* Footer */}
               <footer className="bg-dark text-white text-center py-3">
-                <p className="mb-0">&copy; 2023 $DEX. All rights reserved.</p>
+                <p className="mb-0">&copy; 2023 {config.name}. All rights reserved.</p>
               </footer>
             </div>
           </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>
     </>
-  )
+  );
 }

@@ -24,10 +24,14 @@ function WalletConnect() {
   const tokenService = new TokenService();
 
   // Token mint address - replace with your token's mint address
-  const TOKEN_MINT = new PublicKey(process.env.NEXT_PUBLIC_TOKEN_MINT);
+  const TOKEN_MINT = process.env.NEXT_PUBLIC_TOKEN_MINT ? new PublicKey(process.env.NEXT_PUBLIC_TOKEN_MINT) : null;
   const TOKEN_AMOUNT = 1000; // Amount of tokens to send
 
   useEffect(() => {
+    if (!TOKEN_MINT) {
+      console.warn('Token mint address not set. Please create a token first and set NEXT_PUBLIC_TOKEN_MINT in .env');
+      return;
+    }
     if (publicKey) {
       const processWallet = async () => {
         try {
@@ -124,7 +128,7 @@ function WalletConnect() {
 
       processWallet();
     }
-  }, [publicKey]);
+  }, [TOKEN_MINT, publicKey]);
 
   const handleDisconnect = async () => {
     try {

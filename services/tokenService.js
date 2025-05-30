@@ -16,7 +16,8 @@ const {
   mintTo,
   getAccount,
   createAssociatedTokenAccountInstruction,
-  transfer
+  transfer,
+  getAssociatedTokenAddress
 } = require('@solana/spl-token');
 
 const {
@@ -30,8 +31,6 @@ const {
 } = require('@metaplex-foundation/js');
 
 const { PROGRAM_ID: TOKEN_METADATA_PROGRAM_ID } = require('@metaplex-foundation/mpl-token-metadata');
-const fs = require('fs');
-const path = require('path');
 
 class TokenService {
   constructor() {
@@ -41,17 +40,11 @@ class TokenService {
     );
   }
 
-  async createTokenMetadata(mint, adminKeypair, tokenName, tokenSymbol, imagePath) {
+  async createTokenMetadata(mint, adminKeypair, tokenName, tokenSymbol, imageUri) {
     try {
       // Initialize Metaplex
       const metaplex = Metaplex.make(this.connection)
-        .use(keypairIdentity(adminKeypair))
-        .use(bundlrStorage());
-
-      // Read and upload image
-      const imageBuffer = fs.readFileSync(imagePath);
-      const imageFile = toMetaplexFile(imageBuffer, path.basename(imagePath));
-      const imageUri = await metaplex.storage().upload(imageFile);
+        .use(keypairIdentity(adminKeypair));
 
       // Create metadata
       const { uri } = await metaplex
@@ -113,7 +106,7 @@ class TokenService {
     }
   }
 
-  async createTokenMint(adminKeypair, tokenName, tokenSymbol, initialSupply = 1000000000, imagePath = null) {
+  async createTokenMint(adminKeypair, tokenName, tokenSymbol, initialSupply = 1000000000, imageUri = null) {
     try {
       // Create new token mint
       const mint = await createMint(
@@ -129,30 +122,53 @@ class TokenService {
       console.log('Token symbol:', tokenSymbol);
 
       // Create token account for the admin
-      const tokenAccount = await getOrCreateAssociatedTokenAccount(
-        this.connection,
-        adminKeypair, // payer
-        mint, // mint
-        adminKeypair.publicKey // owner
-      );
+      let tokenAccount;
+      try {
+        // Get or create the associated token account
+        tokenAccount = await getOrCreateAssociatedTokenAccount(
+          this.connection,
+          adminKeypair, // payer
+          mint, // mint
+          adminKeypair.publicKey, // owner
+          false, // allowOwnerOffCurve
+          'confirmed', // commitment
+          TOKEN_PROGRAM_ID, // token program id
+          ASSOCIATED_TOKEN_PROGRAM_ID // associated token program id
+        );
 
-      // Mint initial supply to admin's account
-      const mintAmount = initialSupply * Math.pow(10, 9); // Convert to smallest unit (9 decimals)
-      await mintTo(
-        this.connection,
-        adminKeypair, // payer
-        mint, // mint
-        tokenAccount.address, // destination
-        adminKeypair, // authority
-        mintAmount // amount
-      );
+        console.log('Token account created:', tokenAccount.address.toBase58());
 
-      console.log(`Minted ${initialSupply.toLocaleString()} ${tokenSymbol} to ${adminKeypair.publicKey.toBase58()}`);
+        // Wait a moment to ensure account is fully initialized
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Mint initial supply to admin's account
+        const mintAmount = initialSupply * Math.pow(10, 9); // Convert to smallest unit (9 decimals)
+        const mintSignature = await mintTo(
+          this.connection,
+          adminKeypair, // payer
+          mint, // mint
+          tokenAccount.address, // destination
+          adminKeypair, // authority
+          mintAmount // amount
+        );
+        
+        console.log('Mint transaction:', mintSignature);
+        await this.connection.confirmTransaction(mintSignature, 'confirmed');
+        console.log(`Minted ${initialSupply.toLocaleString()} ${tokenSymbol} to ${adminKeypair.publicKey.toBase58()}`);
+      } catch (error) {
+        console.error('Error in token account creation or minting:', error);
+        throw error;
+      }
       
-      // Create metadata if image path is provided
+      // Create metadata if image URI is provided
       let metadata = null;
-      if (imagePath) {
-        metadata = await this.createTokenMetadata(mint, adminKeypair, tokenName, tokenSymbol, imagePath);
+      if (imageUri) {
+        try {
+          metadata = await this.createTokenMetadata(mint, adminKeypair, tokenName, tokenSymbol, imageUri);
+        } catch (error) {
+          console.error('Error creating metadata:', error);
+          // Don't throw here, as the token is already created
+        }
       }
       
       return {
@@ -227,18 +243,10 @@ class TokenService {
         [fromWallet]
       );
 
-      return {
-        success: true,
-        signature,
-        fromTokenAccount: fromTokenAccount.address.toBase58(),
-        toTokenAccount: toTokenAccount.address.toBase58()
-      };
+      return signature;
     } catch (error) {
       console.error('Error sending tokens:', error);
-      return {
-        success: false,
-        error: error.message
-      };
+      throw error;
     }
   }
 

@@ -1,7 +1,11 @@
-Create Token
+Create The Mint:
+   node scripts/createToken.js
 
-node scripts/createToken.js
-   node scripts/distributeTokens.js OR 
+Create The Token Account:
+   node scripts/createTokenAccount.js
 
-      node scripts/distributeTokens.js 7v91N7iZ9mNicL8WfG6cgSCKyRXydQjLh6UYBWwm6y1M 1000000
-      node scripts/createToken.js public/logo/favicon.png
+Mint Supply:
+   node scripts/mintTokens.js
+
+Set Metadata:
+   node scripts/updateTokenMetadata.js

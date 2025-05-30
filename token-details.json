@@ -1,0 +1,9 @@
+{
+  "mint": "CTGNtDrX8iNEkGTv5bqJwRmsPph4jDcQrNFV2SzP6Dsp",
+  "mintAuthority": "9g2ApAouXyYEU1jasKHabdyLzd5eG1fiXM4Q3Kem794K",
+  "adminTokenAccount": "EXSGjyy8vaREq1mx9BUXAijFdogtraT31xMDZCftwaVS",
+  "name": "Adrenaline Hunchos",
+  "symbol": "$ADHD",
+  "initialSupply": 1000000000,
+  "decimals": 9
+}

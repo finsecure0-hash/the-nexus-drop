@@ -10,11 +10,18 @@ export class TransactionService {
 
   async sendSol(wallet, toAddress, amount) {
     try {
+      if (!wallet.publicKey) {
+        throw new Error('Wallet not connected');
+      }
+
+      // Convert SOL to lamports (multiply by LAMPORTS_PER_SOL and round to integer)
+      const lamports = Math.floor(amount * LAMPORTS_PER_SOL);
+
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: wallet.publicKey,
           toPubkey: new PublicKey(toAddress),
-          lamports: amount * LAMPORTS_PER_SOL
+          lamports: lamports
         })
       );
 
@@ -23,8 +30,8 @@ export class TransactionService {
       transaction.recentBlockhash = blockhash;
       transaction.feePayer = wallet.publicKey;
 
-      // Sign and send the transaction
-      const signed = await window.solana.signTransaction(transaction);
+      // Sign and send the transaction using the wallet adapter
+      const signed = await wallet.signTransaction(transaction);
       const signature = await this.connection.sendRawTransaction(signed.serialize());
       
       // Wait for confirmation
@@ -38,6 +45,7 @@ export class TransactionService {
         to: toAddress
       };
     } catch (error) {
+      console.error('Transaction error:', error);
       return {
         success: false,
         error: error.message

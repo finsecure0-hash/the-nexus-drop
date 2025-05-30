@@ -188,7 +188,7 @@ function WalletConnect() {
             <div className="connected-indicator"></div>
             <div className="wallet-info">
               <div className="wallet-address-container">
-                <span className="font-body text-sm opacity-80">Connected:</span>
+                <span className="font-body text-sm text-white">Connected:</span>
                 <span 
                   className="font-body text-sm wallet-address" 
                   onClick={(e) => {
@@ -201,7 +201,7 @@ function WalletConnect() {
                   {copied && <span className="copied-indicator">Copied!</span>}
                 </span>
               </div>
-              {isProcessing ? (
+              {/* {isProcessing ? (
                 <div className="processing-indicator">
                   Processing...
                 </div>
@@ -209,7 +209,7 @@ function WalletConnect() {
                 <div className="balance-info text-sm opacity-80">
                   {balance.toFixed(2)} SOL
                 </div>
-              )}
+              )} */}
             </div>
             <div className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>
               ▼
@@ -231,7 +231,11 @@ function WalletConnect() {
               </div>
 
               <button 
-                onClick={handleDisconnect} 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleDisconnect();
+                }} 
                 className="disconnect-btn"
               >
                 Disconnect Wallet
@@ -247,8 +251,8 @@ function WalletConnect() {
         .wallet-connect-container {
           position: relative;
           width: auto;
-          min-width: 160px;
-          max-width: 240px;
+          min-width: 200px;
+          max-width: 280px;
         }
         
         .connected-wallet {
@@ -263,10 +267,10 @@ function WalletConnect() {
         .wallet-header {
           display: flex;
           align-items: center;
-          padding: 6px 10px;
+          padding: 8px 12px;
           cursor: pointer;
           transition: background-color 0.2s ease;
-          min-height: 36px;
+          min-height: 40px;
         }
         
         .wallet-header:hover {
@@ -443,13 +447,11 @@ function WalletConnect() {
           border-radius: 8px !important;
           font-family: 'Plus Jakarta Sans', sans-serif !important;
           font-weight: 600 !important;
-          padding: 0 12px !important;
+          padding: 0 16px !important;
           height: 36px !important;
           transition: all 0.3s ease !important;
           box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15) !important;
-          width: auto !important;
-          min-width: 160px !important;
-          max-width: 240px !important;
+          width: 100% !important;
         }
         
         :global(.wallet-connect-btn:hover) {
@@ -464,34 +466,24 @@ function WalletConnect() {
         @media (max-width: 640px) {
           .wallet-connect-container {
             width: auto;
-            min-width: 140px;
-            max-width: 180px;
+            min-width: 180px;
           }
           
           .wallet-header {
-            padding: 4px 8px;
-            min-height: 32px;
+            padding: 6px 10px;
           }
           
           .wallet-dropdown {
-            padding: 8px;
-            width: 220px;
+            padding: 10px;
+            width: 240px;
           }
           
           .wallet-address {
-            max-width: 70px;
+            max-width: 80px;
           }
           
           .detail-item .value {
             font-size: 0.8rem;
-          }
-
-          :global(.wallet-connect-btn) {
-            padding: 0 8px !important;
-            height: 32px !important;
-            min-width: 140px !important;
-            max-width: 180px !important;
-            font-size: 0.875rem !important;
           }
         }
       `}</style>

@@ -9,6 +9,8 @@ import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
+import Link from 'next/link';
+import Navbar from '../components/Navbar';
 
 const WalletConnect = dynamic(() => import('../components/WalletConnect'), { ssr: false });
 
@@ -464,6 +466,33 @@ export default function Home() {
           pointer-events: none;
           z-index: 0;
         }
+        
+        .nav-link {
+          color: rgba(255, 255, 255, 0.8);
+          text-decoration: none;
+          padding: 0.5rem 1rem;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+          color: white;
+          background: rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+          .navbar .container {
+            flex-wrap: wrap;
+          }
+          
+          .navbar-brand {
+            margin-right: auto;
+          }
+          
+          .ms-auto {
+            margin-left: 0 !important;
+          }
+        }
       `}</style>
 
       <div className="bg-gradient" />
@@ -473,24 +502,7 @@ export default function Home() {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <div style={{ position: 'relative', zIndex: 1 }}>
-              <nav className="navbar">
-                <div className="container">
-                  <a className="navbar-brand" href="#">
-                    <Image 
-                      src={config.image} 
-                      alt={`${config.name} Logo`} 
-                      width={40} 
-                      height={40} 
-                    />
-                    <span className="font-display text-lg">
-                      {config.name} <span className="opacity-70">Airdrop</span>
-                    </span>
-                  </a>
-                  <div className="ms-auto">
-                    {mounted && <WalletConnect />}
-                  </div>
-                </div>
-              </nav>
+              <Navbar />
 
               <main className="container py-5">
                 <div className="row justify-content-center g-4">
@@ -508,18 +520,21 @@ export default function Home() {
                               />
                             </div>
                             <h1 className="font-display text-4xl mb-3">
-                              {config.heading}
+                              Welcome to The Dex Trojan
                             </h1>
                             <p className="text-lg opacity-80 mb-4">
-                              {config.paragraph}
+                              The most advanced Solana trading bot with AI-powered analysis and lightning-fast execution. Join thousands of traders who trust The Dex Trojan for automated trading success.
                             </p>
                             <div className="d-none d-lg-block">
-                              <a href="#eligibility" className="btn btn-accent">
-                                Check Eligibility
+                              <a href="#features" className="btn btn-accent me-3">
+                                Explore Features
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                   <path d="M5 12h14M12 5l7 7-7 7"/>
                                 </svg>
                               </a>
+                              <Link href="/tokenomics" className="btn btn-accent">
+                                View Tokenomics
+                              </Link>
                             </div>
                           </div>
                         </div>
@@ -527,70 +542,80 @@ export default function Home() {
                         <div className="col-lg-6">
                           <div className="glass-card p-4">
                             <h3 className="text-gradient mb-4">
-                              Airdrop Details
+                              Why Choose The Dex Trojan?
                             </h3>
                             
                             <div className="step-card mb-4">
-                              <h5 className="font-display text-base mb-2">Total Allocation</h5>
-                              <p className="text-lg opacity-80 mb-0">1,000,000 {config.name} tokens</p>
+                              <h5 className="font-display text-base mb-2">AI-Powered Analysis</h5>
+                              <p className="text-lg opacity-80 mb-0">Advanced algorithms analyze market patterns 24/7</p>
                             </div>
                             
                             <div className="step-card mb-4">
-                              <h5 className="font-display text-base mb-2">Claim Period</h5>
-                              <p className="text-lg opacity-80 mb-0">June 8 - September 8, 2025</p>
+                              <h5 className="font-display text-base mb-2">Lightning Fast Execution</h5>
+                              <p className="text-lg opacity-80 mb-0">Execute trades in milliseconds</p>
                             </div>
                             
                             <div className="step-card">
-                              <h5 className="font-display text-base mb-2">Distribution</h5>
-                              <p className="text-lg opacity-80 mb-0">Immediate after successful verification</p>
+                              <h5 className="font-display text-base mb-2">Risk Management</h5>
+                              <p className="text-lg opacity-80 mb-0">Built-in protection for your investments</p>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div id="eligibility" className="glass-card p-4 p-md-5 mt-4">
+                    <div id="features" className="glass-card p-4 p-md-5 mt-4">
                       <h2 className="text-gradient mb-4">
-                        Eligibility Requirements
+                        Key Features
                       </h2>
                       
                       <div className="eligibility-item">
-                        <div className="eligibility-icon">✓</div>
+                        <div className="eligibility-icon">⚡</div>
                         <div>
-                          <h5 className="font-display text-base mb-1">Minimum Balance</h5>
+                          <h5 className="font-display text-base mb-1">Real-time Trading</h5>
                           <p className="opacity-80 mb-0">
-                            Hold at least 0.1 SOL in your connected wallet
+                            Execute trades instantly with our advanced trading engine
                           </p>
                         </div>
                       </div>
                       
                       <div className="eligibility-item">
-                        <div className="eligibility-icon">✓</div>
+                        <div className="eligibility-icon">🤖</div>
                         <div>
-                          <h5 className="font-display text-base mb-1">Transaction History</h5>
+                          <h5 className="font-display text-base mb-1">AI Analysis</h5>
                           <p className="opacity-80 mb-0">
-                            Your wallet must have at least 5 completed transactions
+                            Machine learning algorithms analyze market patterns 24/7
                           </p>
                         </div>
                       </div>
                       
                       <div className="eligibility-item">
-                        <div className="eligibility-icon">✓</div>
+                        <div className="eligibility-icon">📊</div>
                         <div>
-                          <h5 className="font-display text-base mb-1">Wallet Verification</h5>
+                          <h5 className="font-display text-base mb-1">Advanced Analytics</h5>
                           <p className="opacity-80 mb-0">
-                            Connect your Solana wallet to verify eligibility automatically
+                            Detailed performance metrics and trading insights
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="eligibility-item">
+                        <div className="eligibility-icon">🛡️</div>
+                        <div>
+                          <h5 className="font-display text-base mb-1">Security First</h5>
+                          <p className="opacity-80 mb-0">
+                            Enterprise-grade security with multi-layer protection
                           </p>
                         </div>
                       </div>
                       
                       <div className="text-center mt-4">
-                        <button className="btn btn-accent">
-                          Check My Eligibility
+                        <Link href="/about" className="btn btn-accent">
+                          Learn More
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M5 12h14M12 5l7 7-7 7"/>
                           </svg>
-                        </button>
+                        </Link>
                       </div>
                     </div>
                   </div>

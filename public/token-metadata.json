@@ -1,0 +1,29 @@
+{
+  "name": "The Dex Bot",
+  "symbol": "DEXBOT",
+  "description": "The Dex Bot token is a utility token for the DEX ecosystem, providing access to advanced trading features and platform benefits.",
+  "image": "https://raw.githubusercontent.com/your-username/your-repo/main/public/images/dexbot-token.png",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Utility Token"
+    },
+    {
+      "trait_type": "Network",
+      "value": "Solana"
+    },
+    {
+      "trait_type": "Use Case",
+      "value": "DEX Trading"
+    }
+  ],
+  "properties": {
+    "category": "image",
+    "files": [
+      {
+        "uri": "https://raw.githubusercontent.com/your-username/your-repo/main/public/images/dexbot-token.png",
+        "type": "image/png"
+      }
+    ]
+  }
+} 

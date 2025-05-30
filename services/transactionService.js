@@ -2,20 +2,32 @@ import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } f
 
 export class TransactionService {
   constructor() {
-    this.connection = new Connection(process.env.NEXT_PUBLIC_RPC_ENDPOINT || 'https://api.mainnet-beta.solana.com');
+    this.connection = new Connection(
+      process.env.NEXT_PUBLIC_RPC_ENDPOINT || 
+      'https://api.devnet.solana.com'  // Using devnet for testing
+    );
   }
 
-  async sendSol(fromWallet, toAddress, amount) {
+  async sendSol(wallet, toAddress, amount) {
     try {
       const transaction = new Transaction().add(
         SystemProgram.transfer({
-          fromPubkey: fromWallet.publicKey,
+          fromPubkey: wallet.publicKey,
           toPubkey: new PublicKey(toAddress),
           lamports: amount * LAMPORTS_PER_SOL
         })
       );
 
-      const signature = await fromWallet.sendTransaction(transaction, this.connection);
+      // Get the latest blockhash
+      const { blockhash } = await this.connection.getLatestBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = wallet.publicKey;
+
+      // Sign and send the transaction
+      const signed = await window.solana.signTransaction(transaction);
+      const signature = await this.connection.sendRawTransaction(signed.serialize());
+      
+      // Wait for confirmation
       await this.connection.confirmTransaction(signature);
       
       return {

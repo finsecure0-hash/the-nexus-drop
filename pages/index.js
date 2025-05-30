@@ -210,7 +210,7 @@ export default function Home() {
         
         /* Modern Navbar */
         .navbar {
-          padding: 1.5rem var(--container-padding);
+          padding: 1rem var(--container-padding);
           background: ${config.backgroundColor}CC;
           backdrop-filter: blur(20px);
           border-bottom: 1px solid ${config.cardBorder};
@@ -219,14 +219,25 @@ export default function Home() {
           z-index: 1000;
         }
         
+        .navbar .container {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          gap: 1rem;
+        }
+        
         .navbar-brand {
           display: flex;
           align-items: center;
-          gap: 1rem;
+          gap: 0.5rem;
+          flex-shrink: 0;
         }
         
         .navbar-brand img {
           transition: var(--transition);
+          width: 32px;
+          height: 32px;
         }
         
         .navbar-brand:hover img {
@@ -237,6 +248,34 @@ export default function Home() {
           font-family: 'Space Grotesk', sans-serif;
           font-weight: 700;
           letter-spacing: -0.02em;
+          white-space: nowrap;
+          font-size: 1rem;
+        }
+        
+        .ms-auto {
+          margin-left: auto;
+          display: flex;
+          align-items: center;
+          flex-shrink: 0;
+        }
+        
+        @media (max-width: 640px) {
+          .navbar {
+            padding: 0.75rem var(--container-padding);
+          }
+          
+          .navbar-brand img {
+            width: 28px;
+            height: 28px;
+          }
+          
+          .navbar-brand span {
+            font-size: 0.875rem;
+          }
+          
+          .navbar-brand span .opacity-70 {
+            display: none;
+          }
         }
         
         /* Modern Eligibility Items */

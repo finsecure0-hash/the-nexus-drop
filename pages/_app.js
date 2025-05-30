@@ -8,7 +8,8 @@ import '@solana/wallet-adapter-react-ui/styles.css'
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
-  const network = clusterApiUrl(WalletAdapterNetwork.Mainnet)
+  // Use devnet for testing
+  const network = clusterApiUrl(WalletAdapterNetwork.Devnet)
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),

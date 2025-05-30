@@ -145,6 +145,10 @@ export default function Tokenomics() {
 
       <Navbar />
 
+
+      <br />
+      <br />
+
       <main className="container py-5">
         <div className="row justify-content-center g-4">
           <div className="col-lg-10">

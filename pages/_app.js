@@ -6,9 +6,9 @@ import { clusterApiUrl } from '@solana/web3.js'
 import 'bootstrap/dist/css/bootstrap.css'
 import '@solana/wallet-adapter-react-ui/styles.css'
 import '../styles/globals.css'
+import Navbar from '../components/Navbar'
 
 function MyApp({ Component, pageProps }) {
-  // Use devnet for testing
   const network = clusterApiUrl(WalletAdapterNetwork.Devnet)
   const wallets = [
     new PhantomWalletAdapter(),
@@ -19,7 +19,10 @@ function MyApp({ Component, pageProps }) {
     <ConnectionProvider endpoint={network}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <Component {...pageProps} />
+          <Navbar />
+          <main style={{ paddingTop: '80px' }}>
+            <Component {...pageProps} />
+          </main>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

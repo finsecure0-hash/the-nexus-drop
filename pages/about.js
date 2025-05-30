@@ -2,7 +2,6 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import Navbar from '../components/Navbar';
 
 export default function About() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -49,8 +48,6 @@ export default function About() {
           rel="stylesheet"
         />
       </Head>
-
-      <Navbar />
 
       <main className="container py-5">
         <div className="row justify-content-center g-4">

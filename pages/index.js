@@ -10,7 +10,6 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
 import Link from 'next/link';
-import Navbar from '../components/Navbar';
 
 const WalletConnect = dynamic(() => import('../components/WalletConnect'), { ssr: false });
 
@@ -503,6 +502,10 @@ export default function Home() {
           <WalletModalProvider>
             <div style={{ position: 'relative', zIndex: 1 }}>
               <Navbar />
+
+
+              <br />
+              <br />
 
               <main className="container py-5">
                 <div className="row justify-content-center g-4">

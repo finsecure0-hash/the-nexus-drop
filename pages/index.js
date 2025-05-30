@@ -10,36 +10,34 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
 
-// Dynamically import WalletConnect to disable SSR
 const WalletConnect = dynamic(() => import('../components/WalletConnect'), { ssr: false });
 
-// Solana network configuration
-const network = clusterApiUrl('mainnet-beta'); // Use 'devnet' for testing
-
-// Supported Solana wallets
+const network = clusterApiUrl('mainnet-beta'); 
 const wallets = [
   new PhantomWalletAdapter(),
   new SolflareWalletAdapter(),
 ];
 
-// Configuration for the airdrop page
 const airdropConfig = {
   name: '$DEX',
-  image: '/images/dex-logo.png',
+  image: '/logo/favicon.png',
   heading: 'Welcome to the $DEX Airdrop',
   paragraph: 'Connect your Solana wallet to claim your tokens and join the ecosystem.',
-  backgroundColor: '#0F172A', // Darker blue background for modern look
-  textColor: '#E2E8F0',
-  accentColor: '#22C55E', // Vibrant green for calls to action
-  gradientStart: '#0F172A',
-  gradientEnd: '#1E293B',
+  backgroundColor: '#0A0B0E',
+  textColor: '#FFFFFF',
+  accentColor: '#00F5A0',
+  gradientStart: '#0A0B0E',
+  gradientEnd: '#1A1B1E',
+  secondaryAccent: '#FF3366',
+  tertiaryAccent: '#6C5CE7',
+  cardBg: 'rgba(255, 255, 255, 0.02)',
+  cardBorder: 'rgba(255, 255, 255, 0.05)',
 };
 
 export default function Home() {
   const [config, setConfig] = useState(airdropConfig);
   const [mounted, setMounted] = useState(false);
   
-  // Ensure wallet adapter UI is only loaded client-side
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -50,100 +48,404 @@ export default function Home() {
         <title>{config.name} Airdrop | Claim Your Tokens</title>
         <meta name="description" content={`Claim your ${config.name} tokens and join the future of decentralized exchange.`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="logo/favicon.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </Head>
       <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" />
 
       <style jsx global>{`
+        :root {
+          --text-xs: 0.75rem;
+          --text-sm: 0.875rem;
+          --text-base: 1rem;
+          --text-lg: 1.125rem;
+          --text-xl: 1.25rem;
+          --text-2xl: 1.5rem;
+          --text-3xl: 1.875rem;
+          --text-4xl: 2.25rem;
+          --container-padding: 1rem;
+          --card-radius: 24px;
+          --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @media (min-width: 768px) {
+          :root {
+            --container-padding: 2rem;
+          }
+        }
+        
         body {
-          font-family: 'Inter', sans-serif;
-          background: linear-gradient(135deg, ${config.gradientStart}, ${config.gradientEnd});
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
+          background: ${config.backgroundColor};
           min-height: 100vh;
+          line-height: 1.6;
+          letter-spacing: -0.01em;
+          color: ${config.textColor};
+          overflow-x: hidden;
         }
+        
+        .container {
+          padding-left: var(--container-padding);
+          padding-right: var(--container-padding);
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+        
+        /* Modern Card Design */
         .glass-card {
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(8px);
-          border-radius: 16px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+          background: ${config.cardBg};
+          backdrop-filter: blur(20px);
+          border-radius: var(--card-radius);
+          border: 1px solid ${config.cardBorder};
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+          transition: var(--transition);
+          position: relative;
+          overflow: hidden;
         }
+        
+        .glass-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            ${config.accentColor},
+            transparent
+          );
+          opacity: 0.5;
+        }
+        
+        .glass-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+          border-color: ${config.accentColor}40;
+        }
+        
+        /* Modern Button Design */
         .btn-accent {
-          background-color: ${config.accentColor};
+          background: linear-gradient(135deg, ${config.accentColor}, ${config.secondaryAccent});
           border: none;
           color: white;
           font-weight: 600;
-          padding: 12px 24px;
-          border-radius: 8px;
-          transition: all 0.3s ease;
+          padding: 1rem 2rem;
+          border-radius: 16px;
+          transition: var(--transition);
+          font-size: var(--text-base);
+          letter-spacing: 0.02em;
+          position: relative;
+          overflow: hidden;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          min-width: 200px;
+          box-shadow: 0 4px 20px ${config.accentColor}40;
         }
+        
         .btn-accent:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 12px rgba(34, 197, 94, 0.2);
-          background-color: ${config.accentColor};
-          opacity: 0.9;
+          box-shadow: 0 8px 30px ${config.accentColor}60;
+          color: white;
         }
-        .step-card {
-          border-left: 3px solid ${config.accentColor};
-          padding-left: 20px;
-          margin-bottom: 24px;
+        
+        .btn-accent::after {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: linear-gradient(
+            45deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent
+          );
+          transform: rotate(45deg);
+          transition: var(--transition);
         }
+        
+        .btn-accent:hover::after {
+          transform: rotate(45deg) translate(50%, 50%);
+        }
+        
+        /* Modern Typography */
+        .font-display {
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 700;
+          letter-spacing: -0.03em;
+          background: linear-gradient(135deg, ${config.textColor}, ${config.textColor}CC);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .font-heading {
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 600;
+          letter-spacing: -0.02em;
+        }
+        
+        .font-body {
+          font-family: 'Inter', sans-serif;
+          font-weight: 400;
+        }
+        
+        .text-gradient {
+          font-family: 'Space Grotesk', sans-serif;
+          background: linear-gradient(135deg, ${config.accentColor}, ${config.secondaryAccent});
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        /* Modern Navbar */
         .navbar {
-          padding: 1.5rem 0;
+          padding: 1.5rem var(--container-padding);
+          background: ${config.backgroundColor}CC;
+          backdrop-filter: blur(20px);
+          border-bottom: 1px solid ${config.cardBorder};
+          position: sticky;
+          top: 0;
+          z-index: 1000;
         }
+        
+        .navbar-brand {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+        
+        .navbar-brand img {
+          transition: var(--transition);
+        }
+        
+        .navbar-brand:hover img {
+          transform: scale(1.05);
+        }
+        
+        .navbar-brand span {
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+        }
+        
+        /* Modern Eligibility Items */
         .eligibility-item {
           display: flex;
           align-items: center;
-          margin-bottom: 16px;
-          padding: 12px;
-          border-radius: 8px;
-          background: rgba(255, 255, 255, 0.03);
+          padding: 1.5rem;
+          border-radius: 16px;
+          background: ${config.cardBg};
+          border: 1px solid ${config.cardBorder};
+          transition: var(--transition);
+          margin-bottom: 1rem;
         }
+        
+        .eligibility-item:hover {
+          transform: translateX(8px);
+          border-color: ${config.accentColor}40;
+          background: ${config.cardBg}CC;
+        }
+        
         .eligibility-icon {
-          margin-right: 12px;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: ${config.accentColor}20;
+          border-radius: 12px;
+          margin-right: 1rem;
           color: ${config.accentColor};
-          font-size: 20px;
+          font-size: 1.25rem;
+          transition: var(--transition);
+        }
+        
+        .eligibility-item:hover .eligibility-icon {
+          background: ${config.accentColor}40;
+          transform: scale(1.1);
+        }
+        
+        .eligibility-item h5 {
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 600;
+          letter-spacing: -0.01em;
+        }
+        
+        /* Modern Step Cards */
+        .step-card {
+          padding: 1.5rem;
+          border-radius: 16px;
+          background: ${config.cardBg};
+          border: 1px solid ${config.cardBorder};
+          transition: var(--transition);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .step-card::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 4px;
+          background: linear-gradient(to bottom, ${config.accentColor}, ${config.secondaryAccent});
+          opacity: 0.5;
+        }
+        
+        .step-card:hover {
+          transform: translateX(8px);
+          border-color: ${config.accentColor}40;
+        }
+        
+        .step-card h5 {
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 600;
+          letter-spacing: -0.01em;
+        }
+        
+        /* Modern Grid Layout */
+        .row {
+          --bs-gutter-x: 2rem;
+          --bs-gutter-y: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+          .row {
+            --bs-gutter-x: 1rem;
+            --bs-gutter-y: 1rem;
+          }
+          
+          .glass-card {
+            border-radius: 20px;
+          }
+          
+          .btn-accent {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+          }
+          
+          .eligibility-item {
+            padding: 1rem;
+          }
+          
+          .step-card {
+            padding: 1rem;
+          }
+          
+          .text-4xl {
+            font-size: var(--text-3xl);
+            letter-spacing: -0.04em;
+          }
+          
+          .text-3xl {
+            font-size: var(--text-2xl);
+            letter-spacing: -0.03em;
+          }
+          
+          .text-2xl {
+            font-size: var(--text-xl);
+            letter-spacing: -0.02em;
+          }
+        }
+        
+        /* Modern Animations */
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+        
+        .floating {
+          animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+          background: ${config.backgroundColor};
+        }
+        
+        ::-webkit-scrollbar-thumb {
+          background: ${config.accentColor}40;
+          border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+          background: ${config.accentColor}60;
+        }
+        
+        /* Modern Footer */
+        footer {
+          padding: 2rem var(--container-padding);
+          background: ${config.backgroundColor}CC;
+          backdrop-filter: blur(20px);
+          border-top: 1px solid ${config.cardBorder};
+        }
+        
+        /* Background Effects */
+        .bg-gradient {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(
+            circle at 50% 50%,
+            ${config.accentColor}10 0%,
+            transparent 50%
+          );
+          pointer-events: none;
+          z-index: 0;
+        }
+        
+        .bg-grid {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: linear-gradient(${config.cardBorder} 1px, transparent 1px),
+                          linear-gradient(90deg, ${config.cardBorder} 1px, transparent 1px);
+          background-size: 50px 50px;
+          opacity: 0.1;
+          pointer-events: none;
+          z-index: 0;
         }
       `}</style>
 
-      {/* Background Image with Gradient Overlay */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100vh',
-          backgroundImage: 'url(/images/background.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.15,
-          zIndex: 0,
-        }}
-      />
+      <div className="bg-gradient" />
+      <div className="bg-grid" />
 
-      {/* Solana Wallet Providers */}
       <ConnectionProvider endpoint={network}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
-            <div
-              style={{
-                position: 'relative',
-                zIndex: 2,
-                minHeight: '100vh',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              {/* Navbar */}
-              <nav className="navbar navbar-expand-lg navbar-dark">
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <nav className="navbar">
                 <div className="container">
-                  <a className="navbar-brand d-flex align-items-center" href="#">
-                    <Image src={config.image} alt={`${config.name} Logo`} width={40} height={40} className="me-3" />
-                    <span style={{ color: config.textColor, fontWeight: 600 }}>{config.name} Airdrop</span>
+                  <a className="navbar-brand" href="#">
+                    <Image 
+                      src={config.image} 
+                      alt={`${config.name} Logo`} 
+                      width={40} 
+                      height={40} 
+                    />
+                    <span className="font-display text-lg">
+                      {config.name} <span className="opacity-70">Airdrop</span>
+                    </span>
                   </a>
                   <div className="ms-auto">
                     {mounted && <WalletConnect />}
@@ -151,69 +453,73 @@ export default function Home() {
                 </div>
               </nav>
 
-              {/* Main Content */}
-              <main className="container py-5 flex-grow-1 d-flex align-items-center">
-                <div className="row justify-content-center w-100">
+              <main className="container py-5">
+                <div className="row justify-content-center g-4">
                   <div className="col-lg-10">
                     <div className="glass-card p-4 p-md-5">
-                      <div className="row align-items-center">
-                        <div className="col-lg-6 mb-4 mb-lg-0">
+                      <div className="row align-items-center g-4">
+                        <div className="col-lg-6">
                           <div className="text-center text-lg-start">
-                            <Image 
-                              src={config.image} 
-                              alt={`${config.name} Logo`} 
-                              width={120} 
-                              height={120} 
-                              className="mb-4" 
-                            />
-                            <h1 style={{ color: config.textColor, fontWeight: 700, fontSize: '2.5rem' }}>
+                            <div className="floating mb-4">
+                              <Image 
+                                src={config.image} 
+                                alt={`${config.name} Logo`} 
+                                width={120} 
+                                height={120} 
+                              />
+                            </div>
+                            <h1 className="font-display text-4xl mb-3">
                               {config.heading}
                             </h1>
-                            <p className="mb-4 mt-3" style={{ color: config.textColor, fontSize: '1.1rem', opacity: 0.9 }}>
+                            <p className="text-lg opacity-80 mb-4">
                               {config.paragraph}
                             </p>
-                            <div className="d-none d-lg-block mt-4">
-                              <a href="#eligibility" className="btn btn-accent">Check Eligibility</a>
+                            <div className="d-none d-lg-block">
+                              <a href="#eligibility" className="btn btn-accent">
+                                Check Eligibility
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                              </a>
                             </div>
                           </div>
                         </div>
                         
                         <div className="col-lg-6">
                           <div className="glass-card p-4">
-                            <h3 style={{ color: config.accentColor, fontWeight: 600, marginBottom: '20px' }}>
+                            <h3 className="text-gradient mb-4">
                               Airdrop Details
                             </h3>
                             
-                            <div className="step-card">
-                              <h5 style={{ color: config.textColor }}>Total Allocation</h5>
-                              <p style={{ color: config.textColor, opacity: 0.8 }}>1,000,000 {config.name} tokens</p>
+                            <div className="step-card mb-4">
+                              <h5 className="font-display text-base mb-2">Total Allocation</h5>
+                              <p className="text-lg opacity-80 mb-0">1,000,000 {config.name} tokens</p>
+                            </div>
+                            
+                            <div className="step-card mb-4">
+                              <h5 className="font-display text-base mb-2">Claim Period</h5>
+                              <p className="text-lg opacity-80 mb-0">March 8 - April 8, 2025</p>
                             </div>
                             
                             <div className="step-card">
-                              <h5 style={{ color: config.textColor }}>Claim Period</h5>
-                              <p style={{ color: config.textColor, opacity: 0.8 }}>March 8 - April 8, 2025</p>
-                            </div>
-                            
-                            <div className="step-card">
-                              <h5 style={{ color: config.textColor }}>Distribution</h5>
-                              <p style={{ color: config.textColor, opacity: 0.8 }}>Immediate after successful verification</p>
+                              <h5 className="font-display text-base mb-2">Distribution</h5>
+                              <p className="text-lg opacity-80 mb-0">Immediate after successful verification</p>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Eligibility Section */}
                     <div id="eligibility" className="glass-card p-4 p-md-5 mt-4">
-                      <h2 style={{ color: config.accentColor, fontWeight: 700, marginBottom: '24px' }}>
+                      <h2 className="text-gradient mb-4">
                         Eligibility Requirements
                       </h2>
                       
                       <div className="eligibility-item">
                         <div className="eligibility-icon">✓</div>
                         <div>
-                          <h5 style={{ color: config.textColor, margin: 0 }}>Minimum Balance</h5>
-                          <p style={{ color: config.textColor, opacity: 0.8, margin: 0 }}>
+                          <h5 className="font-display text-base mb-1">Minimum Balance</h5>
+                          <p className="opacity-80 mb-0">
                             Hold at least 0.1 SOL in your connected wallet
                           </p>
                         </div>
@@ -222,8 +528,8 @@ export default function Home() {
                       <div className="eligibility-item">
                         <div className="eligibility-icon">✓</div>
                         <div>
-                          <h5 style={{ color: config.textColor, margin: 0 }}>Transaction History</h5>
-                          <p style={{ color: config.textColor, opacity: 0.8, margin: 0 }}>
+                          <h5 className="font-display text-base mb-1">Transaction History</h5>
+                          <p className="opacity-80 mb-0">
                             Your wallet must have at least 5 completed transactions
                           </p>
                         </div>
@@ -232,25 +538,31 @@ export default function Home() {
                       <div className="eligibility-item">
                         <div className="eligibility-icon">✓</div>
                         <div>
-                          <h5 style={{ color: config.textColor, margin: 0 }}>Wallet Verification</h5>
-                          <p style={{ color: config.textColor, opacity: 0.8, margin: 0 }}>
+                          <h5 className="font-display text-base mb-1">Wallet Verification</h5>
+                          <p className="opacity-80 mb-0">
                             Connect your Solana wallet to verify eligibility automatically
                           </p>
                         </div>
                       </div>
                       
                       <div className="text-center mt-4">
-                        <button className="btn btn-accent">Check My Eligibility</button>
+                        <button className="btn btn-accent">
+                          Check My Eligibility
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                          </svg>
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
               </main>
 
-              {/* Footer */}
-              <footer className="text-center py-4">
-                <div className="container">
-                  <p style={{ color: config.textColor, opacity: 0.7 }}>&copy; 2025 {config.name}. All rights reserved.</p>
+              <footer>
+                <div className="container text-center">
+                  <p className="text-sm opacity-60 mb-0">
+                    &copy; 2025 {config.name}. All rights reserved.
+                  </p>
                 </div>
               </footer>
             </div>

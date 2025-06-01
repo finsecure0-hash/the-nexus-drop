@@ -378,9 +378,9 @@ export default function ClaimStatus() {
       <div className="bg-grid" />
 
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <main className="container py-5">
-          <div className="row justify-content-center g-4">
-            <div className="col-lg-10">
+        <main className="container-fluid px-0">
+          <div className="row g-0">
+            <div className="col-12">
               <div className="glass-card p-4 p-md-5">
                 <div className="d-flex justify-content-center align-items-center mb-4">
                   <h1 className="text-white mb-0 font-display">Claim Status</h1>
@@ -482,6 +482,160 @@ export default function ClaimStatus() {
                         </Link>
                       </div>
                     )}
+
+                    <div className="col-12 mt-5">
+                      <div className="glass-card p-4">
+                        <h3 className="text-white mb-4 font-heading">Claim Process Guide</h3>
+                        
+                        <div className="row g-4">
+                          <div className="col-md-6">
+                            <div className="status-item">
+                              <div className="d-flex align-items-center mb-3">
+                                <div className="eligibility-icon me-3">1</div>
+                                <h5 className="font-display mb-0">Check Eligibility</h5>
+                              </div>
+                              <p className="opacity-80 mb-0 font-body">
+                                Ensure your wallet holds at least 0.1 SOL and hasn't claimed before
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="col-md-6">
+                            <div className="status-item">
+                              <div className="d-flex align-items-center mb-3">
+                                <div className="eligibility-icon me-3">2</div>
+                                <h5 className="font-display mb-0">Prepare Wallet</h5>
+                              </div>
+                              <p className="opacity-80 mb-0 font-body">
+                                Make sure you have enough SOL for transaction fees (0.01 SOL recommended)
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="col-md-6">
+                            <div className="status-item">
+                              <div className="d-flex align-items-center mb-3">
+                                <div className="eligibility-icon me-3">3</div>
+                                <h5 className="font-display mb-0">Claim Tokens</h5>
+                              </div>
+                              <p className="opacity-80 mb-0 font-body">
+                                Click the "Claim Airdrop" button and confirm the transaction
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="col-md-6">
+                            <div className="status-item">
+                              <div className="d-flex align-items-center mb-3">
+                                <div className="eligibility-icon me-3">4</div>
+                                <h5 className="font-display mb-0">Verify Receipt</h5>
+                              </div>
+                              <p className="opacity-80 mb-0 font-body">
+                                Check your wallet for the received $DEX tokens
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-12 mt-4">
+                      <div className="glass-card p-4">
+                        <h3 className="text-white mb-4 font-heading">Common Issues & Solutions</h3>
+                        
+                        <div className="accordion" id="issuesAccordion">
+                          <div className="accordion-item bg-transparent border-0 mb-3">
+                            <h2 className="accordion-header">
+                              <button className="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#issue1">
+                                Transaction Failed
+                              </button>
+                            </h2>
+                            <div id="issue1" className="accordion-collapse collapse" data-bs-parent="#issuesAccordion">
+                              <div className="accordion-body text-white opacity-80">
+                                Ensure you have enough SOL for transaction fees (0.01 SOL recommended). If the issue persists, try refreshing the page and claiming again.
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="accordion-item bg-transparent border-0 mb-3">
+                            <h2 className="accordion-header">
+                              <button className="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#issue2">
+                                Not Eligible
+                              </button>
+                            </h2>
+                            <div id="issue2" className="accordion-collapse collapse" data-bs-parent="#issuesAccordion">
+                              <div className="accordion-body text-white opacity-80">
+                                Make sure your wallet holds at least 0.1 SOL. If you've already claimed, you won't be eligible for another claim.
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="accordion-item bg-transparent border-0 mb-3">
+                            <h2 className="accordion-header">
+                              <button className="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#issue3">
+                                Tokens Not Received
+                              </button>
+                            </h2>
+                            <div id="issue3" className="accordion-collapse collapse" data-bs-parent="#issuesAccordion">
+                              <div className="accordion-body text-white opacity-80">
+                                Check your transaction history in your wallet. If the transaction was successful but tokens aren't showing, try refreshing your wallet or adding the token manually.
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="accordion-item bg-transparent border-0">
+                            <h2 className="accordion-header">
+                              <button className="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#issue4">
+                                Wallet Connection Issues
+                              </button>
+                            </h2>
+                            <div id="issue4" className="accordion-collapse collapse" data-bs-parent="#issuesAccordion">
+                              <div className="accordion-body text-white opacity-80">
+                                Try disconnecting and reconnecting your wallet. Make sure you're using a supported wallet (Phantom, Solflare) and that it's properly installed.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-12 mt-4">
+                      <div className="glass-card p-4">
+                        <h3 className="text-white mb-4 font-heading">Need Help?</h3>
+                        
+                        <div className="row g-4">
+                          <div className="col-md-4">
+                            <Link href="/contact" className="text-decoration-none">
+                              <div className="status-item h-100">
+                                <div className="eligibility-icon mb-3">💬</div>
+                                <h5 className="font-display text-white mb-2">Contact Support</h5>
+                                <p className="opacity-80 mb-0 font-body">Get help from our support team</p>
+                              </div>
+                            </Link>
+                          </div>
+
+                          <div className="col-md-4">
+                            <a href="https://t.me/dextrojan_support" target="_blank" rel="noopener noreferrer" className="text-decoration-none">
+                              <div className="status-item h-100">
+                                <div className="eligibility-icon mb-3">📱</div>
+                                <h5 className="font-display text-white mb-2">Join Telegram</h5>
+                                <p className="opacity-80 mb-0 font-body">Connect with our community</p>
+                              </div>
+                            </a>
+                          </div>
+
+                          <div className="col-md-4">
+                            <Link href="/tokenomics" className="text-decoration-none">
+                              <div className="status-item h-100">
+                                <div className="eligibility-icon mb-3">📊</div>
+                                <h5 className="font-display text-white mb-2">View Tokenomics</h5>
+                                <p className="opacity-80 mb-0 font-body">Learn about $DEX token</p>
+                              </div>
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

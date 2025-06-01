@@ -383,9 +383,9 @@ export default function Tokenomics() {
       <div className="bg-grid" />
 
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <main className="container py-5">
-          <div className="row justify-content-center g-4">
-            <div className="col-lg-10">
+        <main className="container-fluid px-0">
+          <div className="row g-0">
+            <div className="col-12">
               <div className="glass-card p-4 p-md-5">
                 <div className="d-flex justify-content-center align-items-center mb-4">
                   <h1 className="text-white mb-0 font-display">Tokenomics</h1>

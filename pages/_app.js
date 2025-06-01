@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }) {
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           <Navbar />
-          <main style={{ paddingTop: '80px' }}>
+          <main style={{ paddingTop: '80px', minHeight: 'calc(100vh - 80px)' }}>
             <Component {...pageProps} />
           </main>
         </WalletModalProvider>

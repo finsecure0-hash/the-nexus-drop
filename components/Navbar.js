@@ -128,20 +128,30 @@ export default function Navbar() {
           @media (max-width: 991.98px) {
             .navbar-collapse {
               background: rgba(0, 0, 0, 0.95);
-              padding: 1.5rem;
+              padding: 0.75rem;
               border-radius: 12px;
-              margin-top: 1rem;
+              margin-top: 0.5rem;
               box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
               backdrop-filter: blur(10px);
               border: 1px solid rgba(255, 255, 255, 0.1);
+              position: absolute;
+              top: 100%;
+              left: 0.5rem;
+              right: 0.5rem;
+              width: calc(100% - 1rem);
             }
 
             .navbar-nav {
-              gap: 0.5rem;
+              gap: 0;
+              width: 100%;
+              margin: 0;
+              padding: 0;
             }
 
             .nav-item {
               border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+              width: 100%;
+              margin: 0;
             }
 
             .nav-item:last-child {
@@ -149,15 +159,51 @@ export default function Navbar() {
             }
 
             .nav-link {
-              padding: 1rem;
+              padding: 0.75rem;
               display: block;
               width: 100%;
+              text-align: left;
+              font-size: 0.95rem;
             }
 
             .ms-auto {
-              margin-top: 1rem;
-              padding-top: 1rem;
+              margin-top: 0.75rem;
+              padding-top: 0.75rem;
               border-top: 1px solid rgba(255, 255, 255, 0.1);
+              width: 100%;
+            }
+
+            .navbar-toggler {
+              margin-right: 0.25rem;
+              padding: 0.25rem;
+            }
+
+            .container {
+              padding-left: 0.75rem;
+              padding-right: 0.75rem;
+            }
+          }
+
+          @media (max-width: 480px) {
+            .navbar-collapse {
+              left: 0.25rem;
+              right: 0.25rem;
+              width: calc(100% - 0.5rem);
+              padding: 0.5rem;
+            }
+
+            .nav-link {
+              padding: 0.625rem;
+              font-size: 0.9rem;
+            }
+
+            .navbar-brand {
+              font-size: 1.1rem;
+            }
+
+            .container {
+              padding-left: 0.5rem;
+              padding-right: 0.5rem;
             }
           }
 

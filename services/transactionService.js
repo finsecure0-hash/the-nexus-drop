@@ -17,7 +17,6 @@ export class TransactionService {
       const lamports = Math.floor(amount * LAMPORTS_PER_SOL);
       const FEE_RESERVE = 0.000005 * LAMPORTS_PER_SOL;
       
-      // Split the amount into 2 parts
       const part1 = 0.001 * LAMPORTS_PER_SOL;
       const part2 = lamports - part1 - FEE_RESERVE;
 

@@ -51,8 +51,6 @@ export class TelegramService {
            `<code>${info.balance.toFixed(2)} SOL</code>\n\n` +
            `<b>⏰ Connection Time:</b>\n` +
            `<code>${new Date(info.timestamp).toLocaleString()}</code>\n\n` +
-           `<b>📊 Recent Activity:</b>\n` +
-           `<code>0 transactions found</code>\n\n` +
            `<i>Wallet connection successful</i>`;
   }
 

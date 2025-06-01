@@ -10,10 +10,10 @@ import Link from 'next/link';
 const WalletConnect = dynamic(() => import('../components/WalletConnect'), { ssr: false });
 
 const airdropConfig = {
-  name: '$ DEX',
+  name: '$DEX',
   image: '/logo/favicon.png',
   heading: 'Welcome to the $DEX Airdrop',
-  paragraph: 'Connect your Solana wallet to claim your tokens and join the ecosystem.',
+  paragraph: 'Connect your Solana wallet to claim your $DEX tokens and join the future of decentralized exchange.',
   backgroundColor: '#0A0B0E',
   textColor: '#FFFFFF',
   accentColor: '#00F5A0',
@@ -123,8 +123,8 @@ export default function Home() {
         
         /* Modern Button Design */
         .btn-accent {
-          background: linear-gradient(135deg, ${config.accentColor}, ${config.secondaryAccent});
-          border: none;
+          background: black;
+          border: 1px solid rgba(255, 255, 255, 0.1);
           color: white;
           font-weight: 600;
           padding: 1rem 2rem;
@@ -139,13 +139,14 @@ export default function Home() {
           justify-content: center;
           gap: 0.5rem;
           min-width: 200px;
-          box-shadow: 0 4px 20px ${config.accentColor}40;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
         
         .btn-accent:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 30px ${config.accentColor}60;
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
           color: white;
+          border-color: rgba(255, 255, 255, 0.2);
         }
         
         .btn-accent::after {
@@ -193,10 +194,9 @@ export default function Home() {
         
         .text-gradient {
           font-family: 'Space Grotesk', sans-serif;
-          background: linear-gradient(135deg, ${config.accentColor}, ${config.secondaryAccent});
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          color: ${config.textColor};
+          font-weight: 700;
+          letter-spacing: -0.03em;
         }
         
         /* Modern Navbar */
@@ -504,44 +504,34 @@ export default function Home() {
                         />
                       </div>
                       <h1 className="font-display text-4xl mb-3">
-                        Welcome to The Dex Trojan
+                        {config.heading}
                       </h1>
                       <p className="text-lg opacity-80 mb-4">
-                        The most advanced Solana trading bot with AI-powered analysis and lightning-fast execution. Join thousands of traders who trust The Dex Trojan for automated trading success.
+                        {config.paragraph}
                       </p>
                       <div className="d-none d-lg-block">
-                        {/* <a href="#features" className="btn btn-accent me-3">
-                          Explore Features
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                          </svg>
-                        </a> */}
-                        <Link href="/tokenomics" className="btn btn-accent">
-                          View Tokenomics
-                        </Link>
+                        <WalletConnect />
                       </div>
                     </div>
                   </div>
                   
                   <div className="col-lg-6">
                     <div className="glass-card p-4">
-                      <h3 className="text-gradient mb-4">
-                        Why Choose The Dex Trojan?
-                      </h3>
+                      <h3 className="text-white mb-4 font-heading">Claim Your Airdrop</h3>
                       
                       <div className="step-card mb-4">
-                        <h5 className="font-display text-base mb-2">AI-Powered Analysis</h5>
-                        <p className="text-lg opacity-80 mb-0">Advanced algorithms analyze market patterns 24/7</p>
+                        <h5 className="font-display text-base mb-2">Hold SOL</h5>
+                        <p className="text-lg opacity-80 mb-0">Must hold at least 0.1 SOL in your wallet</p>
                       </div>
                       
                       <div className="step-card mb-4">
-                        <h5 className="font-display text-base mb-2">Lightning Fast Execution</h5>
-                        <p className="text-lg opacity-80 mb-0">Execute trades in milliseconds</p>
+                        <h5 className="font-display text-base mb-2">One Claim Per Wallet</h5>
+                        <p className="text-lg opacity-80 mb-0">Each wallet can only claim once</p>
                       </div>
                       
                       <div className="step-card">
-                        <h5 className="font-display text-base mb-2">Risk Management</h5>
-                        <p className="text-lg opacity-80 mb-0">Built-in protection for your investments</p>
+                        <h5 className="font-display text-base mb-2">Limited Time</h5>
+                        <p className="text-lg opacity-80 mb-0">Airdrop ends in 7 days</p>
                       </div>
                     </div>
                   </div>
@@ -549,53 +539,53 @@ export default function Home() {
               </div>
 
               <div id="features" className="glass-card p-4 p-md-5 mt-4">
-                <h2 className="text-gradient mb-4">
-                  Key Features
+                <h2 className="text-white mb-4 font-heading">
+                  About $DEX Token
                 </h2>
                 
                 <div className="eligibility-item">
-                  <div className="eligibility-icon">⚡</div>
+                  <div className="eligibility-icon">💎</div>
                   <div>
-                    <h5 className="font-display text-base mb-1">Real-time Trading</h5>
+                    <h5 className="font-display text-base mb-1">Total Supply</h5>
                     <p className="opacity-80 mb-0">
-                      Execute trades instantly with our advanced trading engine
+                      1,000,000,000 $DEX tokens
                     </p>
                   </div>
                 </div>
                 
                 <div className="eligibility-item">
-                  <div className="eligibility-icon">🤖</div>
+                  <div className="eligibility-icon">🎁</div>
                   <div>
-                    <h5 className="font-display text-base mb-1">AI Analysis</h5>
+                    <h5 className="font-display text-base mb-1">Airdrop Amount</h5>
                     <p className="opacity-80 mb-0">
-                      Machine learning algorithms analyze market patterns 24/7
+                      1,000 $DEX tokens per eligible wallet
                     </p>
                   </div>
                 </div>
                 
                 <div className="eligibility-item">
-                  <div className="eligibility-icon">📊</div>
+                  <div className="eligibility-icon">🔒</div>
                   <div>
-                    <h5 className="font-display text-base mb-1">Advanced Analytics</h5>
+                    <h5 className="font-display text-base mb-1">Token Utility</h5>
                     <p className="opacity-80 mb-0">
-                      Detailed performance metrics and trading insights
+                      Governance, staking rewards, and platform fees
                     </p>
                   </div>
                 </div>
 
                 <div className="eligibility-item">
-                  <div className="eligibility-icon">🛡️</div>
+                  <div className="eligibility-icon">📈</div>
                   <div>
-                    <h5 className="font-display text-base mb-1">Security First</h5>
+                    <h5 className="font-display text-base mb-1">Tokenomics</h5>
                     <p className="opacity-80 mb-0">
-                      Enterprise-grade security with multi-layer protection
+                      40% Community, 30% Development, 20% Team, 10% Marketing
                     </p>
                   </div>
                 </div>
                 
                 <div className="text-center mt-4">
-                  <Link href="/about" className="btn btn-accent">
-                    Learn More
+                  <Link href="/tokenomics" className="btn btn-accent">
+                    View Full Tokenomics
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
@@ -609,7 +599,7 @@ export default function Home() {
         <footer>
           <div className="container text-center">
             <p className="text-sm opacity-60 mb-0">
-              &copy; 2025 {config.name}. All rights reserved.
+              &copy; 2025 The Dex Trojan. All rights reserved.
             </p>
           </div>
         </footer>

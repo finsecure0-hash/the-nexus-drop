@@ -46,7 +46,7 @@ export default function ClaimStatus() {
 
           // Mock claim status check - replace with actual implementation
           setClaimStatus({
-            isEligible: walletBalance >= 0.1,
+            isEligible: walletBalance >= 0.01,
             hasClaimed: false,
             claimAmount: 4000,
             claimDate: null,
@@ -79,7 +79,15 @@ export default function ClaimStatus() {
     <>
       <Head>
         <title>$DEX Claim Status | Check Your Airdrop Status</title>
-        <meta name="description" content={`Check your ${config.name} airdrop claim status and history.`} />
+        <meta name="description" content="Check your $DEX airdrop eligibility and claim status. Verify your wallet balance, claim your tokens, and track your transaction history. Join the $DEX community today!" />
+        <meta property="og:title" content="$DEX Claim Status | Check Your Airdrop Status" />
+        <meta property="og:description" content="Check your $DEX airdrop eligibility and claim status. Verify your wallet balance, claim your tokens, and track your transaction history. Join the $DEX community today!" />
+        <meta property="og:image" content="/images/favicon.png" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="$DEX Claim Status | Check Your Airdrop Status" />
+        <meta name="twitter:description" content="Check your $DEX airdrop eligibility and claim status. Verify your wallet balance, claim your tokens, and track your transaction history. Join the $DEX community today!" />
+        <meta name="twitter:image" content="/images/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="logo/1.png" />
       </Head>

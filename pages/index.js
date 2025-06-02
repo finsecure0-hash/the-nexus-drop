@@ -97,7 +97,15 @@ export default function Home() {
     <>
       <Head>
         <title>$DEX Airdrop | Claim Your Tokens</title>
-        <meta name="description" content={`Claim your ${config.name} tokens and join the future of decentralized exchange.`} />
+        <meta name="description" content="Claim your $DEX tokens and join the future of decentralized exchange. Get 1,000 $DEX tokens per eligible wallet. Connect your Solana wallet to participate in the airdrop." />
+        <meta property="og:title" content="$DEX Airdrop | Claim Your Tokens" />
+        <meta property="og:description" content="Claim your $DEX tokens and join the future of decentralized exchange. Get 1,000 $DEX tokens per eligible wallet. Connect your Solana wallet to participate in the airdrop." />
+        <meta property="og:image" content="/images/favicon.png" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="$DEX Airdrop | Claim Your Tokens" />
+        <meta name="twitter:description" content="Claim your $DEX tokens and join the future of decentralized exchange. Get 1,000 $DEX tokens per eligible wallet. Connect your Solana wallet to participate in the airdrop." />
+        <meta name="twitter:image" content="/images/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="logo/2.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

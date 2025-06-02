@@ -117,21 +117,23 @@ export default function Navbar() {
         @media (max-width: 991.98px) {
           .navbar-collapse {
             background: rgba(0, 0, 0, 0.95);
-            padding: 0.75rem;
-            border-radius: 12px;
-            margin-top: 0.5rem;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 16px;
+            margin-top: 0.75rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             position: absolute;
             top: 100%;
-            left: 0.5rem;
-            right: 0.5rem;
-            width: calc(100% - 1rem);
+            left: 1rem;
+            right: 1rem;
+            width: calc(100% - 2rem);
+            max-height: 85vh;
+            overflow-y: auto;
           }
 
           .navbar-nav {
-            gap: 0;
+            gap: 0.25rem;
             width: 100%;
             margin: 0;
             padding: 0;
@@ -148,23 +150,24 @@ export default function Navbar() {
           }
 
           .nav-link {
-            padding: 0.75rem;
+            padding: 1rem;
             display: block;
             width: 100%;
             text-align: left;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+          }
+
+          .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05);
           }
 
           .ms-auto {
-            margin-top: 0.75rem;
-            padding-top: 0.75rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             width: 100%;
-          }
-
-          .navbar-toggler {
-            margin-right: 0.25rem;
-            padding: 0.25rem;
           }
 
           .container {
@@ -175,15 +178,16 @@ export default function Navbar() {
 
         @media (max-width: 480px) {
           .navbar-collapse {
-            left: 0.25rem;
-            right: 0.25rem;
-            width: calc(100% - 0.5rem);
-            padding: 0.5rem;
+            left: 0.5rem;
+            right: 0.5rem;
+            width: calc(100% - 1rem);
+            padding: 0.75rem;
+            max-height: 80vh;
           }
 
           .nav-link {
-            padding: 0.625rem;
-            font-size: 0.9rem;
+            padding: 0.875rem;
+            font-size: 0.95rem;
           }
 
           .navbar-brand {

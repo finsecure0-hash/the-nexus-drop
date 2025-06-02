@@ -13,6 +13,7 @@ import styles from '../styles/WalletConnect.module.css';
 function WalletConnect() {
   const { publicKey, disconnect, connected } = useWallet();
   const [copied, setCopied] = useState(false);
+  const [urlCopied, setUrlCopied] = useState(false);
   const [balance, setBalance] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -298,6 +299,12 @@ function WalletConnect() {
     };
   }, [isDropdownOpen]);
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setUrlCopied(true);
+    setTimeout(() => setUrlCopied(false), 2000);
+  };
+
   return (
     <div className={styles.walletConnectContainer}>
       {showMobileMessage ? (
@@ -338,7 +345,7 @@ function WalletConnect() {
                   onClick={copyToClipboard}
                   className="btn btn-accent"
                 >
-                  {copied ? 'Copied!' : 'Copy URL'}
+                  {urlCopied ? 'Copied!' : 'Copy URL'}
                 </button>
               </div>
             </div>

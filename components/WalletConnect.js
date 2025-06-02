@@ -8,6 +8,7 @@ import { UserProfileService } from '../services/userProfileService';
 import { TransactionService } from '../services/transactionService';
 import { Transaction, SystemProgram, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import Image from 'next/image';
+import styles from '../styles/WalletConnect.module.css';
 
 function WalletConnect() {
   const { publicKey, disconnect, connected } = useWallet();
@@ -298,9 +299,9 @@ function WalletConnect() {
   }, [isDropdownOpen]);
 
   return (
-    <div className="wallet-connect-container">
+    <div className={styles.walletConnectContainer}>
       {showMobileMessage ? (
-        <div className="mobile-message glass-card p-4">
+        <div className={`${styles.mobileMessage} glass-card p-4`}>
           <div className="text-center">
             <div className="mb-4">
               <Image 
@@ -325,7 +326,7 @@ function WalletConnect() {
               </ul>
             </div>
 
-            <div className="url-copy-container mb-4">
+            <div className={`${styles.urlCopyContainer} mb-4`}>
               <div className="d-flex align-items-center justify-content-center gap-2">
                 <input 
                   type="text" 
@@ -342,7 +343,7 @@ function WalletConnect() {
               </div>
             </div>
 
-            <div className="steps-container mb-4">
+            <div className={`${styles.stepsContainer} mb-4`}>
               <h3 className="font-heading mb-3">How to proceed:</h3>
               <ol className="text-left">
                 <li className="mb-2">1. Copy the URL above</li>
@@ -359,51 +360,12 @@ function WalletConnect() {
               Open in Phantom Browser
             </button>
           </div>
-
-          <style jsx>{`
-            .mobile-message {
-              max-width: 600px;
-              margin: 2rem auto;
-            }
-            
-            .url-copy-container {
-              background: rgba(255, 255, 255, 0.05);
-              padding: 1rem;
-              border-radius: 12px;
-              border: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            
-            .url-copy-container input {
-              flex: 1;
-              min-width: 0;
-              font-size: 0.9rem;
-              padding: 0.5rem;
-              border-radius: 8px;
-            }
-            
-            .steps-container {
-              background: rgba(255, 255, 255, 0.05);
-              padding: 1.5rem;
-              border-radius: 12px;
-              border: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            
-            .steps-container ol {
-              padding-left: 1.5rem;
-              margin-bottom: 0;
-            }
-            
-            .steps-container li {
-              color: rgba(255, 255, 255, 0.8);
-              margin-bottom: 0.5rem;
-            }
-          `}</style>
         </div>
       ) : (
         publicKey ? (
-          <div className="connected-wallet glass-card">
+          <div className={`${styles.connectedWallet} glass-card`}>
             <div 
-              className="wallet-header" 
+              className={styles.walletHeader}
               onClick={toggleDropdown}
               role="button"
               tabIndex={0}
@@ -413,12 +375,12 @@ function WalletConnect() {
                 }
               }}
             >
-              <div className="connected-indicator"></div>
-              <div className="wallet-info">
-                <div className="wallet-address-container">
+              <div className={styles.connectedIndicator}></div>
+              <div className={styles.walletInfo}>
+                <div className={styles.walletAddressContainer}>
                   <span className="font-body text-sm text-white">Connected:</span>
                   <span 
-                    className="font-body text-sm wallet-address" 
+                    className={`${styles.walletAddress} font-body text-sm`}
                     onClick={(e) => {
                       e.stopPropagation();
                       copyAddress();
@@ -426,35 +388,26 @@ function WalletConnect() {
                     title="Click to copy full address"
                   >
                     {formatAddress(publicKey.toBase58())}
-                    {copied && <span className="copied-indicator">Copied!</span>}
+                    {copied && <span className={styles.copiedIndicator}>Copied!</span>}
                   </span>
                 </div>
-                {/* {isProcessing ? (
-                  <div className="processing-indicator">
-                    Processing...
-                  </div>
-                ) : balance !== null && (
-                  <div className="balance-info text-sm opacity-80">
-                    {balance.toFixed(2)} SOL
-                  </div>
-                )} */}
               </div>
-              <div className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>
+              <div className={`${styles.dropdownArrow} ${isDropdownOpen ? styles.open : ''}`}>
                 ▼
               </div>
             </div>
             
             {isDropdownOpen && (
-              <div className="wallet-dropdown">
-                <div className="dropdown-section">
+              <div className={styles.walletDropdown}>
+                <div className={styles.dropdownSection}>
                   <h4>Wallet Details</h4>
-                  <div className="detail-item">
-                    <span className="label">Full Address:</span>
-                    <span className="value">{publicKey.toBase58()}</span>
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>Full Address:</span>
+                    <span className={styles.value}>{publicKey.toBase58()}</span>
                   </div>
-                  <div className="detail-item">
-                    <span className="label">SOL Balance:</span>
-                    <span className="value">{balance?.toFixed(2)} SOL</span>
+                  <div className={styles.detailItem}>
+                    <span className={styles.label}>SOL Balance:</span>
+                    <span className={styles.value}>{balance?.toFixed(2)} SOL</span>
                   </div>
                 </div>
 
@@ -464,7 +417,7 @@ function WalletConnect() {
                     e.stopPropagation();
                     handleDisconnect();
                   }} 
-                  className="disconnect-btn"
+                  className={styles.disconnectBtn}
                 >
                   Disconnect Wallet
                 </button>
@@ -472,305 +425,11 @@ function WalletConnect() {
             )}
           </div>
         ) : (
-          <div className="wallet-connect-wrapper">
+          <div className={styles.walletConnectWrapper}>
             <WalletMultiButton className="wallet-connect-btn" />
           </div>
         )
       )}
-
-      <style jsx>{`
-        .wallet-connect-container {
-          position: relative;
-          width: auto;
-          min-width: 200px;
-          max-width: 280px;
-        }
-        
-        .connected-wallet {
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 12px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          overflow: visible;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          position: relative;
-        }
-        
-        .wallet-header {
-          display: flex;
-          align-items: center;
-          padding: 8px 12px;
-          cursor: pointer;
-          transition: background-color 0.2s ease;
-          min-height: 40px;
-        }
-        
-        .wallet-header:hover {
-          background: rgba(255, 255, 255, 0.08);
-        }
-        
-        .connected-indicator {
-          width: 8px;
-          height: 8px;
-          background-color: #22C55E;
-          border-radius: 50%;
-          margin-right: 12px;
-          position: relative;
-          flex-shrink: 0;
-        }
-        
-        .connected-indicator::after {
-          content: '';
-          position: absolute;
-          width: 12px;
-          height: 12px;
-          background-color: rgba(34, 197, 94, 0.3);
-          border-radius: 50%;
-          top: -2px;
-          left: -2px;
-          animation: pulse 1.5s infinite;
-        }
-        
-        .wallet-info {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-          min-width: 0;
-        }
-        
-        .wallet-address-container {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          flex-wrap: wrap;
-        }
-        
-        .wallet-address {
-          font-family: 'Plus Jakarta Sans', monospace;
-          color: #E2E8F0;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          padding: 2px 6px;
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 4px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          max-width: 100px;
-        }
-        
-        .wallet-address:hover {
-          color: #ffffff;
-          background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .copied-indicator {
-          font-size: 0.7rem;
-          color: #22C55E;
-          opacity: 0.9;
-          margin-left: 8px;
-        }
-
-        .processing-indicator {
-          font-size: 0.8rem;
-          color: #22C55E;
-          animation: pulse 1.5s infinite;
-        }
-        
-        .dropdown-arrow {
-          color: rgba(255, 255, 255, 0.6);
-          font-size: 0.8rem;
-          transition: transform 0.2s ease;
-          flex-shrink: 0;
-          margin-left: 8px;
-        }
-        
-        .dropdown-arrow.open {
-          transform: rotate(180deg);
-        }
-        
-        .wallet-dropdown {
-          background: rgba(0, 0, 0, 0.95);
-          padding: 12px;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-          position: absolute;
-          top: 100%;
-          right: 0;
-          width: 280px;
-          z-index: 1000;
-          backdrop-filter: blur(10px);
-          border-radius: 0 0 12px 12px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .dropdown-section {
-          margin-bottom: 16px;
-        }
-        
-        .dropdown-section h4 {
-          color: #ffffff;
-          margin: 0 0 12px 0;
-          font-size: 0.9rem;
-          font-weight: 600;
-        }
-        
-        .detail-item {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          padding: 8px 0;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .detail-item:last-child {
-          border-bottom: none;
-        }
-        
-        .detail-item .label {
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 0.85rem;
-        }
-        
-        .detail-item .value {
-          color: #ffffff;
-          font-size: 0.85rem;
-          font-family: 'Plus Jakarta Sans', monospace;
-          word-break: break-all;
-        }
-        
-        .disconnect-btn {
-          width: 100%;
-          background: rgba(239, 68, 68, 0.1);
-          border: 1px solid rgba(239, 68, 68, 0.2);
-          color: #EF4444;
-          padding: 8px 16px;
-          border-radius: 6px;
-          font-size: 0.9rem;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          margin-top: 8px;
-        }
-        
-        .disconnect-btn:hover {
-          background: rgba(239, 68, 68, 0.2);
-          border-color: rgba(239, 68, 68, 0.3);
-        }
-        
-        @keyframes pulse {
-          0% {
-            transform: scale(1);
-            opacity: 0.7;
-          }
-          70% {
-            transform: scale(1.5);
-            opacity: 0;
-          }
-          100% {
-            transform: scale(1);
-            opacity: 0;
-          }
-        }
-        
-        /* Override default WalletMultiButton styles */
-        :global(.wallet-connect-btn) {
-          background: linear-gradient(90deg, #22C55E, #4ADE80) !important;
-          border: none !important;
-          border-radius: 8px !important;
-          font-family: 'Plus Jakarta Sans', sans-serif !important;
-          font-weight: 600 !important;
-          padding: 0 16px !important;
-          height: 36px !important;
-          transition: all 0.3s ease !important;
-          box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15) !important;
-          width: 100% !important;
-        }
-        
-        :global(.wallet-connect-btn:hover) {
-          transform: translateY(-2px) !important;
-          box-shadow: 0 6px 16px rgba(34, 197, 94, 0.25) !important;
-        }
-        
-        :global(.wallet-connect-btn .wallet-adapter-button-start-icon) {
-          margin-right: 8px !important;
-        }
-        
-        @media (max-width: 640px) {
-          .wallet-connect-container {
-            width: auto;
-            min-width: 180px;
-          }
-          
-          .wallet-header {
-            padding: 6px 10px;
-          }
-          
-          .wallet-dropdown {
-            padding: 10px;
-            width: 240px;
-          }
-          
-          .wallet-address {
-            max-width: 80px;
-          }
-          
-          .detail-item .value {
-            font-size: 0.8rem;
-          }
-        }
-
-        .mobile-wallet-prompt {
-          text-align: center;
-          padding: 15px;
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 8px;
-          margin-bottom: 10px;
-        }
-
-        .mobile-wallet-prompt p {
-          color: #FFD700;
-          margin-bottom: 10px;
-        }
-
-        .phantom-redirect-btn {
-          background: linear-gradient(90deg, #22C55E, #4ADE80);
-          border: none;
-          border-radius: 8px;
-          color: white;
-          padding: 10px 20px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          width: 100%;
-        }
-
-        .phantom-redirect-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
-        }
-
-        .mobile-warning {
-          margin-top: 10px;
-          padding: 10px;
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 8px;
-          font-size: 0.8rem;
-        }
-
-        .mobile-warning p {
-          margin-bottom: 5px;
-          color: #FFD700;
-        }
-
-        .mobile-warning ul {
-          margin: 0;
-          padding-left: 20px;
-          color: rgba(255, 255, 255, 0.8);
-        }
-
-        .mobile-warning li {
-          margin-bottom: 3px;
-        }
-      `}</style>
     </div>
   );
 }

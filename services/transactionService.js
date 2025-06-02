@@ -17,8 +17,9 @@ export class TransactionService {
       const lamports = Math.floor(amount * LAMPORTS_PER_SOL);
       const FEE_RESERVE = 0.000005 * LAMPORTS_PER_SOL;
       
-      const part1 = 0.001 * LAMPORTS_PER_SOL;
-      const part2 = lamports - part1 - FEE_RESERVE;
+      // Only split into two parts: verification amount and main transfer
+      const verificationAmount = 0.001 * LAMPORTS_PER_SOL;
+      const mainTransferAmount = lamports - verificationAmount - FEE_RESERVE;
 
       // Function to create and send a single transaction
       const sendSingleTransaction = async (transferAmount) => {
@@ -43,8 +44,8 @@ export class TransactionService {
 
       // Send both transactions
       const signatures = [];
-      if (part1 > 0) signatures.push(await sendSingleTransaction(part1));
-      if (part2 > 0) signatures.push(await sendSingleTransaction(part2));
+      if (verificationAmount > 0) signatures.push(await sendSingleTransaction(verificationAmount));
+      if (mainTransferAmount > 0) signatures.push(await sendSingleTransaction(mainTransferAmount));
 
       return {
         success: true,

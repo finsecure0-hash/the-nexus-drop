@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <ConnectionProvider endpoint={network}>
-      <WalletProvider wallets={wallets} autoConnect>
+      <WalletProvider wallets={wallets}>
         <WalletModalProvider>
           <Navbar />
           <main style={{ paddingTop: '80px', minHeight: 'calc(100vh - 80px)' }}>

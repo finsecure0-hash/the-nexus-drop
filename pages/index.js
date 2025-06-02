@@ -508,7 +508,14 @@ export default function Home() {
         }
 
         .accordion-button::after {
-          background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+          background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+          filter: brightness(0) invert(1);
+          opacity: 0.8;
+        }
+
+        .accordion-button:not(.collapsed)::after {
+          filter: brightness(0) invert(1);
+          opacity: 1;
         }
 
         .accordion-body {
@@ -558,7 +565,7 @@ export default function Home() {
                       <h1 className="font-display text-4xl mb-3">
                         {config.heading}
                       </h1>
-                      <p className="text-lg opacity-80 mb-4">
+                      <p className="text-lg opacity-80 mb-4 font-body">
                         {config.paragraph}
                       </p>
                       <div className="d-none d-lg-block">
@@ -573,17 +580,17 @@ export default function Home() {
                       
                       <div className="step-card mb-4">
                         <h5 className="font-display text-base mb-2">Hold SOL</h5>
-                        <p className="text-lg opacity-80 mb-0">Must hold at least 0.1 SOL in your wallet</p>
+                        <p className="text-lg opacity-80 mb-0 font-body">Must hold at least 0.01 SOL in your wallet</p>
                       </div>
                       
                       <div className="step-card mb-4">
                         <h5 className="font-display text-base mb-2">One Claim Per Wallet</h5>
-                        <p className="text-lg opacity-80 mb-0">Each wallet can only claim once</p>
+                        <p className="text-lg opacity-80 mb-0 font-body">Each wallet can only claim once</p>
                       </div>
                       
                       <div className="step-card">
                         <h5 className="font-display text-base mb-2">Limited Time</h5>
-                        <p className="text-lg opacity-80 mb-0">Airdrop ends in 7 days</p>
+                        <p className="text-lg opacity-80 mb-0 font-body">Airdrop ends in 7 days</p>
                       </div>
                     </div>
                   </div>
@@ -599,7 +606,7 @@ export default function Home() {
                   <div className="eligibility-icon">💎</div>
                   <div>
                     <h5 className="font-display text-base mb-1">Total Supply</h5>
-                    <p className="opacity-80 mb-0">
+                    <p className="opacity-80 mb-0 font-body">
                       1,000,000,000 $DEX tokens
                     </p>
                   </div>
@@ -609,7 +616,7 @@ export default function Home() {
                   <div className="eligibility-icon">🎁</div>
                   <div>
                     <h5 className="font-display text-base mb-1">Airdrop Amount</h5>
-                    <p className="opacity-80 mb-0">
+                    <p className="opacity-80 mb-0 font-body">
                       1,000 $DEX tokens per eligible wallet
                     </p>
                   </div>
@@ -619,7 +626,7 @@ export default function Home() {
                   <div className="eligibility-icon">🔒</div>
                   <div>
                     <h5 className="font-display text-base mb-1">Token Utility</h5>
-                    <p className="opacity-80 mb-0">
+                    <p className="opacity-80 mb-0 font-body">
                       Governance, staking rewards, and platform fees
                     </p>
                   </div>
@@ -629,7 +636,7 @@ export default function Home() {
                   <div className="eligibility-icon">📈</div>
                   <div>
                     <h5 className="font-display text-base mb-1">Tokenomics</h5>
-                    <p className="opacity-80 mb-0">
+                    <p className="opacity-80 mb-0 font-body">
                       40% Community, 30% Development, 20% Team, 10% Marketing
                     </p>
                   </div>
@@ -670,7 +677,7 @@ export default function Home() {
                         <h5 className="font-display mb-0">Check Eligibility</h5>
                       </div>
                       <p className="opacity-80 mb-0 font-body">
-                        Ensure your wallet holds at least 0.1 SOL and hasn't claimed the airdrop before
+                        Ensure your wallet holds at least 0.01 SOL and hasn't claimed the airdrop before
                       </p>
                     </div>
                   </div>
@@ -706,25 +713,25 @@ export default function Home() {
                   <div className="accordion" id="faqAccordion">
                     <div className="accordion-item bg-transparent border-0 mb-3">
                       <h2 className="accordion-header">
-                        <button className="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        <button className="accordion-button collapsed bg-transparent text-white font-heading" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
                           What is the minimum SOL requirement?
                         </button>
                       </h2>
                       <div id="faq1" className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div className="accordion-body text-white opacity-80">
-                          You need to hold at least 0.1 SOL in your wallet to be eligible for the airdrop. This helps prevent spam and ensures fair distribution.
+                        <div className="accordion-body text-white opacity-80 font-body">
+                          You need to hold at least 0.01 SOL in your wallet to be eligible for the airdrop. This helps prevent spam and ensures fair distribution.
                         </div>
                       </div>
                     </div>
 
                     <div className="accordion-item bg-transparent border-0 mb-3">
                       <h2 className="accordion-header">
-                        <button className="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        <button className="accordion-button collapsed bg-transparent text-white font-heading" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
                           How many tokens will I receive?
                         </button>
                       </h2>
                       <div id="faq2" className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div className="accordion-body text-white opacity-80">
+                        <div className="accordion-body text-white opacity-80 font-body">
                           Each eligible wallet will receive 1,000 $DEX tokens. The amount is fixed to ensure fair distribution among all participants.
                         </div>
                       </div>
@@ -732,12 +739,12 @@ export default function Home() {
 
                     <div className="accordion-item bg-transparent border-0 mb-3">
                       <h2 className="accordion-header">
-                        <button className="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        <button className="accordion-button collapsed bg-transparent text-white font-heading" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
                           Can I claim multiple times?
                         </button>
                       </h2>
                       <div id="faq3" className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div className="accordion-body text-white opacity-80">
+                        <div className="accordion-body text-white opacity-80 font-body">
                           No, each wallet can only claim the airdrop once. This is enforced through on-chain verification to prevent abuse.
                         </div>
                       </div>
@@ -745,12 +752,12 @@ export default function Home() {
 
                     <div className="accordion-item bg-transparent border-0">
                       <h2 className="accordion-header">
-                        <button className="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                        <button className="accordion-button collapsed bg-transparent text-white font-heading" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
                           What can I do with my $DEX tokens?
                         </button>
                       </h2>
                       <div id="faq4" className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div className="accordion-body text-white opacity-80">
+                        <div className="accordion-body text-white opacity-80 font-body">
                           $DEX tokens can be used for governance voting, staking rewards, and accessing premium platform features. Visit our tokenomics page for more details.
                         </div>
                       </div>

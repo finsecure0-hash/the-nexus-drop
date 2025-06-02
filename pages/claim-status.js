@@ -5,6 +5,9 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletService } from '../services/walletService';
 import 'bootstrap/dist/css/bootstrap.css';
 import Script from 'next/script';
+import dynamic from 'next/dynamic';
+
+const WalletConnect = dynamic(() => import('../components/WalletConnect'), { ssr: false });
 
 export default function ClaimStatus() {
   const { publicKey } = useWallet();
@@ -163,6 +166,25 @@ export default function ClaimStatus() {
           gap: 0.5rem;
           min-width: 200px;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-accent :global(button) {
+          background: transparent !important;
+          border: none !important;
+          color: white !important;
+          font-weight: 600 !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
+        .btn-accent :global(button:hover) {
+          background: transparent !important;
+          color: white !important;
         }
         
         .btn-accent:hover {
@@ -391,20 +413,20 @@ export default function ClaimStatus() {
 
                 {!publicKey ? (
                   <div className="text-center py-5">
-                    <h3 className="text-white mb-4">Connect Your Wallet</h3>
-                    <p className="text-white opacity-80 mb-4">
+                    <h3 className="text-white mb-4 font-body">Connect Your Wallet</h3>
+                    <p className="text-white opacity-80 mb-4 font-body">
                       Please connect your wallet to check your claim status
                     </p>
-                    <Link href="/" className="btn btn-accent">
-                      Connect Wallet
-                    </Link>
+                    <div className="btn-accent">
+                      <WalletConnect />
+                    </div>
                   </div>
                 ) : loading ? (
                   <div className="text-center py-5">
                     <div className="spinner-border" role="status">
                       <span className="visually-hidden">Loading...</span>
                     </div>
-                    <p className="text-white opacity-80 mt-3">Checking claim status...</p>
+                    <p className="text-white opacity-80 mt-3 font-body">Checking claim status...</p>
                   </div>
                 ) : (
                   <div className="row g-4">
@@ -424,7 +446,7 @@ export default function ClaimStatus() {
                             ></div>
                           </div>
                           <small className="text-white opacity-60 mt-2 d-block font-body">
-                            Minimum required: 0.1 SOL
+                            Minimum required: 0.01 SOL
                           </small>
                         </div>
 
@@ -495,7 +517,7 @@ export default function ClaimStatus() {
                                 <h5 className="font-display mb-0">Check Eligibility</h5>
                               </div>
                               <p className="opacity-80 mb-0 font-body">
-                                Ensure your wallet holds at least 0.1 SOL and hasn't claimed before
+                                Ensure your wallet holds at least 0.01 SOL and hasn't claimed before
                               </p>
                             </div>
                           </div>
@@ -565,7 +587,7 @@ export default function ClaimStatus() {
                             </h2>
                             <div id="issue2" className="accordion-collapse collapse" data-bs-parent="#issuesAccordion">
                               <div className="accordion-body text-white opacity-80">
-                                Make sure your wallet holds at least 0.1 SOL. If you've already claimed, you won't be eligible for another claim.
+                                Make sure your wallet holds at least 0.01 SOL. If you've already claimed, you won't be eligible for another claim.
                               </div>
                             </div>
                           </div>

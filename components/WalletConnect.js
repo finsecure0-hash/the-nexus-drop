@@ -33,8 +33,9 @@ function WalletConnect() {
       if (mobile) {
         // Check if we're already in Phantom
         const isPhantomInstalled = window.solana?.isPhantom;
+        const isInPhantomBrowser = window.location.href.includes('phantom.app');
         setHasPhantomApp(isPhantomInstalled);
-        setShowMobileMessage(!isPhantomInstalled);
+        setShowMobileMessage(!isPhantomInstalled && !isInPhantomBrowser);
       }
     };
     checkMobile();

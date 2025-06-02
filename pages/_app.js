@@ -6,6 +6,7 @@ import { clusterApiUrl } from '@solana/web3.js'
 import 'bootstrap/dist/css/bootstrap.css'
 import '@solana/wallet-adapter-react-ui/styles.css'
 import '../styles/globals.css'
+import '../styles/global.css'
 import Navbar from '../components/Navbar'
 
 function MyApp({ Component, pageProps }) {

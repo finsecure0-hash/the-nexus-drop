@@ -1,0 +1,301 @@
+import Head from 'next/head';
+import Link from 'next/link';
+import { useState } from 'react';
+import styles from '../styles/Home.module.css';
+
+export default function CookiePolicy() {
+  const [config] = useState({
+    name: '$DEX',
+    backgroundColor: '#0A0B0E',
+    textColor: '#FFFFFF',
+    accentColor: '#00F5A0',
+    secondaryAccent: '#FF3366',
+    tertiaryAccent: '#6C5CE7',
+    cardBg: 'rgba(255, 255, 255, 0.02)',
+    cardBorder: 'rgba(255, 255, 255, 0.05)',
+  });
+
+  return (
+    <>
+      <Head>
+        <title>Cookie Policy | The Dex Trojan</title>
+        <meta name="description" content="Cookie Policy for The Dex Trojan - Learn about how we use cookies and similar technologies on our platform." />
+      </Head>
+
+      <style jsx global>{`
+        :root {
+          --text-xs: 0.75rem;
+          --text-sm: 0.875rem;
+          --text-base: 1rem;
+          --text-lg: 1.125rem;
+          --text-xl: 1.25rem;
+          --text-2xl: 1.5rem;
+          --text-3xl: 1.875rem;
+          --text-4xl: 2.25rem;
+          --container-padding: 1rem;
+          --card-radius: 24px;
+          --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @media (min-width: 768px) {
+          :root {
+            --container-padding: 2rem;
+          }
+        }
+        
+        body {
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
+          background: ${config.backgroundColor};
+          min-height: 100vh;
+          line-height: 1.6;
+          letter-spacing: -0.01em;
+          color: ${config.textColor};
+          overflow-x: hidden;
+        }
+        
+        .container {
+          padding-left: var(--container-padding);
+          padding-right: var(--container-padding);
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+        
+        .glass-card {
+          background: ${config.cardBg};
+          backdrop-filter: blur(20px);
+          border-radius: var(--card-radius);
+          border: 1px solid ${config.cardBorder};
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+          transition: var(--transition);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .glass-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            ${config.accentColor},
+            transparent
+          );
+          opacity: 0.5;
+        }
+        
+        .glass-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+          border-color: ${config.accentColor}40;
+        }
+        
+        .btn-accent {
+          background: black;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: white;
+          font-weight: 600;
+          padding: 1rem 2rem;
+          border-radius: 16px;
+          transition: var(--transition);
+          font-size: var(--text-base);
+          letter-spacing: 0.02em;
+          position: relative;
+          overflow: hidden;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          min-width: 200px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-accent:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+          color: white;
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .font-display {
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 700;
+          letter-spacing: -0.03em;
+        }
+        
+        .font-heading {
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 600;
+          letter-spacing: -0.02em;
+        }
+        
+        .font-body {
+          font-family: 'Inter', sans-serif;
+          font-weight: 400;
+        }
+        
+        .bg-gradient {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(
+            circle at 50% 50%,
+            ${config.accentColor}10 0%,
+            transparent 50%
+          );
+          pointer-events: none;
+          z-index: 0;
+        }
+        
+        .bg-grid {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: linear-gradient(${config.cardBorder} 1px, transparent 1px),
+                          linear-gradient(90deg, ${config.cardBorder} 1px, transparent 1px);
+          background-size: 50px 50px;
+          opacity: 0.1;
+          pointer-events: none;
+          z-index: 0;
+        }
+        
+        .policy-section {
+          padding: 1.5rem;
+          background: ${config.cardBg};
+          border-radius: 16px;
+          border: 1px solid ${config.cardBorder};
+          transition: var(--transition);
+          margin-bottom: 1rem;
+        }
+        
+        .policy-section:hover {
+          transform: translateX(8px);
+          border-color: ${config.accentColor}40;
+          background: ${config.cardBg}CC;
+        }
+        
+        @media (max-width: 768px) {
+          :root {
+            --container-padding: 1rem;
+            --card-radius: 16px;
+          }
+          
+          .glass-card {
+            border-radius: var(--card-radius);
+            padding: 1.25rem !important;
+          }
+          
+          .btn-accent {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            min-width: unset;
+          }
+          
+          .policy-section {
+            padding: 1.25rem;
+            margin-bottom: 0.75rem;
+          }
+        }
+      `}</style>
+
+      <div className="bg-gradient" />
+      <div className="bg-grid" />
+
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <main className="container-fluid px-0">
+          <div className="row g-0">
+            <div className="col-12">
+              <div className="glass-card p-4 p-md-5">
+                <div className="d-flex justify-content-center align-items-center mb-4">
+                  <h1 className="text-white mb-0 font-display">Cookie Policy</h1>
+                </div>
+
+                <div className="policy-section">
+                  <h2 className="font-heading text-xl mb-3">1. What Are Cookies</h2>
+                  <p className="text-sm opacity-80 mb-3 font-body">
+                    Cookies are small text files that are placed on your device when you visit our website. They help us provide you with a better experience by enabling us to monitor which pages you find useful and which you do not.
+                  </p>
+                </div>
+
+                <div className="policy-section">
+                  <h2 className="font-heading text-xl mb-3">2. How We Use Cookies</h2>
+                  <p className="text-sm opacity-80 mb-3 font-body">
+                    We use cookies for the following purposes:
+                  </p>
+                  <ul className="list-disc pl-5 mb-3 text-sm opacity-80 font-body">
+                    <li>Essential cookies for platform functionality</li>
+                    <li>Authentication and security</li>
+                    <li>Performance and analytics</li>
+                    <li>User preferences and settings</li>
+                  </ul>
+                </div>
+
+                <div className="policy-section">
+                  <h2 className="font-heading text-xl mb-3">3. Types of Cookies We Use</h2>
+                  
+                  <h3 className="font-heading text-lg mb-2">3.1 Essential Cookies</h3>
+                  <p className="text-sm opacity-80 mb-3 font-body">
+                    These cookies are necessary for the website to function properly. They enable basic functions like page navigation and access to secure areas of the website.
+                  </p>
+
+                  <h3 className="font-heading text-lg mb-2">3.2 Performance Cookies</h3>
+                  <p className="text-sm opacity-80 mb-3 font-body">
+                    These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously.
+                  </p>
+
+                  <h3 className="font-heading text-lg mb-2">3.3 Functionality Cookies</h3>
+                  <p className="text-sm opacity-80 mb-3 font-body">
+                    These cookies allow the website to remember choices you make and provide enhanced, more personal features.
+                  </p>
+                </div>
+
+                <div className="policy-section">
+                  <h2 className="font-heading text-xl mb-3">4. Third-Party Cookies</h2>
+                  <p className="text-sm opacity-80 mb-3 font-body">
+                    Some cookies are placed by third-party services that appear on our pages. We use the following third-party services:
+                  </p>
+                  <ul className="list-disc pl-5 mb-3 text-sm opacity-80 font-body">
+                    <li>Google Analytics for website analytics</li>
+                    <li>Cloudflare for security and performance</li>
+                    <li>Social media platforms for sharing features</li>
+                  </ul>
+                </div>
+
+                <div className="policy-section">
+                  <h2 className="font-heading text-xl mb-3">5. Managing Cookies</h2>
+                  <p className="text-sm opacity-80 mb-3 font-body">
+                    You can control and/or delete cookies as you wish. You can delete all cookies that are already on your computer and you can set most browsers to prevent them from being placed.
+                  </p>
+                  <p className="text-sm opacity-80 mb-3 font-body">
+                    To manage cookies, you can:
+                  </p>
+                  <ul className="list-disc pl-5 mb-3 text-sm opacity-80 font-body">
+                    <li>Adjust your browser settings</li>
+                    <li>Use privacy-focused browser extensions</li>
+                    <li>Clear cookies regularly</li>
+                  </ul>
+                </div>
+
+                <div className="policy-section">
+                  <h2 className="font-heading text-xl mb-3">6. Updates to This Policy</h2>
+                  <p className="text-sm opacity-80 mb-3 font-body">
+                    We may update this Cookie Policy from time to time. We will notify you of any changes by posting the new Cookie Policy on this page and updating the "Last updated" date.
+                  </p>
+                </div>
+
+              
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </>
+  );
+} 

@@ -9,6 +9,7 @@ import '../styles/globals.css'
 import '../styles/global.css'
 import { Inter } from 'next/font/google'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -31,6 +32,7 @@ function MyApp({ Component, pageProps }) {
             <main style={{ paddingTop: '80px', minHeight: 'calc(100vh - 80px)' }}>
               <Component {...pageProps} />
             </main>
+            <Footer />
           </div>
         </WalletModalProvider>
       </WalletProvider>

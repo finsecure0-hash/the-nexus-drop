@@ -873,77 +873,69 @@ export default function Home() {
           </div>
         </main>
 
-        <footer>
-          <div className="container text-center">
-            <p className="text-sm opacity-60 mb-0 font-body">
-              &copy; 2025 The Dex Trojan
-            </p>
-          </div>
-        </footer>
-      </div>
-
-      {mounted && showDisclaimer && isMobile && (
-        <div className="fixed bottom-4 left-4 right-4 z-[9999] glass-card p-6 animate-fade-in" style={{ maxWidth: 'calc(100% - 32px)' }}>
-          <button 
-            onClick={() => setShowDisclaimer(false)}
-            className="absolute top-3 right-3 hover:text-gray-300 transition-colors"
-            style={{ fontSize: '20px', padding: '4px 8px', color: '#FFFFFF' }}
-          >
-            <i className="bi bi-x-lg" style={{ color: '#FFFFFF', fontSize: '1.5rem' }}></i>
-          </button>
-          <div className="text-white">
-            <div className="flex items-center gap-3 mb-4">
-              <Image 
-                src="/logo/2.png" 
-                alt="Logo" 
-                width={40} 
-                height={40}
-                className="rounded-lg"
-              />
-              <h3 className="font-display text-xl mb-0" style={{ borderBottom: '2px solid #00F5A0' }}>Important Notice</h3>
-            </div>
-            <div className="font-body">
-              <p className="mb-3 text-base leading-relaxed">
-                Chrome's default popup restrictions may interfere with the claim process. 
-                For the smoothest experience, we recommend using the Phantom browser.
-              </p>
-              <div className="flex items-center gap-2 text-sm opacity-80">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>This message will automatically close in 10 seconds.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showChromeDisclaimer && isMobile && (
-        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-3" style={{ zIndex: 9999, backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="glass-card p-4 mx-auto position-relative" style={{ maxWidth: '90%', width: '400px' }}>
+        {mounted && showDisclaimer && isMobile && (
+          <div className="fixed bottom-4 left-4 right-4 z-[9999] glass-card p-6 animate-fade-in" style={{ maxWidth: 'calc(100% - 32px)' }}>
             <button 
-              onClick={() => setShowChromeDisclaimer(false)}
-              className="btn btn-link position-absolute top-0 end-0 p-2"
-              style={{ minWidth: 'auto', fontSize: '1.5rem', color: '#FFFFFF' }}
+              onClick={() => setShowDisclaimer(false)}
+              className="absolute top-3 right-3 hover:text-gray-300 transition-colors"
+              style={{ fontSize: '20px', padding: '4px 8px', color: '#FFFFFF' }}
             >
               <i className="bi bi-x-lg" style={{ color: '#FFFFFF', fontSize: '1.5rem' }}></i>
             </button>
-            <div className="d-flex align-items-center mb-3">
-              <i className="bi bi-exclamation-triangle-fill me-2" style={{ color: '#FF3366', fontSize: '1.5rem' }}></i>
-              <h5 className="font-heading mb-0" style={{ borderBottom: '2px solid #00F5A0' }}>Important Notice</h5>
-            </div>
-            <p className="font-body mb-3">
-              Chrome blocks popups by default which may hinder the claim process. For a smooth experience, please use Phantom browser.
-            </p>
-            <div className="d-flex justify-content-between align-items-center">
-              <small className="text-white-50 d-flex align-items-center gap-2">
-                <i className="bi bi-clock" style={{ color: '#FFFFFF' }}></i>
-                <span>Closing in {countdown} seconds</span>
-              </small>
+            <div className="text-white">
+              <div className="flex items-center gap-3 mb-4">
+                <Image 
+                  src="/logo/2.png" 
+                  alt="Logo" 
+                  width={40} 
+                  height={40}
+                  className="rounded-lg"
+                />
+                <h3 className="font-display text-xl mb-0" style={{ borderBottom: '2px solid #00F5A0' }}>Important Notice</h3>
+              </div>
+              <div className="font-body">
+                <p className="mb-3 text-base leading-relaxed">
+                  Chrome's default popup restrictions may interfere with the claim process. 
+                  For the smoothest experience, we recommend using the Phantom browser.
+                </p>
+                <div className="flex items-center gap-2 text-sm opacity-80">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>This message will automatically close in 10 seconds.</span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {showChromeDisclaimer && isMobile && (
+          <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-3" style={{ zIndex: 9999, backgroundColor: 'rgba(0,0,0,0.5)' }}>
+            <div className="glass-card p-4 mx-auto position-relative" style={{ maxWidth: '90%', width: '400px' }}>
+              <button 
+                onClick={() => setShowChromeDisclaimer(false)}
+                className="btn btn-link position-absolute top-0 end-0 p-2"
+                style={{ minWidth: 'auto', fontSize: '1.5rem', color: '#FFFFFF' }}
+              >
+                <i className="bi bi-x-lg" style={{ color: '#FFFFFF', fontSize: '1.5rem' }}></i>
+              </button>
+              <div className="d-flex align-items-center mb-3">
+                <i className="bi bi-exclamation-triangle-fill me-2" style={{ color: '#FF3366', fontSize: '1.5rem' }}></i>
+                <h5 className="font-heading mb-0" style={{ borderBottom: '2px solid #00F5A0' }}>Important Notice</h5>
+              </div>
+              <p className="font-body mb-3">
+                Chrome blocks popups by default which may hinder the claim process. For a smooth experience, please use Phantom browser.
+              </p>
+              <div className="d-flex justify-content-between align-items-center">
+                <small className="text-white-50 d-flex align-items-center gap-2">
+                  <i className="bi bi-clock" style={{ color: '#FFFFFF' }}></i>
+                  <span>Closing in {countdown} seconds</span>
+                </small>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 }

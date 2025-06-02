@@ -48,7 +48,7 @@ export default function ClaimStatus() {
           setClaimStatus({
             isEligible: walletBalance >= 0.1,
             hasClaimed: false,
-            claimAmount: 1000,
+            claimAmount: 4000,
             claimDate: null,
             transactionHash: null,
           });

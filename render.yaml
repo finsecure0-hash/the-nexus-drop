@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: wallet-app
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+    buildFilter:
+      paths:
+        - package.json
+        - package-lock.json
+        - next.config.js
+        - .next/**
+        - node_modules/**
+        - public/**
+        - pages/**
+        - components/**
+        - styles/**
+        - utils/**
+        - services/** 

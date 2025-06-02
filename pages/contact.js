@@ -62,7 +62,7 @@ export default function Contact() {
         <title>$DEX Contact | Get in Touch</title>
         <meta name="description" content={`Contact the ${config.name} team for support, partnerships, or general inquiries.`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="logo/favicon.png" />
+        <link rel="icon" href="logo/2.png" />
       </Head>
       <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" />
 

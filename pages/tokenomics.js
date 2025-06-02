@@ -8,7 +8,7 @@ import Script from 'next/script';
 export default function Tokenomics() {
   const [config] = useState({
     name: '$DEX',
-    image: '/logo/favicon.png',
+    image: '/logo/2.png',
     backgroundColor: '#0A0B0E',
     textColor: '#FFFFFF',
     accentColor: '#00F5A0',
@@ -24,7 +24,7 @@ export default function Tokenomics() {
         <title>$DEX Tokenomics | Token Distribution & Utility</title>
         <meta name="description" content={`Learn about ${config.name} token distribution, utility, and roadmap.`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="logo/favicon.png" />
+        <link rel="icon" href="logo/2.png" />
       </Head>
       <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" />
 

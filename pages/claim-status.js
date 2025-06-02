@@ -81,7 +81,7 @@ export default function ClaimStatus() {
         <title>$DEX Claim Status | Check Your Airdrop Status</title>
         <meta name="description" content={`Check your ${config.name} airdrop claim status and history.`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="logo/favicon.png" />
+        <link rel="icon" href="logo/1.png" />
       </Head>
       <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" />
 

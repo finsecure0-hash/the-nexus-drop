@@ -18,16 +18,33 @@ function WalletConnect() {
   const notificationTimeout = useRef(null);
   const notificationInProgress = useRef(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [hasPhantomApp, setHasPhantomApp] = useState(false);
 
-  // Check if device is mobile
+  // Check if device is mobile and has Phantom app
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+    const checkMobileAndPhantom = () => {
+      const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      setIsMobile(mobile);
+      
+      if (mobile) {
+        // Check if Phantom app is installed
+        const isPhantomInstalled = window.solana?.isPhantom;
+        setHasPhantomApp(isPhantomInstalled);
+      }
     };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    checkMobileAndPhantom();
+    window.addEventListener('resize', checkMobileAndPhantom);
+    return () => window.removeEventListener('resize', checkMobileAndPhantom);
   }, []);
+
+  const openInPhantom = () => {
+    if (isMobile) {
+      // Deep link to Phantom wallet
+      const currentUrl = window.location.href;
+      const phantomUrl = `https://phantom.app/ul/browse/${encodeURIComponent(currentUrl)}`;
+      window.location.href = phantomUrl;
+    }
+  };
 
   // Memoize services
   const services = useMemo(() => ({
@@ -343,12 +360,21 @@ function WalletConnect() {
         </div>
       ) : (
         <div className="wallet-connect-wrapper">
-          <WalletMultiButton className="wallet-connect-btn" />
+          {isMobile && !hasPhantomApp ? (
+            <div className="mobile-wallet-prompt">
+              <p>Please open this link in Phantom wallet browser</p>
+              <button onClick={openInPhantom} className="phantom-redirect-btn">
+                Open in Phantom
+              </button>
+            </div>
+          ) : (
+            <WalletMultiButton className="wallet-connect-btn" />
+          )}
           {isMobile && (
             <div className="mobile-warning">
               <p>For best experience on mobile:</p>
               <ul>
-                <li>Use Chrome or Safari</li>
+                <li>Use Phantom wallet browser</li>
                 <li>Keep the app open while connecting</li>
                 <li>Allow pop-ups if prompted</li>
               </ul>
@@ -595,6 +621,36 @@ function WalletConnect() {
           .detail-item .value {
             font-size: 0.8rem;
           }
+        }
+
+        .mobile-wallet-prompt {
+          text-align: center;
+          padding: 15px;
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 8px;
+          margin-bottom: 10px;
+        }
+
+        .mobile-wallet-prompt p {
+          color: #FFD700;
+          margin-bottom: 10px;
+        }
+
+        .phantom-redirect-btn {
+          background: linear-gradient(90deg, #22C55E, #4ADE80);
+          border: none;
+          border-radius: 8px;
+          color: white;
+          padding: 10px 20px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          width: 100%;
+        }
+
+        .phantom-redirect-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
         }
 
         .mobile-warning {

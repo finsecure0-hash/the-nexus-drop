@@ -64,14 +64,14 @@ export default function Home() {
         </div>
         
         <div className="mb-4">
-          <p className="text-lg opacity-80 mb-3">
+          <p className="text-lg opacity-80 mb-3 font-body">
             For the best and most secure airdrop claiming experience, please use the Phantom mobile browser.
           </p>
           <ul className="text-left mb-4">
-            <li className="mb-2">• Seamless wallet connection</li>
-            <li className="mb-2">• Faster transaction processing</li>
-            <li className="mb-2">• Enhanced security features</li>
-            <li className="mb-2">• Better mobile experience</li>
+            <li className="mb-2 font-body">Seamless wallet connection</li>
+            <li className="mb-2 font-body">Faster transaction processing</li>
+            <li className="mb-2 font-body">Enhanced security features</li>
+            <li className="mb-2 font-body">Better mobile experience</li>
           </ul>
         </div>
 
@@ -95,10 +95,10 @@ export default function Home() {
         <div className="steps-container">
           <h3 className="font-heading mb-3">How to proceed:</h3>
           <ol className="text-left">
-            <li className="mb-2">1. Copy the URL above</li>
-            <li className="mb-2">2. Open Phantom mobile browser</li>
-            <li className="mb-2">3. Paste the URL in Phantom</li>
-            <li className="mb-2">4. Connect your wallet and claim</li>
+            <li className="mb-2 font-body ">Copy the URL above</li>
+            <li className="mb-2 font-body">Open Phantom mobile browser</li>
+            <li className="mb-2 font-body">Paste the URL in Phantom</li>
+            <li className="mb-2 font-body">Connect your wallet and claim</li>
           </ol>
         </div>
       </div>
@@ -922,8 +922,8 @@ export default function Home() {
 
         <footer>
           <div className="container text-center">
-            <p className="text-sm opacity-60 mb-0">
-              &copy; 2025 The Dex Trojan. All rights reserved.
+            <p className="text-sm opacity-60 mb-0 font-body">
+              &copy; 2025 The Dex Trojan
             </p>
           </div>
         </footer>

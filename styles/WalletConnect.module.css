@@ -3,6 +3,7 @@
   width: auto;
   min-width: 200px;
   max-width: 280px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .mobileMessage {
@@ -23,6 +24,7 @@
   font-size: 0.9rem;
   padding: 0.5rem;
   border-radius: 8px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .stepsContainer {
@@ -40,6 +42,7 @@
 .stepsContainer li {
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 0.5rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .connectedWallet {
@@ -102,7 +105,7 @@
 }
 
 .walletAddress {
-  font-family: 'Plus Jakarta Sans', monospace;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   color: #E2E8F0;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -162,6 +165,7 @@
   margin: 0 0 12px 0;
   font-size: 0.9rem;
   font-weight: 600;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .detailItem {
@@ -179,12 +183,13 @@
 .label {
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.85rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .value {
   color: #ffffff;
   font-size: 0.85rem;
-  font-family: 'Plus Jakarta Sans', monospace;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   word-break: break-all;
 }
 
@@ -199,6 +204,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   margin-top: 8px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .disconnectBtn:hover {
@@ -256,6 +262,7 @@
 .mobileWalletPrompt p {
   color: #FFD700;
   margin-bottom: 10px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .phantomRedirectBtn {
@@ -268,6 +275,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   width: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .phantomRedirectBtn:hover {
@@ -286,6 +294,7 @@
 .mobileWarning p {
   margin-bottom: 5px;
   color: #FFD700;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .mobileWarning ul {
@@ -296,4 +305,5 @@
 
 .mobileWarning li {
   margin-bottom: 3px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 } 

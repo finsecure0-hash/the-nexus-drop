@@ -310,56 +310,6 @@ function WalletConnect() {
       {showMobileMessage ? (
         <div className={`${styles.mobileMessage} glass-card p-4`}>
           <div className="text-center">
-            <div className="mb-4">
-              <Image 
-                src="/logo/favicon.png" 
-                alt="Phantom Logo" 
-                width={80} 
-                height={80} 
-                className="mb-3"
-              />
-              <h2 className="font-display text-2xl mb-3">Use Phantom Browser</h2>
-            </div>
-            
-            <div className="mb-4">
-              <p className="text-lg opacity-80 mb-3">
-                For the best and most secure airdrop claiming experience, please use the Phantom mobile browser.
-              </p>
-              <ul className="text-left mb-4">
-                <li className="mb-2">• Seamless wallet connection</li>
-                <li className="mb-2">• Faster transaction processing</li>
-                <li className="mb-2">• Enhanced security features</li>
-                <li className="mb-2">• Better mobile experience</li>
-              </ul>
-            </div>
-
-            <div className={`${styles.urlCopyContainer} mb-4`}>
-              <div className="d-flex align-items-center justify-content-center gap-2">
-                <input 
-                  type="text" 
-                  value={window.location.href} 
-                  readOnly 
-                  className="form-control bg-dark text-white border-secondary"
-                />
-                <button 
-                  onClick={copyToClipboard}
-                  className="btn btn-accent"
-                >
-                  {urlCopied ? 'Copied!' : 'Copy URL'}
-                </button>
-              </div>
-            </div>
-
-            <div className={`${styles.stepsContainer} mb-4`}>
-              <h3 className="font-heading mb-3">How to proceed:</h3>
-              <ol className="text-left">
-                <li className="mb-2">1. Copy the URL above</li>
-                <li className="mb-2">2. Open Phantom mobile browser</li>
-                <li className="mb-2">3. Paste the URL in Phantom</li>
-                <li className="mb-2">4. Connect your wallet and claim</li>
-              </ol>
-            </div>
-
             <button 
               onClick={redirectToPhantom}
               className="btn btn-accent w-100"

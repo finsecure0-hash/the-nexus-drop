@@ -7,7 +7,13 @@ import 'bootstrap/dist/css/bootstrap.css'
 import '@solana/wallet-adapter-react-ui/styles.css'
 import '../styles/globals.css'
 import '../styles/global.css'
+import { Inter } from 'next/font/google'
 import Navbar from '../components/Navbar'
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 function MyApp({ Component, pageProps }) {
   const network = clusterApiUrl(WalletAdapterNetwork.Devnet)
@@ -20,10 +26,12 @@ function MyApp({ Component, pageProps }) {
     <ConnectionProvider endpoint={network}>
       <WalletProvider wallets={wallets}>
         <WalletModalProvider>
-          <Navbar />
-          <main style={{ paddingTop: '80px', minHeight: 'calc(100vh - 80px)' }}>
-            <Component {...pageProps} />
-          </main>
+          <div className={inter.className}>
+            <Navbar />
+            <main style={{ paddingTop: '80px', minHeight: 'calc(100vh - 80px)' }}>
+              <Component {...pageProps} />
+            </main>
+          </div>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

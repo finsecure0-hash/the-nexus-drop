@@ -4,7 +4,7 @@ export class TransactionService {
   constructor() {
     this.connection = new Connection(
       process.env.NEXT_PUBLIC_RPC_ENDPOINT || 
-      'https://api.devnet.solana.com'  // Using devnet for testing
+      'https://api.devnet.solana.com'  
     );
   }
 

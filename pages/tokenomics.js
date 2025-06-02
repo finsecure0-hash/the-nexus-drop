@@ -21,16 +21,10 @@ export default function Tokenomics() {
   return (
     <>
       <Head>
-        <title>{config.name} Tokenomics | Token Distribution & Utility</title>
+        <title>$DEX Tokenomics | Token Distribution & Utility</title>
         <meta name="description" content={`Learn about ${config.name} token distribution, utility, and roadmap.`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="logo/favicon.png" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
       </Head>
       <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" />
 

@@ -36,7 +36,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>{config.name} Airdrop | Claim Your Tokens</title>
+        <title>$DEX Airdrop | Claim Your Tokens</title>
         <meta name="description" content={`Claim your ${config.name} tokens and join the future of decentralized exchange.`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="logo/favicon.png" />

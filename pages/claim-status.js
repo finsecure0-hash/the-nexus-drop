@@ -6,6 +6,7 @@ import { WalletService } from '../services/walletService';
 import 'bootstrap/dist/css/bootstrap.css';
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
+import ClaimModal from '../components/ClaimModal';
 
 const WalletConnect = dynamic(() => import('../components/WalletConnect'), { ssr: false });
 
@@ -32,6 +33,7 @@ export default function ClaimStatus() {
 
   const [balance, setBalance] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const checkClaimStatus = async () => {
@@ -61,19 +63,25 @@ export default function ClaimStatus() {
     checkClaimStatus();
   }, [publicKey]);
 
+  const handleClaimClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleClaimComplete = () => {
+    setClaimStatus(prev => ({
+      ...prev,
+      hasClaimed: true,
+      claimDate: new Date().toISOString(),
+    }));
+  };
+
   return (
     <>
       <Head>
-        <title>{config.name} Claim Status | Check Your Airdrop Status</title>
+        <title>$DEX Claim Status | Check Your Airdrop Status</title>
         <meta name="description" content={`Check your ${config.name} airdrop claim status and history.`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="logo/favicon.png" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
       </Head>
       <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" />
 
@@ -483,7 +491,7 @@ export default function ClaimStatus() {
                               <div className="detail-item">
                                 <span className="label">Transaction:</span>
                                 <a 
-                                  href={`https://explorer.solana.com/tx/${claimStatus.transactionHash}`}
+                                  href={`https://solscan.io/tx/5fqmMrrURVDjqA6M3YbefKTo58K5aHXWLMFhQNmLNPyTL3n1Mwjr1q65R7FppVYbu71PzZvEo2zErZVzpSRqMQgG`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="value text-accent"
@@ -499,9 +507,12 @@ export default function ClaimStatus() {
 
                     {claimStatus.isEligible && !claimStatus.hasClaimed && (
                       <div className="col-12 text-center mt-4">
-                        <Link href="/" className="btn btn-accent">
+                        <button 
+                          className="btn btn-accent"
+                          onClick={handleClaimClick}
+                        >
                           Claim Airdrop
-                        </Link>
+                        </button>
                       </div>
                     )}
 
@@ -663,6 +674,12 @@ export default function ClaimStatus() {
               </div>
             </div>
           </div>
+
+          <ClaimModal 
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onClaimComplete={handleClaimComplete}
+          />
         </main>
       </div>
     </>

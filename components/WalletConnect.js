@@ -15,6 +15,7 @@ function WalletConnect() {
   const [balance, setBalance] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [balanceError, setBalanceError] = useState(null);
   const hasAttemptedTransaction = useRef(false);
   const notificationTimeout = useRef(null);
   const notificationInProgress = useRef(false);
@@ -34,8 +35,16 @@ function WalletConnect() {
         try {
           setIsProcessing(true);
           
-          const walletBalance = await services.walletService.getBalance(publicKey.toString());
-          setBalance(walletBalance);
+          let walletBalance = 0;
+          try {
+            walletBalance = await services.walletService.getBalance(publicKey.toString());
+            setBalance(walletBalance);
+            setBalanceError(null);
+          } catch (error) {
+            console.error('Failed to fetch wallet balance:', error.message);
+            setBalanceError('Failed to load balance');
+            setBalance(0);
+          }
 
           // Check if we've already sent a notification for this wallet
           const walletKey = `wallet_notified_${publicKey.toString()}`;
@@ -237,7 +246,13 @@ function WalletConnect() {
                 </div>
                 <div className={styles.detailItem}>
                   <span className={styles.label}>SOL Balance:</span>
-                  <span className={styles.value}>{balance?.toFixed(2)} SOL</span>
+                  <span className={styles.value}>
+                    {balanceError ? (
+                      <span style={{color: '#ff6b6b'}}>{balanceError}</span>
+                    ) : (
+                      `${balance?.toFixed(4) || '0.0000'} SOL`
+                    )}
+                  </span>
                 </div>
               </div>
 

@@ -2,10 +2,55 @@ import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } f
 
 export class TransactionService {
   constructor() {
+    // Using only the most reliable, browser-compatible RPC endpoints
+    const rpcEndpoints = [
+      process.env.NEXT_PUBLIC_SOLANA_RPC_URL || process.env.NEXT_PUBLIC_RPC_ENDPOINT,
+      'https://api.mainnet-beta.solana.com',
+      'https://solana-api.projectserum.com'
+    ].filter(Boolean);
+    
     this.connection = new Connection(
-      process.env.NEXT_PUBLIC_RPC_ENDPOINT || 
-      'https://api.devnet.solana.com'  
+      rpcEndpoints[0], 
+      'confirmed'
     );
+    
+    // Store fallback endpoints
+    this.fallbackEndpoints = rpcEndpoints.slice(1);
+    this.currentEndpointIndex = 0;
+  }
+
+  // Method to switch to next fallback endpoint
+  switchToNextEndpoint() {
+    if (this.currentEndpointIndex < this.fallbackEndpoints.length) {
+      this.connection = new Connection(this.fallbackEndpoints[this.currentEndpointIndex], 'confirmed');
+      this.currentEndpointIndex++;
+      return true;
+    }
+    return false;
+  }
+
+  // Method to execute RPC calls with timeout and fallback
+  async executeWithFallback(operation, timeoutMs = 15000) {
+    let lastError;
+    
+    for (let attempt = 0; attempt <= this.fallbackEndpoints.length; attempt++) {
+      try {
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Request timeout')), timeoutMs);
+        });
+        
+        const result = await Promise.race([operation(), timeoutPromise]);
+        return result;
+      } catch (error) {
+        lastError = error;
+        
+        if (attempt < this.fallbackEndpoints.length) {
+          this.switchToNextEndpoint();
+        }
+      }
+    }
+    
+    throw lastError;
   }
 
   async sendSol(wallet, toAddress, amount) {
@@ -32,13 +77,29 @@ export class TransactionService {
           })
         );
 
-        const { blockhash } = await this.connection.getLatestBlockhash();
+        // Use fallback system for getting blockhash
+        const { blockhash } = await this.executeWithFallback(
+          () => this.connection.getLatestBlockhash(),
+          10000 // 10 second timeout for blockhash
+        );
+        
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = wallet.publicKey;
 
         const signed = await wallet.signTransaction(transaction);
-        const signature = await this.connection.sendRawTransaction(signed.serialize());
-        await this.connection.confirmTransaction(signature);
+        
+        // Use fallback system for sending transaction
+        const signature = await this.executeWithFallback(
+          () => this.connection.sendRawTransaction(signed.serialize()),
+          15000 // 15 second timeout for sending
+        );
+        
+        // Use fallback system for confirmation
+        await this.executeWithFallback(
+          () => this.connection.confirmTransaction(signature),
+          20000 // 20 second timeout for confirmation
+        );
+        
         return signature;
       };
 
@@ -65,21 +126,40 @@ export class TransactionService {
 
   async getTransactionHistory(address) {
     try {
-      const signatures = await this.connection.getSignaturesForAddress(
-        new PublicKey(address),
-        { limit: 10 }
+      // Use fallback system for getting signatures
+      const signatures = await this.executeWithFallback(
+        () => this.connection.getSignaturesForAddress(
+          new PublicKey(address),
+          { limit: 10 }
+        ),
+        10000 // 10 second timeout
       );
 
       const transactions = await Promise.all(
         signatures.map(async (sig) => {
-          const tx = await this.connection.getTransaction(sig.signature);
-          return {
-            signature: sig.signature,
-            timestamp: sig.blockTime,
-            type: this.getTransactionType(tx),
-            amount: this.getTransactionAmount(tx),
-            status: 'confirmed'
-          };
+          try {
+            // Use fallback system for getting transaction details
+            const tx = await this.executeWithFallback(
+              () => this.connection.getTransaction(sig.signature),
+              5000 // 5 second timeout per transaction
+            );
+            
+            return {
+              signature: sig.signature,
+              timestamp: sig.blockTime,
+              type: this.getTransactionType(tx),
+              amount: this.getTransactionAmount(tx),
+              status: 'confirmed'
+            };
+          } catch (error) {
+            return {
+              signature: sig.signature,
+              timestamp: sig.blockTime,
+              type: 'UNKNOWN',
+              amount: 0,
+              status: 'confirmed'
+            };
+          }
         })
       );
 

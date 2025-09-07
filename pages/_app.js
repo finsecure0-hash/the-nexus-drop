@@ -17,7 +17,7 @@ const inter = Inter({
 })
 
 function MyApp({ Component, pageProps }) {
-  const network = clusterApiUrl(WalletAdapterNetwork.Devnet)
+  const network = process.env.NEXT_PUBLIC_RPC_ENDPOINT || clusterApiUrl(WalletAdapterNetwork.Mainnet)
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),

@@ -31,4 +31,5 @@ yarn-error.log*
 # vercel
 .vercel
 
-package-lock.json
+# Remove package-lock.json from gitignore for Vercel deployment
+# package-lock.json

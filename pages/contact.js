@@ -41,12 +41,12 @@ export default function Contact() {
   const contactInfo = [
     {
       title: "Telegram",
-      value: "@dextrojan_support",
+      value: "@dexairdrop",
       icon: "💬"
     },
     {
       title: "Email",
-      value: "support@dextrojan.com",
+      value: "support@dexairdrop.com",
       icon: "📧"
     },
     {
@@ -396,7 +396,7 @@ export default function Contact() {
                   <p className="text-lg text-white opacity-90 font-body">
                     Have questions? We're here to help!
                   </p>
-                  <span className="text-white font-display">The Dex Trojan</span>
+                  <span className="text-white font-display">The Dex Airdrop</span>
                 </div>
 
                 <div className="row g-4 mb-5">

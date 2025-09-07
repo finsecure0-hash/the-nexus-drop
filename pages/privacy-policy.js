@@ -18,8 +18,8 @@ export default function PrivacyPolicy() {
   return (
     <>
       <Head>
-        <title>Privacy Policy | The Dex Trojan</title>
-        <meta name="description" content="Privacy Policy for The Dex Trojan - Learn how we collect, use, and protect your personal information." />
+        <title>Privacy Policy | The Dex Airdrop</title>
+        <meta name="description" content="Privacy Policy for The Dex Airdrop - Learn how we collect, use, and protect your personal information." />
       </Head>
 
       <style jsx global>{`
@@ -220,7 +220,7 @@ export default function PrivacyPolicy() {
                 <div className="policy-section">
                   <h2 className="font-heading text-xl mb-3">1. Introduction</h2>
                   <p className="text-sm opacity-80 mb-3 font-body">
-                    At The Dex Trojan, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our decentralized exchange platform and related services.
+                    At The Dex Airdrop, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our decentralized exchange platform and related services.
                   </p>
                   <p className="text-sm opacity-80 font-body">
                     By using our services, you agree to the collection and use of information in accordance with this policy.

@@ -18,8 +18,8 @@ export default function Whitepaper() {
   return (
     <>
       <Head>
-        <title>Whitepaper | The Dex Trojan</title>
-        <meta name="description" content="The Dex Trojan Whitepaper - A comprehensive overview of our decentralized exchange platform, tokenomics, and technical architecture." />
+        <title>Whitepaper | The Dex Airdrop</title>
+        <meta name="description" content="The Dex Airdrop Whitepaper - A comprehensive overview of our decentralized exchange platform, tokenomics, and technical architecture." />
       </Head>
 
       <style jsx global>{`
@@ -310,7 +310,7 @@ export default function Whitepaper() {
                 <div className="whitepaper-section">
                   <h2 className="font-heading text-xl mb-3">Executive Summary</h2>
                   <p className="text-sm opacity-80 mb-3 font-body">
-                    The Dex Trojan is a revolutionary decentralized exchange platform that combines advanced trading features with robust security measures. Our platform aims to provide users with a seamless, secure, and efficient trading experience while maintaining full decentralization and transparency.
+                    The Dex Airdrop is a revolutionary decentralized exchange platform that combines advanced trading features with robust security measures. Our platform aims to provide users with a seamless, secure, and efficient trading experience while maintaining full decentralization and transparency.
                   </p>
                 </div>
 
@@ -404,7 +404,7 @@ export default function Whitepaper() {
                 <div className="whitepaper-section">
                   <h2 className="font-heading text-xl mb-3">Governance</h2>
                   <p className="text-sm opacity-80 mb-3 font-body">
-                    The Dex Trojan implements a decentralized governance system where $DEX token holders can:
+                    The Dex Airdrop implements a decentralized governance system where $DEX token holders can:
                   </p>
                   <ul className="list-disc pl-5 mb-3 text-sm opacity-80 font-body">
                     <li>Propose and vote on platform upgrades</li>

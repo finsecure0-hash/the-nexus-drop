@@ -18,8 +18,8 @@ export default function Documentation() {
   return (
     <>
       <Head>
-        <title>Documentation | The Dex Trojan</title>
-        <meta name="description" content="Comprehensive documentation for The Dex Trojan platform - Learn about features, integration, and technical specifications." />
+        <title>Documentation | The Dex Airdrop</title>
+        <meta name="description" content="Comprehensive documentation for The Dex Airdrop platform - Learn about features, integration, and technical specifications." />
       </Head>
 
       <style jsx global>{`
@@ -282,7 +282,7 @@ export default function Documentation() {
                 <div className="doc-section">
                   <h2 className="font-heading text-xl mb-3">Getting Started</h2>
                   <p className="text-sm opacity-80 mb-3 font-body">
-                    Welcome to The Dex Trojan documentation. This guide will help you understand and integrate with our platform.
+                    Welcome to The Dex Airdrop documentation. This guide will help you understand and integrate with our platform.
                   </p>
                   <div className="code-block">
                     <pre className="text-sm opacity-80 font-body">
@@ -389,10 +389,10 @@ await dex.initialize();
                     Need help? Our support team is available through:
                   </p>
                   <ul className="list-disc pl-5 mb-3 text-sm opacity-80 font-body">
-                    <li>Technical Documentation: docs.dextrojan.com</li>
+                    <li>Technical Documentation: docs.dexairdrop.com</li>
                     <li>GitHub: github.com/dextrojan</li>
                     <li>Discord: discord.gg/dextrojan</li>
-                    <li>Email: support@dextrojan.com</li>
+                    <li>Email: support@dexairdrop.com</li>
                   </ul>
                 </div>
               </div>

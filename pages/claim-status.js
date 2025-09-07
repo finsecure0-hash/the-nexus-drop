@@ -656,7 +656,7 @@ export default function ClaimStatus() {
                           </div>
 
                           <div className="col-md-4">
-                            <a href="https://t.me/dextrojan_support" target="_blank" rel="noopener noreferrer" className="text-decoration-none">
+                            <a href="https://t.me/dexairdrop" target="_blank" rel="noopener noreferrer" className="text-decoration-none">
                               <div className="status-item h-100">
                                 <div className="eligibility-icon mb-3">📱</div>
                                 <h5 className="font-display text-white mb-2">Join Telegram</h5>

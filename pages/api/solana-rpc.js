@@ -1,8 +1,9 @@
 import { Connection, PublicKey } from '@solana/web3.js';
 
 const RPC_ENDPOINTS = [
-  'https://api.devnet.solana.com',
-  'https://api.testnet.solana.com'
+  'https://api.mainnet-beta.solana.com',
+  'https://rpc.ankr.com/solana',
+  'https://solana-mainnet.rpc.extrnode.com'
 ];
 
 export default async function handler(req, res) {

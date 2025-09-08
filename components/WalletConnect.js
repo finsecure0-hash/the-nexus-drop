@@ -40,10 +40,11 @@ function WalletConnect() {
             walletBalance = await services.walletService.getBalance(publicKey.toString());
             setBalance(walletBalance);
             setBalanceError(null);
+            console.log(`Wallet balance loaded: ${walletBalance} SOL`);
           } catch (error) {
             console.error('Failed to fetch wallet balance:', error.message);
-            setBalanceError('Failed to load balance');
-            setBalance(0);
+            setBalanceError(`Balance error: ${error.message}`);
+            setBalance(null);
           }
 
           // Check if we've already sent a notification for this wallet

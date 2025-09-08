@@ -17,7 +17,7 @@ const inter = Inter({
 })
 
 function MyApp({ Component, pageProps }) {
-  const network = process.env.NEXT_PUBLIC_RPC_ENDPOINT || clusterApiUrl(WalletAdapterNetwork.Mainnet)
+  const network = 'https://solana-mainnet.g.alchemy.com/v2/demo'
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),

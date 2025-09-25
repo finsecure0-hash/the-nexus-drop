@@ -18,8 +18,8 @@ export default function CookiePolicy() {
   return (
     <>
       <Head>
-        <title>Cookie Policy | The Dex Airdrop</title>
-        <meta name="description" content="Cookie Policy for The Dex Airdrop - Learn about how we use cookies and similar technologies on our platform." />
+        <title>Cookie Policy | The Nexus Airdrop</title>
+        <meta name="description" content="Cookie Policy for The Nexus Airdrop - Learn about how we use cookies and similar technologies on our platform." />
       </Head>
 
       <style jsx global>{`

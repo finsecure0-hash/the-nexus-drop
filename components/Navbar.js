@@ -34,7 +34,7 @@ export default function Navbar() {
       <nav className="navbar navbar-expand-lg py-3">
         <div className="container">
           <Link href="/" className="navbar-brand">
-            <span className="text-white font-display">The Dex Airdrop</span>
+            <span className="text-white font-display">The Nexus Airdrop</span>
           </Link>
           
           <button 

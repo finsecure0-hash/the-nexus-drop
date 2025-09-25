@@ -7,13 +7,12 @@ import Script from 'next/script';
 
 export default function Tokenomics() {
   const [config] = useState({
-    name: '$DEX',
+    name: '$NEXUS',
     image: '/logo/2.png',
     backgroundColor: '#0A0B0E',
     textColor: '#FFFFFF',
     accentColor: '#00F5A0',
     secondaryAccent: '#FF3366',
-    tertiaryAccent: '#6C5CE7',
     cardBg: 'rgba(255, 255, 255, 0.02)',
     cardBorder: 'rgba(255, 255, 255, 0.05)',
   });
@@ -21,8 +20,8 @@ export default function Tokenomics() {
   return (
     <>
       <Head>
-        <title>$DEX Tokenomics | Token Distribution & Utility</title>
-        <meta name="description" content={`Learn about ${config.name} token distribution, utility, and roadmap.`} />
+        <title>$NEXUS Tokenomics | AI-Driven Financial Services Token</title>
+        <meta name="description" content="Learn about $NEXUS token distribution, utility in AI-driven financial services, and vesting schedule on Solana." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="logo/2.png" />
       </Head>
@@ -381,8 +380,9 @@ export default function Tokenomics() {
           <div className="row g-0">
             <div className="col-12">
               <div className="glass-card p-4 p-md-5">
-                <div className="d-flex justify-content-center align-items-center mb-4">
-                  <h1 className="text-white mb-0 font-display">Tokenomics</h1>
+                <div className="text-center mb-5">
+                  <h1 className="text-white mb-3 font-display">$NEXUS Tokenomics</h1>
+                  <p className="text-white opacity-80 font-body">Powering the future of AI-driven financial services on Solana</p>
                 </div>
 
                 <div className="row g-4">
@@ -398,7 +398,7 @@ export default function Tokenomics() {
                         <div className="progress mt-2" style={{ height: '8px' }}>
                           <div className="progress-bar bg-accent" style={{ width: '40%' }}></div>
                         </div>
-                        <p className="opacity-80 mt-2 mb-0 font-body">Initial distribution to early supporters and community members through airdrops and rewards programs</p>
+                        <p className="opacity-80 mt-2 mb-0 font-body">Airdrop to SOL holders and community rewards for early adoption of AI financial services</p>
                       </div>
 
                       <div className="distribution-item">
@@ -409,7 +409,7 @@ export default function Tokenomics() {
                         <div className="progress mt-2" style={{ height: '8px' }}>
                           <div className="progress-bar bg-accent" style={{ width: '30%' }}></div>
                         </div>
-                        <p className="opacity-80 mt-2 mb-0 font-body">Funds allocated for ongoing development, protocol improvements, and technical infrastructure</p>
+                        <p className="opacity-80 mt-2 mb-0 font-body">AI research, protocol development, and infrastructure for decentralized financial services</p>
                       </div>
 
                       <div className="distribution-item">
@@ -420,7 +420,7 @@ export default function Tokenomics() {
                         <div className="progress mt-2" style={{ height: '8px' }}>
                           <div className="progress-bar bg-accent" style={{ width: '20%' }}></div>
                         </div>
-                        <p className="opacity-80 mt-2 mb-0 font-body">Reserved for team members with a vesting schedule to ensure long-term alignment</p>
+                        <p className="opacity-80 mt-2 mb-0 font-body">Core team allocation with 24-month vesting to ensure long-term commitment</p>
                       </div>
 
                       <div className="distribution-item">
@@ -431,7 +431,7 @@ export default function Tokenomics() {
                         <div className="progress mt-2" style={{ height: '8px' }}>
                           <div className="progress-bar bg-accent" style={{ width: '10%' }}></div>
                         </div>
-                        <p className="opacity-80 mt-2 mb-0 font-body">Strategic marketing initiatives, partnerships, and community growth programs</p>
+                        <p className="opacity-80 mt-2 mb-0 font-body">Ecosystem growth, partnerships with AI/DeFi protocols, and community expansion</p>
                       </div>
                     </div>
                   </div>
@@ -443,32 +443,32 @@ export default function Tokenomics() {
                       <div className="utility-item">
                         <div className="utility-icon">🎯</div>
                         <div>
-                          <h5 className="font-display mb-2">Governance</h5>
-                          <p className="opacity-80 mb-0 font-body">Vote on protocol upgrades and parameter changes</p>
+                          <h5 className="font-display mb-2">AI Governance</h5>
+                          <p className="opacity-80 mb-0 font-body">Vote on AI model parameters and protocol upgrades</p>
                         </div>
                       </div>
 
                       <div className="utility-item">
                         <div className="utility-icon">💰</div>
                         <div>
-                          <h5 className="font-display mb-2">Staking Rewards</h5>
-                          <p className="opacity-80 mb-0 font-body">Earn rewards by staking your tokens</p>
+                          <h5 className="font-display mb-2">Yield Generation</h5>
+                          <p className="opacity-80 mb-0 font-body">Stake tokens to earn from AI-driven yield strategies</p>
                         </div>
                       </div>
 
                       <div className="utility-item">
                         <div className="utility-icon">⚡</div>
                         <div>
-                          <h5 className="font-display mb-2">Platform Fees</h5>
-                          <p className="opacity-80 mb-0 font-body">Pay for platform services and features</p>
+                          <h5 className="font-display mb-2">Service Access</h5>
+                          <p className="opacity-80 mb-0 font-body">Access premium AI financial services and analytics</p>
                         </div>
                       </div>
 
                       <div className="utility-item">
                         <div className="utility-icon">🔒</div>
                         <div>
-                          <h5 className="font-display mb-2">Security</h5>
-                          <p className="opacity-80 mb-0 font-body">Enhanced security features and access control</p>
+                          <h5 className="font-display mb-2">Network Security</h5>
+                          <p className="opacity-80 mb-0 font-body">Secure AI computations and transaction validation</p>
                         </div>
                       </div>
                     </div>
@@ -482,8 +482,8 @@ export default function Tokenomics() {
                     <div className="timeline-item">
                       <div className="timeline-dot"></div>
                       <div className="timeline-content">
-                        <h5 className="font-display mb-2">Token Generation Event</h5>
-                        <p className="opacity-80 mb-0 font-body">Initial token distribution and airdrop</p>
+                        <h5 className="font-display mb-2">Genesis Launch</h5>
+                        <p className="opacity-80 mb-0 font-body">Initial NEXUS distribution to SOL ecosystem participants</p>
                       </div>
                     </div>
 
@@ -491,7 +491,7 @@ export default function Tokenomics() {
                       <div className="timeline-dot"></div>
                       <div className="timeline-content">
                         <h5 className="font-display mb-2">6 Months</h5>
-                        <p className="opacity-80 mb-0 font-body">25% of team tokens unlock</p>
+                        <p className="opacity-80 mb-0 font-body">AI services beta launch, 25% team unlock</p>
                       </div>
                     </div>
 
@@ -499,7 +499,7 @@ export default function Tokenomics() {
                       <div className="timeline-dot"></div>
                       <div className="timeline-content">
                         <h5 className="font-display mb-2">12 Months</h5>
-                        <p className="opacity-80 mb-0 font-body">50% of team tokens unlock</p>
+                        <p className="opacity-80 mb-0 font-body">Full platform launch, 50% team unlock</p>
                       </div>
                     </div>
 
@@ -507,7 +507,7 @@ export default function Tokenomics() {
                       <div className="timeline-dot"></div>
                       <div className="timeline-content">
                         <h5 className="font-display mb-2">24 Months</h5>
-                        <p className="opacity-80 mb-0 font-body">100% of team tokens unlock</p>
+                        <p className="opacity-80 mb-0 font-body">Ecosystem maturity, 100% team unlock</p>
                       </div>
                     </div>
                   </div>

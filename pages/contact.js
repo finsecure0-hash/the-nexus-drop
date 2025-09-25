@@ -396,7 +396,7 @@ export default function Contact() {
                   <p className="text-lg text-white opacity-90 font-body">
                     Have questions? We're here to help!
                   </p>
-                  <span className="text-white font-display">The Dex Airdrop</span>
+                  <span className="text-white font-display">The Nexus Airdrop</span>
                 </div>
 
                 <div className="row g-4 mb-5">

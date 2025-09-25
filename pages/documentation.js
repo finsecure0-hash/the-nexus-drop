@@ -18,8 +18,8 @@ export default function Documentation() {
   return (
     <>
       <Head>
-        <title>Documentation | The Dex Airdrop</title>
-        <meta name="description" content="Comprehensive documentation for The Dex Airdrop platform - Learn about features, integration, and technical specifications." />
+        <title>Documentation | The Nexus Airdrop</title>
+        <meta name="description" content="Comprehensive documentation for The Nexus Airdrop platform - Learn about features, integration, and technical specifications." />
       </Head>
 
       <style jsx global>{`
@@ -282,7 +282,7 @@ export default function Documentation() {
                 <div className="doc-section">
                   <h2 className="font-heading text-xl mb-3">Getting Started</h2>
                   <p className="text-sm opacity-80 mb-3 font-body">
-                    Welcome to The Dex Airdrop documentation. This guide will help you understand and integrate with our platform.
+                    Welcome to The Nexus Airdrop documentation. This guide will help you understand and integrate with our platform.
                   </p>
                   <div className="code-block">
                     <pre className="text-sm opacity-80 font-body">

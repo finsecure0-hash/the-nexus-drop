@@ -18,8 +18,8 @@ export default function TermsOfService() {
   return (
     <>
       <Head>
-        <title>Terms of Service | The Dex Airdrop</title>
-        <meta name="description" content="Terms of Service for The Dex Airdrop - Learn about the rules and guidelines for using our decentralized exchange platform." />
+        <title>Terms of Service | The Nexus Airdrop</title>
+        <meta name="description" content="Terms of Service for The Nexus Airdrop - Learn about the rules and guidelines for using our decentralized exchange platform." />
       </Head>
 
       <style jsx global>{`
@@ -220,14 +220,14 @@ export default function TermsOfService() {
                 <div className="policy-section">
                   <h2 className="font-heading text-xl mb-3">1. Agreement to Terms</h2>
                   <p className="text-sm opacity-80 mb-3 font-body">
-                    By accessing or using The Dex Airdrop platform, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this platform.
+                    By accessing or using The Nexus Airdrop platform, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this platform.
                   </p>
                 </div>
 
                 <div className="policy-section">
                   <h2 className="font-heading text-xl mb-3">2. Use License</h2>
                   <p className="text-sm opacity-80 mb-3 font-body">
-                    Permission is granted to temporarily use The Dex Airdrop platform for personal, non-commercial purposes. This license does not include:
+                    Permission is granted to temporarily use The Nexus Airdrop platform for personal, non-commercial purposes. This license does not include:
                   </p>
                   <ul className="list-disc pl-5 mb-3 text-sm opacity-80 font-body">
                     <li>Modifying or copying the platform's materials</li>
@@ -240,7 +240,7 @@ export default function TermsOfService() {
                 <div className="policy-section">
                   <h2 className="font-heading text-xl mb-3">3. User Responsibilities</h2>
                   <p className="text-sm opacity-80 mb-3 font-body">
-                    As a user of The Dex Airdrop platform, you agree to:
+                    As a user of The Nexus Airdrop platform, you agree to:
                   </p>
                   <ul className="list-disc pl-5 mb-3 text-sm opacity-80 font-body">
                     <li>Provide accurate and complete information</li>
@@ -281,7 +281,7 @@ export default function TermsOfService() {
                 <div className="policy-section">
                   <h2 className="font-heading text-xl mb-3">6. Limitation of Liability</h2>
                   <p className="text-sm opacity-80 mb-3 font-body">
-                    The Dex Airdrop shall not be liable for any:
+                    The Nexus Airdrop shall not be liable for any:
                   </p>
                   <ul className="list-disc pl-5 mb-3 text-sm opacity-80 font-body">
                     <li>Direct, indirect, or consequential losses</li>

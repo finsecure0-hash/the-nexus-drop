@@ -15,7 +15,7 @@ export default function Footer() {
                 height={40}
                 className="me-2"
               />
-              <h5 className="font-display mb-0">The Dex Airdrop</h5>
+              <h5 className="font-display mb-0">The Nexus Airdrop</h5>
             </div>
             <p className="text-sm opacity-60 mb-3 font-body">
               Join the future of decentralized exchange. Claim your $DEX tokens and be part of the revolution.
@@ -81,7 +81,7 @@ export default function Footer() {
         <div className="row align-items-center">
           <div className="col-md-6 text-center text-md-start">
             <p className="text-sm opacity-60 mb-0 font-body">
-              &copy; 2025 The Dex Airdrop. All rights reserved.
+              &copy; 2025 The Nexus Airdrop. All rights reserved.
             </p>
           </div>
           <div className="col-md-6 text-center text-md-end mt-3 mt-md-0">

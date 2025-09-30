@@ -5,7 +5,7 @@ import styles from '../styles/Home.module.css';
 
 export default function Whitepaper() {
   const [config] = useState({
-    name: '$DEX',
+    name: '$NEXUS',
     backgroundColor: '#0A0B0E',
     textColor: '#FFFFFF',
     accentColor: '#00F5A0',
@@ -338,7 +338,7 @@ export default function Whitepaper() {
                   <div className="tokenomics-grid">
                     <div className="tokenomics-item">
                       <h3 className="font-heading text-lg mb-2">Total Supply</h3>
-                      <p className="text-sm opacity-80 font-body">1,000,000,000 $DEX</p>
+                      <p className="text-sm opacity-80 font-body">1,000,000,000 $NEXUS</p>
                     </div>
                     <div className="tokenomics-item">
                       <h3 className="font-heading text-lg mb-2">Initial Price</h3>
@@ -346,7 +346,7 @@ export default function Whitepaper() {
                     </div>
                     <div className="tokenomics-item">
                       <h3 className="font-heading text-lg mb-2">Max Supply</h3>
-                      <p className="text-sm opacity-80 font-body">1,000,000,000 $DEX</p>
+                      <p className="text-sm opacity-80 font-body">1,000,000,000 $NEXUS</p>
                     </div>
                     <div className="tokenomics-item">
                       <h3 className="font-heading text-lg mb-2">Token Type</h3>
@@ -404,7 +404,7 @@ export default function Whitepaper() {
                 <div className="whitepaper-section">
                   <h2 className="font-heading text-xl mb-3">Governance</h2>
                   <p className="text-sm opacity-80 mb-3 font-body">
-                    The Nexus Airdrop implements a decentralized governance system where $DEX token holders can:
+                    The Nexus Airdrop implements a decentralized governance system where $NEXUS token holders can:
                   </p>
                   <ul className="list-disc pl-5 mb-3 text-sm opacity-80 font-body">
                     <li>Propose and vote on platform upgrades</li>

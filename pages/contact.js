@@ -6,7 +6,7 @@ import Script from 'next/script';
 
 export default function Contact() {
   const [config] = useState({
-    name: '$DEX',
+    name: '$NEXUS',
     backgroundColor: '#0A0B0E',
     textColor: '#FFFFFF',
     accentColor: '#00F5A0',
@@ -59,7 +59,7 @@ export default function Contact() {
   return (
     <>
       <Head>
-        <title>$DEX Contact | Get in Touch</title>
+        <title>$NEXUS Contact | Get in Touch</title>
         <meta name="description" content={`Contact the ${config.name} team for support, partnerships, or general inquiries.`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="logo/2.png" />

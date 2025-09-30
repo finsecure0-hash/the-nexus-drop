@@ -116,10 +116,10 @@ export default function ClaimModal({ isOpen, onClose, onClaimComplete }) {
             <div className="success-container">
               <div className="success-icon">✓</div>
               <p className="text-white opacity-80 mt-3 font-body">
-                1,000 $DEX tokens have been airdropped to your wallet
+                1,000 $NEXUS tokens have been airdropped to your wallet
               </p>
               <p className="text-white opacity-80 mt-2 font-body">
-                Congratulations! You are now part of the $DEX community.
+                Congratulations! You are now part of the $NEXUS community.
               </p>
             </div>
             <button 

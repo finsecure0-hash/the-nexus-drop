@@ -18,7 +18,7 @@ export default function Footer() {
               <h5 className="font-display mb-0">The Nexus Airdrop</h5>
             </div>
             <p className="text-sm opacity-60 mb-3 font-body">
-              Join the future of decentralized exchange. Claim your $DEX tokens and be part of the revolution.
+              Join the future of decentralized exchange. Claim your $NEXUS tokens and be part of the revolution.
             </p>
             <div className="d-flex gap-3">
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white opacity-60 hover:opacity-100 transition-opacity">

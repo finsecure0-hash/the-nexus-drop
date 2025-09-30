@@ -5,7 +5,7 @@ import styles from '../styles/Home.module.css';
 
 export default function TermsOfService() {
   const [config] = useState({
-    name: '$DEX',
+    name: '$NEXUS',
     backgroundColor: '#0A0B0E',
     textColor: '#FFFFFF',
     accentColor: '#00F5A0',

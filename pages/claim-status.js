@@ -55,7 +55,7 @@ export default function ClaimStatus() {
           };
           
           const claimAmount = calculateClaimAmount(walletBalance);
-          const isEligible = walletBalance >= 0.1;
+          const isEligible = walletBalance >= 0.01;
           
           setClaimStatus({
             isEligible,

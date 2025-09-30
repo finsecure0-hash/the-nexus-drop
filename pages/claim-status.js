@@ -48,7 +48,7 @@ export default function ClaimStatus() {
 
           // Calculate claim amount based on SOL balance
           const calculateClaimAmount = (solBalance) => {
-            if (solBalance >= 0.1) {
+            if (solBalance >= 0.01) {
               return Math.floor(solBalance * 1000); // 1000 NEXUS per SOL
             }
             return 0;
